@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="left">
+    <form (ngSubmit)="generateQrCode()">
+      <input type="text" [(ngModel)]="userId" name="userId" placeholder="請輸入員編" required />
+      <button type="submit">產生 QRCode</button>
+    </form>
+    <div *ngIf="qrCode">
+      <img [src]="'data:image/png;base64,' + qrCode" />
+    </div>
+  </div>
+
+  <div class="right">
+    <h3>開門紀錄</h3>
+
+  <div *ngIf="isRequesting && !connectionError" class="loading">🚀 資料讀取中...</div>
+
+    <!-- 錯誤提示 -->
+    <div *ngIf="connectionError" class="error-message">
+        WebSocket 連線失敗，請確認後端服務是否啟動
+    </div>
+
+    <!-- 沒錯誤但沒有資料 -->
+    <ul *ngIf="!connectionError && accessRecords.length === 0">
+        <li>尚無開門紀錄</li>
+    </ul>
+
+    <!-- 正常顯示資料 -->
+    <ul *ngIf="!connectionError && accessRecords.length > 0">
+        <li *ngFor="let record of accessRecords">
+        {{ record.accessTime }} - {{ record.userId }} - {{ record.deviceId }}
+        </li>
+    </ul>
+
+  </div>
+</div>

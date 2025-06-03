@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+#    如果系統（或 .env）中有設定 SPRING_PROFILES_ACTIVE 這個環境變數，就用它的值；
+#    如果沒有設定，就預設使用 local 這個 profile。
