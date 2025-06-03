@@ -1,0 +1,69 @@
+version: '3.8'
+# 使用哪個 docker-compose 語法版本
+
+# 有哪些服務（container）
+services:
+  backend:
+    build:
+#      指定 Dockerfile build 的根目錄
+#      使用/acs作為buildcontext可以避免 Docker 為了安全性與可移植性，禁止你複製 context 之外的東西！
+      context: .
+#      指定要用哪個 Dockerfile（預設是 Dockerfile，可以省略）
+      dockerfile: acs-backend/Dockerfile
+#      backend 這個容器 依賴其他服務先啟動（啟動順序），但不保證它們已經「可連線」
+    depends_on:
+      - db
+      - redis
+      - mqtt
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_MQTT_BROKER: ${SPRING_MQTT_BROKER}
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: acs-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+
+  simulator:
+    build:
+      context: ./python-simulator
+      dockerfile: Dockerfile
+    depends_on:
+      - mqtt
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+#      把 PostgreSQL 的資料儲存位置掛到 volume pgdata（讓資料不會因 container 重啟而遺失）
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  mqtt:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mqtt/config:/mosquitto/config
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/log:/mosquitto/log
+
+# 哪些資料要持久化（避免 container 關掉資料就不見）
+volumes:
+  pgdata:

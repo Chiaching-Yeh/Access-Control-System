@@ -1,0 +1,133 @@
+server:
+  port: 8080
+  servlet:
+    context-parameters:
+      defaultHtmlEscape: true
+    session:
+      timeout: 40m
+      cookie:
+        http-only: true
+      tracking-modes: cookie
+  forward-headers-strategy: NATIVE
+
+spring:
+
+  application:
+    name: AccessControlSystem
+
+  spring:
+    security:
+      enabled: false
+
+  aop:
+    auto: true
+    proxy-target-class: true
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
+
+  session:
+    store-type: jdbc  # 使用 JDBC 來存儲會話
+
+  datasource:
+      name: master
+      driverClassName: org.postgresql.Driver
+      jdbc-url: ${SPRING_DATASOURCE_URL}
+      username: ${SPRING_DATASOURCE_USERNAME}
+      password: ${SPRING_DATASOURCE_PASSWORD}
+      hikari:
+        pool-name: ManageHikariCP
+        auto-commit: true
+        maximum-pool-size: 32
+        max-lifetime: 1800000 # 30分鐘（建議與資料庫連線存活時間一致）
+        connection-timeout: 30000 # 30秒
+        transaction-isolation: TRANSACTION_READ_COMMITTED
+
+  http:
+    encoding:
+      force: true
+
+  jta:
+    enabled: false
+
+  redis:
+    host: localhost
+    port: 6379
+
+  mvc:
+    static-path-pattern: /static/**
+
+  main:
+    allow-circular-references: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+
+mqtt:
+  broker: ${SPRING_MQTT_BROKER}
+
+openai:
+  api:
+    key: "sk-63iPahcgh_m5_E0w-mFrgk153YkmtW8569DpDyMOaPT3BlbkFJRv2hWy45FB-TP7Vj-CarzGLbGT32xKNwNOwdNls7AA"
+  organizationID: "org-7mQpXE2FKJ1Pfqe0F8Kc3Sja"
+
+line:
+  bot:
+    channel-token: "9u+LjgMDJ+4dWJxp10y+CkdvVv6hdhnbODnKl1ZQFXnuwLzO75m245iEJS3Wq2VYk9J5WRO5qwUI17kubyyZLZnPY5LYqp8B/hwr67flS5IodO04KmkDNUxk1oGFqrbWAaaWIPbm/1i2n0jsgzak9gdB04t89/1O/w1cDnyilFU="
+    channel-secret: "733a19feb92498ca3e890ac9869fed65"
+    userId: "Udb7d78437f21b1539430078df9603461"
+    handler:
+      enabled: true
+      path: "/callback"
+
+  login:
+    channel:
+      channelId: ""
+      channel-secret: ""
+      callbackUrl: ""
+
+app:
+  node:
+    id: ${APP_NODE_ID:1}
+
+  mail:
+    domain: "motc.gov.tw"
+
+  mailserver: '{
+          "mailserver": {
+              "server": "smtp.gmail.com",
+              "mserverport": "587",
+              "msender": "a0919319856@gmail.com",
+              "mpass": "npwpquopcbzcydsr",
+              "mailsender": "npa",
+              "author": "true"
+
+          }
+      }'
+
+  config:
+    path: "config.yml"
+
+  pebble:
+    path: ""
+    suffix: .peb
+    cache: false
+    expose-request-attributes: true
+    expose-session-attributes: false
+
+#  check:
+#    apppath: "D:/Project/ACS/Frontend/target/classes/templates/module/app/"
+
+  upload:
+    path: "D:/Project/ACS/Upload/download/"
+    temppath: "D:/Project/ACS/Upload/download/origin/"
+    filepath: "D:/Project/ACS/Upload/download/doc/"
+    picpath: "D:/Project/ACS/Upload/download/pic/"
+    mediapath: "D:/Project/ACS/Upload/download/media/"
+    transpdf: "D:/Project/ACS/Upload/download/pdf/"
+    menufilepath: "D:/Project/ACS/Upload/download/menu/"
+    fckfilepath: "D:/Project/ACS/Upload/userfiles/file"
+    fckpicpath: "D:/Project/ACS/Upload/userfiles/image"

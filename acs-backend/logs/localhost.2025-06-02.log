@@ -1,0 +1,43 @@
+02-Jun-2025 16:17:10.839 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:17:15.834 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:19:28.126 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:19:32.688 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:28:42.923 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:28:47.479 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:36:59.427 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:37:04.174 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:39:22.917 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:39:28.098 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:51:27.805 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:51:32.828 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:56:06.143 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
+02-Jun-2025 16:56:34.364 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 16:56:39.335 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 16:56:49.049 INFO [http-nio-8081-exec-2] org.apache.catalina.core.ApplicationContext.log Initializing Spring DispatcherServlet 'dispatcherServlet'
+02-Jun-2025 17:03:36.749 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Destroying Spring FrameworkServlet 'dispatcherServlet'
+02-Jun-2025 17:03:36.751 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
+02-Jun-2025 17:03:50.401 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 17:03:54.887 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 17:04:07.193 INFO [http-nio-8081-exec-1] org.apache.catalina.core.ApplicationContext.log Initializing Spring DispatcherServlet 'dispatcherServlet'
+02-Jun-2025 17:11:38.428 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Destroying Spring FrameworkServlet 'dispatcherServlet'
+02-Jun-2025 17:11:38.430 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
+02-Jun-2025 17:11:51.948 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 17:11:56.443 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 17:12:04.541 INFO [http-nio-8081-exec-1] org.apache.catalina.core.ApplicationContext.log Initializing Spring DispatcherServlet 'dispatcherServlet'
+02-Jun-2025 17:18:02.092 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Destroying Spring FrameworkServlet 'dispatcherServlet'
+02-Jun-2025 17:18:02.094 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
+02-Jun-2025 17:18:15.140 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 17:18:19.675 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 17:18:27.745 INFO [http-nio-8081-exec-1] org.apache.catalina.core.ApplicationContext.log Initializing Spring DispatcherServlet 'dispatcherServlet'
+02-Jun-2025 17:21:51.344 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Destroying Spring FrameworkServlet 'dispatcherServlet'
+02-Jun-2025 17:21:51.345 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
+02-Jun-2025 17:23:49.088 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 17:23:53.666 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 17:24:01.229 INFO [http-nio-8081-exec-2] org.apache.catalina.core.ApplicationContext.log Initializing Spring DispatcherServlet 'dispatcherServlet'
+02-Jun-2025 17:25:53.057 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Destroying Spring FrameworkServlet 'dispatcherServlet'
+02-Jun-2025 17:25:53.058 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
+02-Jun-2025 17:40:43.618 INFO [main] org.apache.catalina.core.ApplicationContext.log 2 Spring WebApplicationInitializers detected on classpath
+02-Jun-2025 17:40:48.168 INFO [main] org.apache.catalina.core.ApplicationContext.log Initializing Spring embedded WebApplicationContext
+02-Jun-2025 17:40:55.405 INFO [http-nio-8081-exec-1] org.apache.catalina.core.ApplicationContext.log Initializing Spring DispatcherServlet 'dispatcherServlet'
+02-Jun-2025 18:03:09.625 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Destroying Spring FrameworkServlet 'dispatcherServlet'
+02-Jun-2025 18:03:09.626 INFO [Thread-7] org.apache.catalina.core.ApplicationContext.log Closing Spring root WebApplicationContext
