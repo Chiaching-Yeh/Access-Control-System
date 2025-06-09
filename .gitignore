@@ -2,6 +2,7 @@
 .idea/shelf/
 .idea/workspace.xml
 .mvn/wrapper/maven-wrapper.jar
+.smarttomcat
 
 python-simulator/.env
 # Default ignored files
@@ -13,6 +14,14 @@ python-simulator/.idea/httpRequests/
 python-simulator/.idea/dataSources/
 python-simulator/.idea/dataSources.local.xml
 python-simulator/.venv
+
+## 前端
+acs-frontend/node_modules
+acs-frontend/.vscode
+acs-frontend/.idea
+acs-frontend/*.log
+acs-frontend/*.env
+
 
 ## 後端
 acs-backend/logs
@@ -52,8 +61,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-## 前端
 
 ## mqtt
 mqtt/log

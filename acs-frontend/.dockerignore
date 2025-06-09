@@ -1,0 +1,19 @@
+# node_modules 不要進去 container
+node_modules
+
+# build 後的產物不需要複製進去，會在 container 內重建
+dist
+
+# Git 檔案
+.git
+.gitignore
+
+# 測試用設定與記錄檔
+.vscode
+.idea
+*.log
+*.env
+
+# macOS / Windows 暫存檔
+.DS_Store
+Thumbs.db
