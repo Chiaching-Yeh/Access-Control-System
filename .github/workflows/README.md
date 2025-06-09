@@ -29,11 +29,18 @@ GitHub Repo 頁面 → Actions 頁籤看到執行紀錄！
 本工作流程自動化部署 Spring Boot 後端服務至 GCP VM，採用 Docker + Artifact Registry + SSH 部署架構。以下為各步驟說明：
 - Checkout source
   - 使用 [actions/checkout]，將 GitHub Repo 的程式碼 checkout 到 runner（GitHub 提供的 Ubuntu 虛擬機），方便後續建置 Docker Image。
+- Authenticate with Google Cloud
+  - 讓 GitHub Actions 以「GCP 服務帳號」身分登入 Google Cloud，用於後續操作 GCP 資源（如推 Image、建 VM、部署等）
+  - 使用 JSON 格式的服務帳號金鑰（GCP_SA_KEY），讓 GitHub Actions 可以上傳 Docker 映像到 GCP Artifact Registry。
+  - 背後會執行 gcloud auth activate-service-account，模擬登入 GCP CLI
+    - 上傳 Docker Image 到 Artifact Registry
+    - 建立 GCP VM / GKE
+    - 操作 GCP Storage、Pub/Sub、Cloud SQL 等 API
 - Set up Google Cloud SDK
   - 使用 [google-github-actions/setup-gcloud]，透過 GitHub Secrets 中的 GCP 專案 ID（GCP_PROJECT_ID）與服務帳號金鑰（GCP_SA_KEY）登入 Google Cloud。
   - 這一步讓 GitHub Actions 有權限操作 GCP 的資源（如 Artifact Registry）。
-- Authenticate Docker with Artifact Registry
-  - 執行 gcloud auth configure-docker，將 GCP Artifact Registry 登入資訊註冊給 Docker，使後續能夠成功推送 Docker Image 到 GCP 的容器倉庫。
+- Configure Docker to use Artifact Registry
+  - 將 GCP Artifact Registry 登入資訊註冊給 Docker，使後續能夠成功推送 Docker Image 到 GCP 的容器倉庫。
 - Build and Push Backend Docker Image
   - 使用 docker build 建置 acs-backend/acs-frontend 資料夾中的 Dockerfile，並將其標記為目標 Artifact Registry Image。
   - 接著執行 docker push 將 Image 上傳至 GCP，供 VM 拉取使用。
