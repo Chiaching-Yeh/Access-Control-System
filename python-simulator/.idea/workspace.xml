@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="039355a4-6d5d-48c4-ab0e-8670b24c6121" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-backend/src/main/java/org/example/controller/app/AccessStompController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-backend/src/main/java/org/example/controller/app/AccessStompController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/.tsbuildinfo" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_common.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_common.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_common_http.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_common_http.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_core.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_core.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_forms.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_forms.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_platform-browser.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_platform-browser.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@angular_router.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@stomp_stompjs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/@stomp_stompjs.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/_metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-3OV72XIM.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-3OV72XIM.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-KKUUHXVK.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-KKUUHXVK.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-MI3DEVV4.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-MI3DEVV4.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-P6U2JBMQ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-P6U2JBMQ.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-QBRSPIWK.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-QBRSPIWK.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-SC476YFS.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-SC476YFS.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-VNAEC6OA.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/chunk-VNAEC6OA.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/rxjs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/rxjs.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/sockjs-client.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps/sockjs-client.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_common.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_common.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_common_http.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_common_http.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_core.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_core.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_forms.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_forms.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_platform-browser.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_platform-browser.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_platform-server.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_platform-server.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_router.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_ssr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_ssr.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_ssr_node.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@angular_ssr_node.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@stomp_stompjs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/@stomp_stompjs.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/_metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-5CDNOC2P.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-5CDNOC2P.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-AHE7Z7QP.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-AHE7Z7QP.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-AQYIT73X.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-AQYIT73X.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-AXY3REKT.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-AXY3REKT.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-FRTFV2SC.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-FRTFV2SC.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-GPCQHIGC.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-GPCQHIGC.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-OPGDGJX6.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-OPGDGJX6.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-SBDEEQKR.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-SBDEEQKR.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-UAAHOYUJ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-UAAHOYUJ.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-XT73N6DD.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-XT73N6DD.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-YHCV7DAQ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/chunk-YHCV7DAQ.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/express.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/express.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/rxjs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/rxjs.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/sockjs-client.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/sockjs-client.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/xhr2-TXIMV6CV.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/.angular/cache/19.2.13/acs-frontend/vite/deps_ssr/xhr2-TXIMV6CV.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/app/compoment/QrPage/qrPage.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/app/compoment/QrPage/qrPage.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/app/service/webSocketService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/app/service/webSocketService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../acs-frontend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../acs-frontend/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/DeviceSimulator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DeviceSimulator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/device_mqtt.py" beforeDir="false" afterPath="$PROJECT_DIR$/device_mqtt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2xd1R8CJpiqb3yHhoQ4chqw6Zzc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Project/ACS/python-simulator&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PY-251.25410.159" />
+        <option value="bundled-python-sdk-e0ed3721d81e-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.159" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="039355a4-6d5d-48c4-ab0e-8670b24c6121" name="Changes" comment="" />
+      <created>1748253126026</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1748253126026</updated>
+      <workItem from="1748253126967" duration="1801000" />
+      <workItem from="1749228291087" duration="632000" />
+      <workItem from="1749229043650" duration="4171000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
