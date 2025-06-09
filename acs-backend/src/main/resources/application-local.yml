@@ -118,8 +118,8 @@ app:
     expose-request-attributes: true
     expose-session-attributes: false
 
-#  check:
-#    apppath: "D:/Project/ACS/Frontend/target/classes/templates/module/app/"
+  qrApi:
+    path: "http://localhost:8081"
 
   upload:
     path: "D:/Project/ACS/Upload/download/"

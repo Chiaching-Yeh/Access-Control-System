@@ -2,6 +2,7 @@ package org.example.service;
 
 import jakarta.annotation.PostConstruct;
 import org.eclipse.paho.client.mqttv3.*;
+import org.example.configuration.BeanConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Service
-public class MqttAccessControlService {
-
-    @Value("${mqtt.broker}")
-    private String mqttBroker;
+public class MqttAccessControlService extends BeanConfiguration {
 
     private static final String MQTT_CLIENT_ID = "java-backend";
     private static final String CARD_TOPIC = "door/request";

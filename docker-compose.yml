@@ -4,9 +4,10 @@ version: '3.8'
 # 有哪些服務（container）
 services:
   backend:
+    container_name: acs-backend
     build:
 #      指定 Dockerfile build 的根目錄
-#      使用/acs作為buildcontext可以避免 Docker 為了安全性與可移植性，禁止你複製 context 之外的東西！
+#      使用/acs作為buildcontext可以避免 Docker 為了安全性與可移植性，禁止你在dockerfile內使用copy指令複製 context 之外的東西！
       context: .
 #      指定要用哪個 Dockerfile（預設是 Dockerfile，可以省略）
       dockerfile: acs-backend/Dockerfile
@@ -25,20 +26,27 @@ services:
       - "8080:8080"
 
   frontend:
+    container_name: acs-frontend
     build:
-      context: acs-frontend
+      context: ./acs-frontend
       dockerfile: Dockerfile
     ports:
       - "4200:80"
+#    depends_on:
+#      - backend
 
   simulator:
+    container_name: acs-python-simulator
     build:
       context: ./python-simulator
       dockerfile: Dockerfile
+    environment:
+      - MQTT_HOST=mqtt
     depends_on:
       - mqtt
 
   db:
+    container_name: acs-db
     image: postgres:15
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -51,11 +59,13 @@ services:
       - "5432:5432"
 
   redis:
+    container_name: acs-redis
     image: redis:7
     ports:
       - "6379:6379"
 
   mqtt:
+    container_name: acs-mqtt
     image: eclipse-mosquitto
     ports:
       - "1883:1883"

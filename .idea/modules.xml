@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ACS.iml" filepath="$PROJECT_DIR$/.idea/ACS.iml" />
       <module fileurl="file://$PROJECT_DIR$/acs-backend/acs-backend.iml" filepath="$PROJECT_DIR$/acs-backend/acs-backend.iml" />
     </modules>
   </component>

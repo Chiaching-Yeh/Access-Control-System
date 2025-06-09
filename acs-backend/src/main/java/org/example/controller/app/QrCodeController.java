@@ -1,8 +1,10 @@
 package org.example.controller.app;
 
+import org.example.configuration.BeanConfiguration;
 import org.example.service.MqttAccessControlService;
 import org.example.support.QrCodeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/qr")
-public class QrCodeController {
+public class QrCodeController extends BeanConfiguration {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -33,7 +35,7 @@ public class QrCodeController {
         redisTemplate.opsForValue().set(redisKey, userId, Duration.ofSeconds(expireSeconds));
 
         // 2. 將 uuid 構造可掃描的 URL
-        String qrContent = "http://192.168.0.10:8080/api/qr/scan?uuid=" + uuid + "&deviceId=device-002";
+        String qrContent = apiPath + "/api/qr/scan?uuid=" + uuid + "&deviceId=device-002";
 
         String base64Qr = QrCodeSupport.generateBase64Qr(qrContent);
 

@@ -1,15 +1,17 @@
 import { Component,Input, OnInit,Output,EventEmitter ,NgModule  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { WebSocketService } from '../../service/webSocketService';
+import { EnvironmentService } from '../../service/environmentService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: true,
   selector: 'app-view',
   templateUrl: './qrPage.component.html',
   styleUrl: './qrPage.component.scss',
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
 })
 export class QrPageComponent implements OnInit {
 
@@ -31,8 +33,11 @@ export class QrPageComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private websoket: WebSocketService
-  ) {}
+    private webSoket: WebSocketService,
+    private envService: EnvironmentService
+  ) {
+    console.log(this.envService.API_URL);
+    }
 
 
   // 使用者按下按鈕，產生 QRCode
@@ -43,7 +48,7 @@ export class QrPageComponent implements OnInit {
     }
 
     // 呼叫 Java 後端的 API，並送出員編userId
-    this.http.post<any>('/api/qr/generate', { userId: this.userId })
+    this.http.post<any>(`${this.envService.API_URL}/qr/generate`, { userId: this.userId })
       .subscribe({
         next: (response) => {
           // 後端會回傳一張 QRCode 的圖片（base64 格式）
@@ -61,7 +66,7 @@ export class QrPageComponent implements OnInit {
   ngOnInit(): void {
 
     // 訂閱推播資料
-    this.messageSub = this.websoket.messages$.subscribe(data => {
+    this.messageSub = this.webSoket.messages$.subscribe(data => {
       if (data) {
         this.accessRecords.unshift(data);
         this.isRequesting = false;
@@ -69,7 +74,7 @@ export class QrPageComponent implements OnInit {
     });
 
     // 訂閱錯誤狀態
-    this.errorSub = this.websoket.connectionError$.subscribe(err => {
+    this.errorSub = this.webSoket.connectionError$.subscribe(err => {
       this.connectionError = err;
       if (err) {
         this.isRequesting = false; // 顯示錯誤後結束 loading
@@ -77,9 +82,9 @@ export class QrPageComponent implements OnInit {
     });
 
     // 當連線正常時就向後端索取資料
-    this.connectedSub  = this.websoket.connected$.subscribe((isConnected) => {
+    this.connectedSub  = this.webSoket.connected$.subscribe((isConnected) => {
       if (isConnected) {
-        this.websoket.sendMessage('/app/request-records', '');
+        this.webSoket.sendMessage('/app/request-records', '');
       }
     });
 
