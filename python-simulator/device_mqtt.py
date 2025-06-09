@@ -1,9 +1,13 @@
-import argparse # 處理指令列參數（CLI） # 內建模組，不需額外安裝
-import paho.mqtt.client as mqtt  # MQTT 通訊協定的 Python 函式庫 #需安裝
-import time # 內建模組，不需額外安裝
+import argparse  # 處理指令列參數（CLI）
+import paho.mqtt.client as mqtt  # MQTT 通訊協定函式庫（需 pip install）
+import time  # 內建模組
+import os
+from dotenv import load_dotenv
+# 載入 .env 檔案的變數
+load_dotenv()
 
 # MQTT broker 設定
-MQTT_HOST = "localhost"
+MQTT_HOST = os.environ.get("MQTT_HOST", "localhost")
 MQTT_PORT = 1883
 DEVICE_ID = "device-001"  # 預設設備 ID
 
