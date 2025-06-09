@@ -1,0 +1,59 @@
+# Default ignored files
+.idea/shelf/
+.idea/workspace.xml
+.mvn/wrapper/maven-wrapper.jar
+
+python-simulator/.env
+# Default ignored files
+python-simulator/.idea/shelf/
+python-simulator/.idea//workspace.xml
+# Editor-based HTTP Client requests
+python-simulator/.idea/httpRequests/
+# Datasource local storage ignored files
+python-simulator/.idea/dataSources/
+python-simulator/.idea/dataSources.local.xml
+python-simulator/.venv
+
+## 後端
+acs-backend/logs
+acs-backend/work
+acs-backend/target/
+
+### IntelliJ IDEA ##
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+*.iws
+*.iml
+*.ipr
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+## 前端
+
+## mqtt
+mqtt/log
