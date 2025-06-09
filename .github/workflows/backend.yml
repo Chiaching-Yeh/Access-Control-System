@@ -23,6 +23,8 @@ jobs:
 
       - name: Authenticate Docker with Artifact Registry
         run: gcloud auth configure-docker us-west1-docker.pkg.dev # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Build and Push Backend Docker Image  # 使用 backend 的 Dockerfile 打包 image，tag 成 artifact registry 格式，推送到 Artifact Registry，給 VM 拉取用
         run: |
