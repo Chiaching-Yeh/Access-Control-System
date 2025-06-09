@@ -15,16 +15,15 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3 # 把 GitHub Repo 的程式碼抓下來到 runner 上
 
-      - name: Set up Google Cloud SDK # 設定 GCP 專案 ID（來自 GitHub Secret）
-        uses: google-github-actions/setup-gcloud@v1 # 使用 GCP 服務帳號金鑰登入（JSON）
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v1
+      - name: Authenticate with Google Cloud # 設定 GCP 專案 ID（來自 GitHub Secret）
+        uses: google-github-actions/auth@v1 # 使用 GCP 服務帳號金鑰登入（JSON）
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker to use Artifact Registry
         run: gcloud auth configure-docker us-west1-docker.pkg.dev # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
