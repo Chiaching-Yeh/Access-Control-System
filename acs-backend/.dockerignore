@@ -1,0 +1,20 @@
+# IDE 產生的設定檔與工作區資料
+.idea
+*.iml
+.vscode
+
+# Build 時產生的中繼檔
+target
+build
+
+# Git 檔案
+.git
+.gitignore
+
+# 作業系統產生的垃圾檔
+.DS_Store
+Thumbs.db
+
+# log 或環境檔
+*.log
+*.env
