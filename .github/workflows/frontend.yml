@@ -26,7 +26,7 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend ./acs-frontend
+          docker build -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
 
       - name: SSH and Deploy frontend on VM
