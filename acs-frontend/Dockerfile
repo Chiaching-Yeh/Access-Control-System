@@ -26,10 +26,12 @@ ARG BUILD_ENV=production
 ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
 # 加入 ng 路徑，避免因 Alpine 的精簡版 Linux 預設 node_modules/.bin 不在 PATH 中，導致 ng 無法被 shell 找到或執行。
 
+RUN chmod +x ./node_modules/.bin/ng
+# 幫 ng 指令檔案加上執行權限，讓 shell 能執行它
+
 RUN echo "BUILD_ENV is $BUILD_ENV" && \
     test "$BUILD_ENV" != "production" || echo "YOU ARE BUILDING FOR PROD"
 # 環境資訊輸出
-
 
 RUN npm run build -- --configuration=$BUILD_ENV
 # 在 container 裡執行：
