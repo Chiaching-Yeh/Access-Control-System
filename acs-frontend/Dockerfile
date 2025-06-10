@@ -10,6 +10,9 @@ WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
 # 之後的所有 COPY, RUN 指令都會以這個目錄為基準
 
+# 安裝必要套件（確保 ng CLI 可執行時不會缺 native 編譯元件）
+RUN apk add --no-cache bash
+
 # 先複製 package.json 和 package-lock.json（利用 Docker layer cache 優化），這樣如果程式碼變更但套件沒變，就不需要重新安裝套件。
 COPY ./acs-frontend/package*.json ./
 
@@ -24,14 +27,13 @@ ARG BUILD_ENV=production
 # 如果你有提供，會覆蓋它
 
 ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
+RUN chmod +x ./node_modules/.bin/ng \
+    && echo "✅ Angular CLI path: $(which ng)" \
+# 加入全域 CLI 路徑與權限修復（幫 ng 指令檔案加上執行權限，讓 shell 能執行它）
 # 加入 ng 路徑，避免因 Alpine 的精簡版 Linux 預設 node_modules/.bin 不在 PATH 中，導致 ng 無法被 shell 找到或執行。
 
-RUN chmod +x ./node_modules/.bin/ng
-# 幫 ng 指令檔案加上執行權限，讓 shell 能執行它
-
-RUN echo "BUILD_ENV is $BUILD_ENV" && \
-    test "$BUILD_ENV" != "production" || echo "YOU ARE BUILDING FOR PROD"
-# 環境資訊輸出
+RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
+# 顯示編譯環境資訊
 
 RUN npm run build -- --configuration=$BUILD_ENV
 # 在 container 裡執行：
@@ -47,7 +49,9 @@ FROM nginx:stable-alpine
 
 ARG BUILD_ENV=production
 
+
 COPY --from=build /usr/src/app/dist/acs-frontend /usr/share/nginx/html
+# 複製 Angular 靜態檔至 nginx 對應目錄
 # 從前一個 build 階段中，把 dist/ 中編譯好的 Angular 靜態檔複製進 nginx 的對外根目錄 /usr/share/nginx/html
 
 # 根據不同環境注入正確的 env.template.js
