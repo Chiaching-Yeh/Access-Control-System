@@ -47,7 +47,11 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f Dockerfile ./acs-frontend
+          docker build \
+            --no-cache \
+            -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend \
+            -f ./acs-frontend/Dockerfile \
+            .
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
 
       - name: SSH and Deploy frontend on VM
