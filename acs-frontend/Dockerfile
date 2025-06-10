@@ -10,8 +10,14 @@ WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
 # 之後的所有 COPY, RUN 指令都會以這個目錄為基準
 
-COPY . .
-# 將你前端專案的所有檔案（含 package.json, angular.json, src/ 等）複製到 container 內的 /usr/src/app
+# 先複製 package.json 和 package-lock.json（利用 Docker layer cache 優化），這樣如果程式碼變更但套件沒變，就不需要重新安裝套件。
+COPY ./acs-frontend/package*.json ./
+
+# 安裝相依套件
+RUN npm install
+
+# 複製 acs-frontend 目錄的所有檔案到容器內的工作目錄
+COPY ./acs-frontend/ .
 
 ARG BUILD_ENV=production
 # 如果沒有在docker run 指令中提供 --build-arg BUILD_ENV=xxx，就預設用 production
@@ -22,7 +28,7 @@ RUN echo "BUILD_ENV is $BUILD_ENV" && \
 # 環境資訊輸出
 
 
-RUN npm install && npm run build -- --configuration=$BUILD_ENV
+RUN npm run build -- --configuration=$BUILD_ENV
 # 在 container 裡執行：
 # npm install：安裝 Angular 專案所需的相依套件
 # npm run build：執行 build，會產出在 dist/<project-name>/
@@ -49,9 +55,9 @@ COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
 COPY ./acs-frontend/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
+EXPOSE 80
+# 宣告 container 對外提供服務的 port 是 80（Nginx 預設 port）
+
 # 容器啟動時會自動產出 env.js，供 index.html 載入
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
-
-EXPOSE 80
-# 宣告 container 對外提供服務的 port 是 80（Nginx 預設 port）
