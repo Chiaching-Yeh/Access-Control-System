@@ -43,7 +43,16 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker to use Artifact Registry
-        run: gcloud auth configure-docker us-west1-docker.pkg.dev # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
+        run: gcloud auth configure-docker us-west1-docker.pkg.dev
+        # 在 GitHub Actions 的 Runner 環境（Ubuntu VM）上執行的。
+        # 這樣 runner 在 build image + docker push 到 GCP 時才會帶上 gcloud 身份認證。
+
+      - name: Debug Registry Parts
+        run: |
+          echo "Region: us-west1-docker.pkg.dev"
+          echo "Project ID: ${{ secrets.GCP_PROJECT_ID }}"
+          echo "Repo name: access-control-registry"
+          echo "Image full path: us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/access-control-registry/acs-frontend"
 
       - name: Build and Push Frontend Docker Image
         run: |
@@ -57,5 +66,10 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
+            gcloud auth configure-docker us-west1-docker.pkg.dev  
             docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
             docker-compose -f ~/Access-Control-System/docker-compose.yml up -d frontend
+
+          # 部署目標的 GCP VM 裡面執行的指令
+          # 改寫 那台 VM 的 ~/.docker/config.json，讓 VM 上的 Docker pull 時知道用 gcloud 當認證工具
+          # VM 執行 docker pull 時才能取得私有的 GCP Artifact Registry 映像
