@@ -23,6 +23,9 @@ ARG BUILD_ENV=production
 # 如果沒有在docker run 指令中提供 --build-arg BUILD_ENV=xxx，就預設用 production
 # 如果你有提供，會覆蓋它
 
+ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
+# 加入 ng 路徑，避免因 Alpine 的精簡版 Linux 預設 node_modules/.bin 不在 PATH 中，導致 ng 無法被 shell 找到或執行。
+
 RUN echo "BUILD_ENV is $BUILD_ENV" && \
     test "$BUILD_ENV" != "production" || echo "YOU ARE BUILDING FOR PROD"
 # 環境資訊輸出
