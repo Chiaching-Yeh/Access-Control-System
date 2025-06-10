@@ -42,10 +42,10 @@ RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
 # 執行 Angular build
 RUN npm run build -- --configuration=$BUILD_ENV
 
+# mkdir -p 會確保 assets/ 目錄存在，避免 sed 失敗
 # 在 build 階段完成環境變數注入（減少 runtime 變數錯誤）
-RUN sed "s|__API_URL__|${API_URL}|g" \
-  ./src/assets/env.${BUILD_ENV}.template.js \
-  > ./dist/acs-frontend/assets/env.js
+RUN mkdir -p ./dist/acs-frontend/assets && \
+    sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/assets/env.js
 
 # 第 2 階段
 # 用 Nginx 提供靜態檔服務
