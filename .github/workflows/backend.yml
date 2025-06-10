@@ -31,7 +31,7 @@ jobs:
 
       - name: Build and Push Backend Docker Image  # 使用 backend 的 Dockerfile 打包 image，tag 成 artifact registry 格式，推送到 Artifact Registry，給 VM 拉取用
         run: |
-          docker build -t ${{ secrets.DOCKER_REGISTRY }}/acs-backend -f ./acs-backend/Dockerfile .
+          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-backend -f ./acs-backend/Dockerfile .
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-backend
 
       ## 這裡若沒有加 -f 指定 Dockerfile 的位置，而是單純把 ./acs-backend 當作 build context。
