@@ -35,20 +35,19 @@ jobs:
         # 在 GitHub Actions 的 Runner 環境（Ubuntu VM）上執行的。
         # 這樣 runner 在 build image + docker push 到 GCP 時才會帶上 gcloud 身份認證。
 
-      # 讓 Docker 強制重新編
       - name: Build and Push Frontend Docker Image
         run: |
 #          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .
 #          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
-
           docker build --build-arg CACHE_BREAKER=$(date +%s) --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
 
-        # 強制更新 latest tag，確保 VM 拉取的是最新版本
+
       - name: Tag Latest Image
         run: |
           docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest
+      # 強制更新 latest tag，確保 VM 拉取的是最新版本
 
       - name: SSH and Deploy frontend on VM
         uses: appleboy/ssh-action@v1.0.0
