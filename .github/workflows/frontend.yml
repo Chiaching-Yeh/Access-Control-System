@@ -16,6 +16,22 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
+      - name: Debug - List current directory and check required files
+        run: |
+          echo "=== Current working directory ==="
+          pwd
+          echo "=== List all files in current directory ==="
+          ls -la
+          echo "=== List all files recursively ==="
+          find . -type f -name "*.sh" -o -name "*.conf" -o -name "Dockerfile*" | head -20
+          echo "=== Check for required files ==="
+          echo "Checking for docker-entrypoint.sh:"
+          find . -name "docker-entrypoint.sh" -type f || echo "❌ docker-entrypoint.sh NOT FOUND"
+          echo "Checking for default.conf:"
+          find . -name "default.conf" -type f || echo "❌ default.conf NOT FOUND"
+          echo "=== Show dockerfile build context ==="
+          ls -la ./acs-frontend/ || echo "acs-frontend directory not found"
+
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
