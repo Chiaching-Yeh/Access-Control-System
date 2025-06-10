@@ -1,6 +1,7 @@
 name: Deploy Backend
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'acs-backend/**'  # 只要 backend 資料夾有變更，就觸發這個 workflow #test
