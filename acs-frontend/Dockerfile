@@ -58,21 +58,12 @@ FROM nginx:stable-alpine
 # 用來 serve 前端的靜態檔案（.html, .js, .css）
 # Nginx 是最穩定、效能最佳的靜態伺服器之一
 
-#ARG BUILD_ENV=production
-
 COPY --from=build /usr/src/app/dist/acs-frontend /usr/share/nginx/html
 # 複製 Angular 靜態檔至 nginx 對應目錄
 # 從前一個 build 階段中，把 dist/ 中編譯好的 Angular 靜態檔複製進 nginx 的對外根目錄 /usr/share/nginx/html
 
-# 根據不同環境注入正確的 env.template.js
-#COPY ./acs-frontend/src/assets/env.${BUILD_ENV}.template.js /usr/share/nginx/html/assets/env.template.js
-
 # 複製自訂 Nginx 設定與啟動腳本
 COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
-
-## 複製 docker-entrypoint.sh 腳本
-#COPY ./acs-frontend/docker-entrypoint.sh /docker-entrypoint.sh
-#RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80
 # 宣告 container 對外提供服務的 port 是 80（Nginx 預設 port）
