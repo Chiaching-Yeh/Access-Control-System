@@ -27,6 +27,7 @@ services:
 
   frontend:
     container_name: acs-frontend
+    image: ${DOCKER_REGISTRY}/acs-frontend:latest
     build:
       context: ./acs-frontend
       dockerfile: Dockerfile
