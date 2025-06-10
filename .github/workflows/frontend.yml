@@ -16,21 +16,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Debug - List current directory and check required files
-        run: |
-          echo "=== Current working directory ==="
-          pwd
-          echo "=== List all files in current directory ==="
-          ls -la
-          echo "=== List all files recursively ==="
-          find . -type f -name "*.sh" -o -name "*.conf" -o -name "Dockerfile*" | head -20
-          echo "=== Check for required files ==="
-          echo "Checking for docker-entrypoint.sh:"
-          find . -name "docker-entrypoint.sh" -type f || echo "❌ docker-entrypoint.sh NOT FOUND"
-          echo "Checking for default.conf:"
-          find . -name "default.conf" -type f || echo "❌ default.conf NOT FOUND"
-          echo "=== Show dockerfile build context ==="
-          ls -la ./acs-frontend/ || echo "acs-frontend directory not found"
+      - name: Force Clear Docker Cache
+        run: docker system prune -af
+        # 確保清除所有快取
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
@@ -47,10 +35,20 @@ jobs:
         # 在 GitHub Actions 的 Runner 環境（Ubuntu VM）上執行的。
         # 這樣 runner 在 build image + docker push 到 GCP 時才會帶上 gcloud 身份認證。
 
+      # 讓 Docker 強制重新編
       - name: Build and Push Frontend Docker Image
         run: |
-          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .
+#          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .
+#          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
+
+          docker build --build-arg CACHE_BREAKER=$(date +%s) --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
+
+        # 強制更新 latest tag，確保 VM 拉取的是最新版本
+      - name: Tag Latest Image
+        run: |
+          docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest
+          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest
 
       - name: SSH and Deploy frontend on VM
         uses: appleboy/ssh-action@v1.0.0

@@ -39,6 +39,10 @@ ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
 # 顯示編譯環境資訊
 RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
 
+# 禁用 Angular CLI 快取，確保 `ng build` 總是重新編譯
+RUN ng config cli.cache.enabled false
+RUN rm -rf .angular/cache
+
 # 執行 Angular build
 RUN npm run build -- --configuration=$BUILD_ENV
 
