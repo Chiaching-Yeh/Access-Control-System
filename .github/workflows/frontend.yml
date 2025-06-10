@@ -47,13 +47,6 @@ jobs:
         # 在 GitHub Actions 的 Runner 環境（Ubuntu VM）上執行的。
         # 這樣 runner 在 build image + docker push 到 GCP 時才會帶上 gcloud 身份認證。
 
-      - name: Debug Registry Parts
-        run: |
-          echo "Region: us-west1-docker.pkg.dev"
-          echo "Project ID: ${{ secrets.GCP_PROJECT_ID }}"
-          echo "Repo name: access-control-registry"
-          echo "Image full path: us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/access-control-registry/acs-frontend"
-
       - name: Build and Push Frontend Docker Image
         run: |
           docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend -f ./acs-frontend/Dockerfile .

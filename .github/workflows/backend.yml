@@ -47,5 +47,6 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}  # 對應的 SSH 私鑰（貼在 GitHub Secret）
           # 從 Artifact Registry 拉下最新 backend image， # 使用 docker-compose 重新啟動 backend 服務（只更新 backend，不動其他）
           script: |
+            gcloud auth configure-docker us-west1-docker.pkg.dev
             docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-backend
             docker-compose -f ~/Access-Control-System/docker-compose.yml up -d backend
