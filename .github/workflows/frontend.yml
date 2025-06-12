@@ -69,7 +69,7 @@ jobs:
         run: |
             echo "🔐 將私鑰寫入 SSH 金鑰檔"
             mkdir -p ~/.ssh
-            echo "${{ secrets.VM_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+            echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_ed25519
             chmod 600 ~/.ssh/id_ed25519
         
             echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
