@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - 'acs-frontend/**'
-      - '.github/workflows/frontend.yml' #test
+      - '.github/workflows/frontend.yml'
     branches: [main]
 
 jobs:
