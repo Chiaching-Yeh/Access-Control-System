@@ -53,7 +53,7 @@ jobs:
             --no-cache \
             -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG \
             -f ./acs-frontend/Dockerfile \
-            .
+            ./acs-frontend
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
 
       - name: SSH and Deploy frontend on VM
