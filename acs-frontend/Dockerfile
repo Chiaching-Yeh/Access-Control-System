@@ -24,8 +24,8 @@ ARG API_URL=https://35.212.237.104:8080
 # 先安裝 Angular CLI，確保 `ng` 可執行（避免 `sh: ng: Permission denied`）
 RUN npm install -g @angular/cli
 
-# Debug 2：安裝 CLI 後確認 ng 有沒有權限
-RUN echo "🧪 which ng: $(which ng)" && ls -l $(which ng)
+# 🧪 確認 ng CLI 安裝成功且具有執行權限
+RUN echo "✅ global ng path: $(which ng)" && ls -l $(which ng)
 
 # 先複製 package.json 和 package-lock.json（利用 Docker layer cache 優化），這樣如果程式碼變更但套件沒變，就不需要重新安裝套件。
 COPY package*.json ./
@@ -39,17 +39,19 @@ RUN echo "📦 BEFORE COPY . ." && ls -l $(which ng)
 # 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
 COPY . .
 
+# ✅ 再次確認 ng CLI 仍然是 global 安裝的版本
+RUN echo "📦 ng 確認：" && which ng && ls -l $(which ng)
+
 # Debug 4：COPY 後再次確認 ng CLI 有沒有被覆蓋掉
 RUN echo "📦 AFTER COPY . ." && ls -l $(which ng)
-
-# 防呆：再給 ng CLI 加上執行權限
-RUN chmod +x $(which ng)
 
 # 確保 `ng` 指令擁有執行權限
 RUN chmod +x /usr/src/app/node_modules/.bin/ng \
   && echo "✅ Angular CLI path: $(which ng)"
 
-ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
+#ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
+# 🔧 設定 PATH，保險一點
+ENV PATH="/usr/local/bin:$PATH"
 
 # 顯示編譯環境資訊
 RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
