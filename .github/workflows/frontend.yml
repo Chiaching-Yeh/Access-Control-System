@@ -71,7 +71,7 @@ jobs:
             
             gcloud compute ssh ${{ secrets.VM_INSTANCE_NAME }} \
             --project=${{ secrets.GCP_PROJECT_ID }} \
-            --zone=${{ secrets.REGION }} \
+            --zone=${{ secrets.VM_ZONE }} \
             --command="\
           
             echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數' && \
