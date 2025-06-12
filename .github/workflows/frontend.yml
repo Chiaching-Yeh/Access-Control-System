@@ -63,10 +63,12 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
+            export IMAGE_TAG=${{ github.sha }}
+            echo "🔍 Deploying FrontEnd IMAGE_TAG: $IMAGE_TAG"
             gcloud auth configure-docker us-west1-docker.pkg.dev  
             docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
             docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG acs-frontend:latest
-            docker-compose -f ~/Access-Control-System/docker-compose.yml up frontend
+            docker-compose -f ~/Access-Control-System/docker-compose.yml up -d frontend
 
           # 部署目標的 GCP VM 裡面執行的指令
           # 改寫 那台 VM 的 ~/.docker/config.json，讓 VM 上的 Docker pull 時知道用 gcloud 當認證工具
