@@ -81,7 +81,9 @@ COPY --from=build /usr/src/app/dist/acs-frontend /usr/share/nginx/html
 # 從前一個 build 階段中，把 dist/ 中編譯好的 Angular 靜態檔複製進 nginx 的對外根目錄 /usr/share/nginx/html
 
 # 複製自訂 Nginx 設定與啟動腳本
-COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
+#COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
+
 
 EXPOSE 80
 # 宣告 container 對外提供服務的 port 是 80（Nginx 預設 port）
