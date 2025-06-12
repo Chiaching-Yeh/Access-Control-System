@@ -39,6 +39,9 @@ RUN echo "📦 BEFORE COPY . ." && ls -l $(which ng)
 # 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
 COPY . .
 
+RUN chmod +x ./node_modules/.bin/ng
+RUN chmod +x /usr/local/bin/ng
+
 # ✅ 再次確認 ng CLI 仍然是 global 安裝的版本
 RUN echo "📦 ng 確認：" && which ng && ls -l $(which ng)
 
@@ -46,12 +49,7 @@ RUN echo "📦 ng 確認：" && which ng && ls -l $(which ng)
 RUN echo "📦 AFTER COPY . ." && ls -l $(which ng)
 
 # 確保 `ng` 指令擁有執行權限
-RUN chmod +x /usr/src/app/node_modules/.bin/ng \
-  && echo "✅ Angular CLI path: $(which ng)"
-
-#ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
-# 🔧 設定 PATH，保險一點
-ENV PATH="/usr/local/bin:$PATH"
+RUN echo "✅ Angular CLI path: $(which ng)"
 
 # 顯示編譯環境資訊
 RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
