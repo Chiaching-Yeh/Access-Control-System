@@ -65,31 +65,65 @@ jobs:
             ./acs-frontend
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
 
-      - name: SSH and Deploy frontend on VM
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
-            export IMAGE_TAG=${{ github.sha }}
-            echo "🔍 Deploying FrontEnd IMAGE_TAG: $IMAGE_TAG"
+      - name: SSH to VM via gcloud and deploy frontend
+        run: |
+            echo "🔐 Using gcloud compute ssh to login to VM"
             
-            echo "--- Configuring Docker Auth ---"
-            gcloud auth configure-docker us-west1-docker.pkg.dev  
-            echo "--- Docker Auth configured. ---"
+            gcloud compute ssh ${{ secrets.VM_INSTANCE_NAME }} \
+            --project=${{ secrets.GCP_PROJECT_ID }} \
+            --zone=${{ secrets.REGION }} \
+            --command="\
+          
+            echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數' && \
+            IMAGE_TAG=${{ github.sha }} && \
+            echo '✅ IMAGE_TAG: \$IMAGE_TAG' && \
             
-            echo "--- Starting Docker Pull ---"
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
-            echo "--- Docker Pull completed. ---"
+            echo '🔁 [2/6] 切換至專案資料夾 ~/Access-Control-System' && \
+            cd ~/Access-Control-System && pwd && ls -la && \
             
-            echo "--- Tagging image ---"
-            docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG acs-frontend:latest
-            echo "--- Image tagged. ---"
+            echo '🔁 [3/6] Docker pull 最新映像' && \
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:\$IMAGE_TAG && \
             
-            echo "--- Starting Docker Compose ---"
-            docker-compose -f ~/Access-Control-System/docker-compose.yml up -d frontend
-            echo "--- Docker Compose completed. ---"
+            echo '🔁 [4/6] Tag 成 acs-frontend:latest（供 compose 使用）' && \
+            docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:\$IMAGE_TAG acs-frontend:latest && \
+            
+            echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在' && \
+            ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml' && \
+            
+            echo '🔁 [6/6] 執行 docker-compose up -d frontend' && \
+            docker-compose -f docker-compose.yml up -d frontend && \
+            
+            echo '✅ 部署完成'
+            "
+    
+
+    #      - name: SSH and Deploy frontend on VM
+#        uses: appleboy/ssh-action@v1
+#        with:
+#          host: ${{ secrets.VM_HOST }}
+#          username: ${{ secrets.VM_USER }}
+#          key: ${{ secrets.VM_SSH_KEY }}
+#          script: |
+#            export IMAGE_TAG=${{ github.sha }}
+#            echo "🔍 Deploying FrontEnd IMAGE_TAG: $IMAGE_TAG"
+#
+#            echo "--- Configuring Docker Auth ---"
+#            gcloud auth configure-docker us-west1-docker.pkg.dev
+#            echo "--- Docker Auth configured. ---"
+#
+#            echo "--- Starting Docker Pull ---"
+#            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
+#            echo "--- Docker Pull completed. ---"
+#
+#            echo "--- Tagging image ---"
+#            docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG acs-frontend:latest
+#            echo "--- Image tagged. ---"
+#
+#            echo "--- Starting Docker Compose ---"
+#            docker-compose -f ~/Access-Control-System/docker-compose.yml up -d frontend
+#            echo "--- Docker Compose completed. ---"
+
+
 
           # 部署目標的 GCP VM 裡面執行的指令
           # 改寫 那台 VM 的 ~/.docker/config.json，讓 VM 上的 Docker pull 時知道用 gcloud 當認證工具
