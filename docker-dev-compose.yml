@@ -28,9 +28,9 @@ services:
   frontend:
     container_name: acs-frontend
     image: ${DOCKER_REGISTRY}/acs-frontend:latest
-#    build:
-#      context: ./acs-frontend
-#      dockerfile: Dockerfile
+    build:
+      context: ./acs-frontend
+      dockerfile: Dockerfile
     ports:
       - "4200:80"
 #    depends_on:
