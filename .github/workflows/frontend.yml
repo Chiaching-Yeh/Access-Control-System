@@ -47,12 +47,14 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
+          echo "Deploying commit SHA: ${{ github.sha }}"
+          IMAGE_TAG=${{ github.sha }}
           docker build \
             --no-cache \
-            -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend \
+            -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG \
             -f ./acs-frontend/Dockerfile \
             .
-          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
+          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
 
       - name: SSH and Deploy frontend on VM
         uses: appleboy/ssh-action@v1.0.0
@@ -62,7 +64,8 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             gcloud auth configure-docker us-west1-docker.pkg.dev  
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
+            docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG acs-frontend:latest
             docker-compose -f ~/Access-Control-System/docker-compose.yml up frontend
 
           # 部署目標的 GCP VM 裡面執行的指令
