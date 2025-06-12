@@ -68,6 +68,4 @@ COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 # 宣告 container 對外提供服務的 port 是 80（Nginx 預設 port）
 
-# 容器啟動時會自動產出 env.js，供 index.html 載入
-#ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
