@@ -10,6 +10,9 @@ WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
 # 之後的所有 COPY, RUN 指令都會以這個目錄為基準
 
+# Debug 1：檢查 build context 是否正確
+RUN echo "🐞 Build Context 根目錄內容：" && ls -al && echo "==="
+
 # 安裝必要套件（確保 ng CLI 可執行時不會缺 native 編譯元件）
 RUN apk add --no-cache bash
 
@@ -21,14 +24,26 @@ ARG API_URL=https://35.212.237.104:8080
 # 先安裝 Angular CLI，確保 `ng` 可執行（避免 `sh: ng: Permission denied`）
 RUN npm install -g @angular/cli
 
+# Debug 2：安裝 CLI 後確認 ng 有沒有權限
+RUN echo "🧪 which ng: $(which ng)" && ls -l $(which ng)
+
 # 先複製 package.json 和 package-lock.json（利用 Docker layer cache 優化），這樣如果程式碼變更但套件沒變，就不需要重新安裝套件。
-COPY ./acs-frontend/package*.json ./
+COPY package*.json ./
 
 # 安裝相依套件
 RUN npm install
 
-# 複製 acs-frontend 目錄的所有檔案到容器內的工作目錄
-COPY ./acs-frontend/ .
+# Debug 3：安裝完後確認 ng CLI 路徑與權限
+RUN echo "📦 BEFORE COPY . ." && ls -l $(which ng)
+
+# 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
+COPY . .
+
+# Debug 4：COPY 後再次確認 ng CLI 有沒有被覆蓋掉
+RUN echo "📦 AFTER COPY . ." && ls -l $(which ng)
+
+# 防呆：再給 ng CLI 加上執行權限
+RUN chmod +x $(which ng)
 
 # 確保 `ng` 指令擁有執行權限
 RUN chmod +x /usr/src/app/node_modules/.bin/ng \
@@ -42,6 +57,9 @@ RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
 # 禁用 Angular CLI 快取，確保 `ng build` 總是重新編譯
 RUN ng config cli.cache.enabled false
 RUN rm -rf .angular/cache
+
+# Debug 6：列出 src 與 assets，確保存在
+RUN echo "📁 確認 src/ assets/ 存在？" && ls -al src && ls -al src/assets || echo "❌ 找不到"
 
 # 執行 Angular build
 RUN npm run build -- --configuration=$BUILD_ENV
