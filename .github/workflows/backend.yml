@@ -31,8 +31,10 @@ jobs:
 
       - name: Build and Push Backend Docker Image  # 使用 backend 的 Dockerfile 打包 image，tag 成 artifact registry 格式，推送到 Artifact Registry，給 VM 拉取用
         run: |
-          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-backend -f ./acs-backend/Dockerfile .
-          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-backend
+          echo "Deploying commit SHA: ${{ github.sha }}"
+          IMAGE_TAG=${{ github.sha }}
+          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG -f ./acs-backend/Dockerfile .
+          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG
 
       ## 這裡若沒有加 -f 指定 Dockerfile 的位置，而是單純把 ./acs-backend 當作 build context。
       # 它會預設在你指定的目錄 (./acs-backend) 裡找 Dockerfile。
@@ -48,5 +50,6 @@ jobs:
           # 從 Artifact Registry 拉下最新 backend image， # 使用 docker-compose 重新啟動 backend 服務（只更新 backend，不動其他）
           script: |
             gcloud auth configure-docker us-west1-docker.pkg.dev
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-backend
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG
+            docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG acs-backend:latest
             docker-compose -f ~/Access-Control-System/docker-compose.yml up backend
