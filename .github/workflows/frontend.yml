@@ -83,8 +83,8 @@ jobs:
               docker builder prune -af
               
               echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
-              echo "✅ IMAGE_TAG: $IMAGE_TAG"
-              echo "✅ DOCKER_REGISTRY: $DOCKER_REGISTRY"
+              echo '✅ IMAGE_TAG: $IMAGE_TAG'
+              echo '✅ DOCKER_REGISTRY: $DOCKER_REGISTRY'
               export IMAGE_TAG=${{ github.sha }}
               export DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY }}
               
