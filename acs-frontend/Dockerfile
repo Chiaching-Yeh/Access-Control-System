@@ -6,8 +6,13 @@ WORKDIR /usr/src/app
 # 安裝必要工具
 RUN apk add --no-cache bash
 
+COPY package*.json ./
+
 # 安裝相依套件
 RUN npm install
+
+# 🧪 確認 Build Context 是否乾淨 copy . . 前
+RUN echo "📦 檢查 node_modules 是否在 Build Context 裡：" && ls -al node_modules || echo "✅ node_modules 不存在"
 
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
