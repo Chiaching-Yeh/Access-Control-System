@@ -80,15 +80,15 @@ jobs:
           ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
 
           echo "🔁 開始登入並執行部署腳本"
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << 'EOF'
             
             echo '🔁 [0/6] 清除 VM 上 Docker 快取'
             docker system prune -af
             docker builder prune -af
 
             echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
-            export IMAGE_TAG=$IMAGE_TAG
-            export DOCKER_REGISTRY=$DOCKER_REGISTRY
+            export IMAGE_TAG=${IMAGE_TAG}
+            export DOCKER_REGISTRY=${DOCKER_REGISTRY}
 
             echo '🔁 [2/6] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
