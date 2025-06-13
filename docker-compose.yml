@@ -27,7 +27,7 @@ services:
 
   frontend:
     container_name: acs-frontend
-    image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
+    image: us-west1-docker.pkg.dev/access-control-system-461910/access-control-registry/acs-frontend:${IMAGE_TAG}
     ports:
       - "4200:80"
 
