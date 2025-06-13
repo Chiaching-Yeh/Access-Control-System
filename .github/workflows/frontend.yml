@@ -18,7 +18,7 @@ jobs:
 
       # runner上執行清理所有未使用的 Docker 資源的命令。
       # 執行清理 BuildKit 構建快取的命令
-      - name: Clean Docker Build Cache
+      - name: Clean Docker Build Cache In Runner
         run: |
           echo "Cleaning up Docker resources..."
           docker system prune -af
