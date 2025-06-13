@@ -1,16 +1,12 @@
 # 第 1 階段（build）
 # 用 Node.js 編譯 Angular 專案，產出 dist 靜態檔
-
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 # 使用 Node.js 18 + Alpine 版當作建構階段（build stage）的 base image
 # alpine 表示精簡、高效、小體積
 # AS build 是給這個階段命名，後面會用 --from=build 來引用
 
-# 🔍 Debug: 顯示目前 build context 的目錄內容
-RUN echo "🐞 Build Context Test: ls -al" && ls -al && echo "==========="
+RUN echo "🔥 BUILD STARTED AT $(date)"
 
-# 若你 COPY 前先裝 CLI 或 bash，也可以這樣加
- RUN echo "🧱 PWD 是：" && pwd
 
 WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
@@ -20,6 +16,7 @@ WORKDIR /usr/src/app
 RUN apk add --no-cache bash
 
 ARG BUILD_ENV=production
+
 ARG API_URL=https://35.212.237.104:8080
 # 如果沒有在docker run 指令中提供 --build-arg BUILD_ENV=xxx，就預設用 production
 # 如果你有提供，會覆蓋它
@@ -28,29 +25,32 @@ ARG API_URL=https://35.212.237.104:8080
 RUN npm install -g @angular/cli
 
 # 先複製 package.json 和 package-lock.json（利用 Docker layer cache 優化），這樣如果程式碼變更但套件沒變，就不需要重新安裝套件。
-COPY ./acs-frontend/package*.json ./
+COPY package*.json ./
 
 # 安裝相依套件
 RUN npm install
 
-# 複製 acs-frontend 目錄的所有檔案到容器內的工作目錄
-COPY ./acs-frontend/ .
+# 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
+COPY . .
 
-# 確保 `ng` 指令擁有執行權限
-RUN chmod +x /usr/src/app/node_modules/.bin/ng \
-  && echo "✅ Angular CLI path: $(which ng)"
-
-ENV PATH="/usr/src/app/node_modules/.bin:$PATH"
+RUN chmod +x ./node_modules/.bin/ng
+RUN chmod +x /usr/local/bin/ng
 
 # 顯示編譯環境資訊
 RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
 
 # 禁用 Angular CLI 快取，確保 `ng build` 總是重新編譯
+RUN test -f angular.json && echo "✅ angular.json 存在，ng config 可執行" || echo "❌ angular.json 不存在"
 RUN ng config cli.cache.enabled false
 RUN rm -rf .angular/cache
 
+
+# Debug 6：列出 src 與 assets，確保存在
+RUN echo "📁 確認 src/ assets/ 存在？" && ls -al src && ls -al src/assets || echo "❌ 找不到"
+
 # 執行 Angular build
-RUN npm run build -- --configuration=$BUILD_ENV
+#RUN npm run build -- --configuration=$BUILD_ENV
+RUN npx ng build --configuration=$BUILD_ENV --verbose
 
 # mkdir -p 會確保 assets/ 目錄存在，避免 sed 失敗
 # 在 build 階段完成環境變數注入（減少 runtime 變數錯誤）
@@ -64,12 +64,16 @@ FROM nginx:stable-alpine
 # 用來 serve 前端的靜態檔案（.html, .js, .css）
 # Nginx 是最穩定、效能最佳的靜態伺服器之一
 
+RUN echo "🔥 NGINX STAGE STARTED AT $(date)"
+
 COPY --from=build /usr/src/app/dist/acs-frontend /usr/share/nginx/html
 # 複製 Angular 靜態檔至 nginx 對應目錄
 # 從前一個 build 階段中，把 dist/ 中編譯好的 Angular 靜態檔複製進 nginx 的對外根目錄 /usr/share/nginx/html
 
 # 複製自訂 Nginx 設定與啟動腳本
-COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
+#COPY ./acs-frontend/default.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
+
 
 EXPOSE 80
 # 宣告 container 對外提供服務的 port 是 80（Nginx 預設 port）
