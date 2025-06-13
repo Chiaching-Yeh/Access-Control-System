@@ -83,23 +83,25 @@ jobs:
               docker builder prune -af
               
               echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
-              IMAGE_TAG=${{ github.sha }}
-              echo "✅ IMAGE_TAG: \$IMAGE_TAG"
-             
+              echo "✅ IMAGE_TAG: $IMAGE_TAG"
+              echo "✅ DOCKER_REGISTRY: $DOCKER_REGISTRY"
+              export IMAGE_TAG=${{ github.sha }}
+              export DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY }}
+              
               echo '🔁 [2/6] 切換至專案資料夾 ~/Access-Control-System'
               cd ~/Access-Control-System && pwd && ls -la
               
               echo '🔁 [3/6] Docker pull 最新映像'
-              docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
+              docker pull $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG
               
-              echo '🔁 [4/6] Tag 成 acs-frontend:latest（供 compose 使用）'
-              docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG acs-frontend:latest 
-          
+#              echo '🔁 [4/6] Tag 成 acs-frontend:latest（供 compose 使用）'
+#              docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG acs-frontend:latest
+
               echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在'
               ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
 
               echo '🔁 [6/6] 執行 docker-compose up -d frontend'
-              docker-compose -f docker-compose.yml up -d frontend
+              docker-compose -f docker-compose.yml up -d --force-recreate frontend
               
               echo '✅ 部署完成'
             EOF
