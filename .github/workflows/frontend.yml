@@ -56,14 +56,14 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          echo "Deploying commit SHA: ${{ github.sha }}"
-          IMAGE_TAG=${{ github.sha }}
-          docker build \
-            --no-cache \
-            -t "${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG" \
-            -f ./acs-frontend/Dockerfile \
-            ./acs-frontend
-          docker push "${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG"
+            echo "Deploying commit SHA: ${{ github.sha }}"
+            IMAGE_TAG=${{ github.sha }}
+            docker build \
+              --no-cache \
+              -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG \
+              -f ./acs-frontend/Dockerfile \
+              ./acs-frontend
+            docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
 
       - name: SSH to VM via gcloud and deploy frontend
         run: |
