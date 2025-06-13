@@ -27,7 +27,7 @@ services:
 
   frontend:
     container_name: acs-frontend
-    image: ${DOCKER_REGISTRY}/acs-frontend:latest
+    image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
     ports:
       - "4200:80"
 
