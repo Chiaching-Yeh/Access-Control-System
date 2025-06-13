@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8' docker compose v2 不再需要 version: 欄位
 # 使用哪個 docker-compose 語法版本
 
 # 有哪些服務（container）
