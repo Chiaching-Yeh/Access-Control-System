@@ -24,6 +24,8 @@ COPY . .
 # 🔍 驗證 node_modules 是否來自本機 Build Context（而非 npm install）
 RUN echo "🧪 COPY . . 後的檔案內容----5：" && find . -maxdepth 2
 
+RUN echo "🧪 COPY . . 後 node_modules 是否存在：" && ls -al node_modules || echo "✅ node_modules 不存在"
+
 # 避免 Permission denied 與 Angular cache
 RUN chmod +x ./node_modules/.bin/ng && \
     npx ng config cli.cache.enabled false && \
