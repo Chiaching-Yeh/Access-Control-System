@@ -91,7 +91,7 @@ jobs:
           cd ~/Access-Control-System && pwd && ls -la
           
           echo '🔁 [3/6] Docker pull 最新映像（固定標記 latest）'
-          docker pull \$DOCKER_REGISTRY/acs-frontend:latest
+          docker pull us-west1-docker.pkg.dev/access-control-system-461910/access-control-registry/acs-frontend:latest
           
           echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在'
           ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
