@@ -60,10 +60,10 @@ jobs:
           IMAGE_TAG=${{ github.sha }}
           docker build \
             --no-cache \
-            -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG \
+            -t "${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG" \
             -f ./acs-frontend/Dockerfile \
             ./acs-frontend
-          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
+          docker push "${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG"
 
       - name: SSH to VM via gcloud and deploy frontend
         run: |
@@ -75,6 +75,9 @@ jobs:
             echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
             ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
           
+            IMAGE_TAG=${{ github.sha }}
+            DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY }}   
+          
             echo "🔁 開始登入並執行部署腳本"
             ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
               
@@ -83,8 +86,6 @@ jobs:
               docker builder prune -af
               
               echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
-              echo '✅ IMAGE_TAG: $IMAGE_TAG'
-              echo '✅ DOCKER_REGISTRY: $DOCKER_REGISTRY'
               export IMAGE_TAG=${{ github.sha }}
               export DOCKER_REGISTRY=${{ secrets.DOCKER_REGISTRY }}
               
