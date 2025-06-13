@@ -11,8 +11,8 @@ COPY package*.json ./
 # 安裝相依套件
 RUN npm install
 
-# 🧪 確認 Build Context 是否乾淨 copy . . 前
-RUN echo "📦 檢查 node_modules 是否在 Build Context 裡：" && ls -al node_modules || echo "✅ node_modules 不存在"
+RUN echo "📂 Build Context 中的資料夾（不含子檔案）如下：" && \
+    find . -maxdepth 1 -type d | sort
 
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
