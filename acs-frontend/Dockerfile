@@ -33,30 +33,23 @@ COPY package*.json ./
 # 安裝相依套件
 RUN npm install
 
-# Debug 3：安裝完後確認 ng CLI 路徑與權限
 RUN echo "📦 BEFORE COPY . ." && ls -l $(which ng)
-
-# 🐞 Debug COPY 前的內容
 RUN echo "🐞 COPY 前容器內 /usr/src/app 內容：" && pwd && ls -al
-
-RUN echo "📦 Build Context 內容：" && find . | sort
+# ✅ 插入 Build Context 檔案清單（COPY 前）
+RUN echo "📦 Build Context（COPY 前）內容如下：" && find . | sort
 
 # 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
 COPY . .
 
+# ✅ COPY 後再次確認目錄內容（選擇性）
+RUN echo "📦 Build Context（COPY 後）內容如下：" && find . | sort
+
 RUN chmod +x ./node_modules/.bin/ng
 RUN chmod +x /usr/local/bin/ng
 
-# ✅ 再次確認 ng CLI 仍然是 global 安裝的版本
 RUN echo "📦 ng 確認：" && which ng && ls -l $(which ng)
-
-# Debug 4：COPY 後再次確認 ng CLI 有沒有被覆蓋掉
 RUN echo "📦 AFTER COPY . ." && ls -l $(which ng)
-
-# 🧪 Debug COPY 後的內容
 RUN echo "📦 COPY 後容器內 /usr/src/app 內容：" && pwd && ls -al && echo "📁 src 目錄內容：" && ls -al src || echo "❌ src 不存在"
-
-# 確保 `ng` 指令擁有執行權限
 RUN echo "✅ Angular CLI path: $(which ng)"
 
 # 顯示編譯環境資訊
