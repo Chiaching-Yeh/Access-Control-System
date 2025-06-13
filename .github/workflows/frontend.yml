@@ -71,17 +71,17 @@ jobs:
             mkdir -p ~/.ssh
             echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_ed25519
             chmod 600 ~/.ssh/id_ed25519
-          
-            echo "清除VM上的快取
-            docker system prune -af
-            docker builder prune -af
-        
+      
             echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
             ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
           
             echo "🔁 開始登入並執行部署腳本"
             ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
-
+              
+              echo '🔁 [0/6] 清除 VM 上 Docker 快取'
+              docker system prune -af
+              docker builder prune -af
+              
               echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
               IMAGE_TAG=${{ github.sha }}
               echo "✅ IMAGE_TAG: \$IMAGE_TAG"
