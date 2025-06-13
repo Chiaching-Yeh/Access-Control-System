@@ -16,6 +16,9 @@ COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig.json ./
 COPY src/ ./src/
+COPY tsconfig.app.json ./
+COPY tsconfig.json ./
+COPY tsconfig.spec.json ./
 
 # 避免 Permission denied 與 Angular cache
 RUN npx ng config cli.cache.enabled false && rm -rf .angular/cache
