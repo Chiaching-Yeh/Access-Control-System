@@ -59,6 +59,7 @@ jobs:
             -f ./acs-frontend/Dockerfile \
             ./acs-frontend
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
+          echo "images大小"
           docker images | grep acs-frontend
 
       - name: SSH to VM via gcloud and deploy frontend

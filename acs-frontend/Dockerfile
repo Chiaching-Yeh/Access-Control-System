@@ -13,19 +13,9 @@ RUN npm install
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
 
-# 避免 Permission denied 與 Angular cache
-#RUN chmod +x ./node_modules/.bin/ng && \
-#    npx ng config cli.cache.enabled false && \
-#    rm -rf .angular/cache
-
-# 執行編譯
-ARG BUILD_ENV=production
-ARG API_URL=https://35.212.237.104:8080
-RUN npx ng build --configuration=$BUILD_ENV --verbose
-
-# 產生環境變數檔（供 Angular 使用）
-RUN mkdir -p ./dist/acs-frontend/assets && \
-    sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/assets/env.js
+# 避免 Angular cache
+RUN ng config cli.cache.enabled false
+RUN rm -rf .angular/cache
 
 # 清除不必要檔案以減少 image 體積
 RUN rm -rf node_modules \
@@ -37,6 +27,16 @@ RUN rm -rf node_modules \
            .npm \
            README.md \
            package-lock.json
+
+# 產生環境變數檔（供 Angular 使用）
+RUN mkdir -p ./dist/acs-frontend/assets && \
+    sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/assets/env.js
+
+# 執行編譯
+ARG BUILD_ENV=production
+ARG API_URL=https://35.212.237.104:8080
+RUN npx ng build --configuration=$BUILD_ENV --verbose
+
 
 # -------- 第二階段：Serve with Nginx --------
 FROM nginx:stable-alpine
