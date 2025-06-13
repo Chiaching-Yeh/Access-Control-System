@@ -3,25 +3,20 @@ FROM node:22-alpine AS build
 
 WORKDIR /usr/src/app
 
-RUN echo "📂 Build Context 中的資料夾（不含子檔案）如下1：" && \
-    find . -maxdepth 1 -type d | sort
+RUN echo "📦 build context 檔案：" && find . -maxdepth 2
 
 # 安裝必要工具
 RUN apk add --no-cache bash
 
-RUN echo "📂 Build Context 中的資料夾（不含子檔案）如下2：" && \
-    find . -maxdepth 1 -type d | sort
+RUN echo "📦 build context 檔案2：" && find . -maxdepth 2
 
 COPY package*.json ./
 
-RUN echo "📂 Build Context 中的資料夾（不含子檔案）如下3：" && \
-    find . -maxdepth 1 -type d | sort
-
+RUN echo "📦 build context 檔案3：" && find . -maxdepth 2
 # 安裝相依套件
 RUN npm install
 
-RUN echo "📂 Build Context 中的資料夾（不含子檔案）如下4：" && \
-    find . -maxdepth 1 -type d | sort
+RUN echo "📦 build context 檔案4：" && find . -maxdepth 2
 
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
