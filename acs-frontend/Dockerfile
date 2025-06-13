@@ -18,8 +18,7 @@ COPY tsconfig.json ./
 COPY src/ ./src/
 
 # 避免 Permission denied 與 Angular cache
-RUN ng config cli.cache.enabled false
-RUN rm -rf .angular/cache
+RUN npx ng config cli.cache.enabled false && rm -rf .angular/cache
 
 # 執行編譯
 ARG BUILD_ENV=production
