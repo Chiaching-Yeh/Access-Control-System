@@ -66,7 +66,6 @@ RUN echo "📁 確認 src/ assets/ 存在？" && ls -al src && ls -al src/assets
 
 # 執行 Angular build
 #RUN npm run build -- --configuration=$BUILD_ENV
-RUN npx ng build -- --configuration=$BUILD_ENV
 RUN npx ng build --configuration=$BUILD_ENV --verbose
 
 # mkdir -p 會確保 assets/ 目錄存在，避免 sed 失敗

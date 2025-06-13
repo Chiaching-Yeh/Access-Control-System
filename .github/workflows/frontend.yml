@@ -16,7 +16,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      # 執行清理所有未使用的 Docker 資源的命令。
+      # runner上執行清理所有未使用的 Docker 資源的命令。
       # 執行清理 BuildKit 構建快取的命令
       - name: Clean Docker Build Cache
         run: |
@@ -71,6 +71,10 @@ jobs:
             mkdir -p ~/.ssh
             echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_ed25519
             chmod 600 ~/.ssh/id_ed25519
+          
+            echo "清除VM上的快取
+            docker system prune -af
+            docker builder prune -af
         
             echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
             ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
