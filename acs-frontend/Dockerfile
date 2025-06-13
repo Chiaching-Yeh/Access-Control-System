@@ -12,13 +12,6 @@ RUN npm install
 
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
-#COPY package*.json ./
-#COPY angular.json ./
-#COPY tsconfig.json ./
-#COPY src/ ./src/
-#COPY tsconfig.app.json ./
-#COPY tsconfig.json ./
-#COPY tsconfig.spec.json ./
 
 # 避免 Permission denied 與 Angular cache
 RUN npx ng config cli.cache.enabled false && rm -rf .angular/cache
