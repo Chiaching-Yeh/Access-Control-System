@@ -12,9 +12,6 @@ WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
 # 之後的所有 COPY, RUN 指令都會以這個目錄為基準
 
-# Debug 1：檢查 build context 是否正確
-RUN echo "🐞 Build Context 根目錄內容：" && ls -al && echo "==="
-
 # 安裝必要套件（確保 ng CLI 可執行時不會缺 native 編譯元件）
 RUN apk add --no-cache bash
 
@@ -39,6 +36,9 @@ RUN npm install
 # Debug 3：安裝完後確認 ng CLI 路徑與權限
 RUN echo "📦 BEFORE COPY . ." && ls -l $(which ng)
 
+# 🐞 Debug COPY 前的內容
+RUN echo "🐞 COPY 前容器內 /usr/src/app 內容：" && pwd && ls -al
+
 # 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
 COPY . .
 
@@ -50,6 +50,9 @@ RUN echo "📦 ng 確認：" && which ng && ls -l $(which ng)
 
 # Debug 4：COPY 後再次確認 ng CLI 有沒有被覆蓋掉
 RUN echo "📦 AFTER COPY . ." && ls -l $(which ng)
+
+# 🧪 Debug COPY 後的內容
+RUN echo "📦 COPY 後容器內 /usr/src/app 內容：" && pwd && ls -al && echo "📁 src 目錄內容：" && ls -al src || echo "❌ src 不存在"
 
 # 確保 `ng` 指令擁有執行權限
 RUN echo "✅ Angular CLI path: $(which ng)"
