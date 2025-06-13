@@ -1,6 +1,6 @@
 # 第 1 階段（build）
 # 用 Node.js 編譯 Angular 專案，產出 dist 靜態檔
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 # 使用 Node.js 18 + Alpine 版當作建構階段（build stage）的 base image
 # alpine 表示精簡、高效、小體積
 # AS build 是給這個階段命名，後面會用 --from=build 來引用
