@@ -81,6 +81,7 @@ jobs:
 
           echo "🔁 開始登入並執行部署腳本"
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
+            
             echo '🔁 [0/6] 清除 VM 上 Docker 快取'
             docker system prune -af
             docker builder prune -af
@@ -98,8 +99,8 @@ jobs:
             echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在'
             ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
 
-            echo '🔁 [6/6] 執行 docker compose up -d --no-build frontend'
-            docker compose up -d --no-build frontend
+            echo '🔁 [6/6] 執行 docker compose up -d frontend'
+            docker compose up -d frontend
 
             echo '✅ 部署完成'
           EOF
