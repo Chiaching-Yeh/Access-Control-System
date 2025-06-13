@@ -3,38 +3,19 @@ FROM node:22-alpine AS build
 
 WORKDIR /usr/src/app
 
-RUN echo "📦 build context 檔案：" && find . -maxdepth 2
-
-# 安裝必要工具
 RUN apk add --no-cache bash
-
-RUN echo "📦 build context 檔案2：" && find . -maxdepth 2
 
 COPY package*.json ./
 
-RUN echo "📦 build context 檔案3：" && find . -maxdepth 2
 # 安裝相依套件
 RUN npm install
-
-RUN echo "📦 build context 檔案4：" && find . -maxdepth 2
 
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
 
-# 🔍 驗證 node_modules 是否來自本機 Build Context（而非 npm install）
-RUN echo "🧪 COPY . . 後的檔案內容----5：" && find . -maxdepth 2
-
-RUN echo "🧪 COPY . . 後 node_modules 是否存在：" && ls -al node_modules || echo "✅ node_modules 不存在"
-
-# 避免 Permission denied 與 Angular cache
-RUN chmod +x ./node_modules/.bin/ng && \
-    npx ng config cli.cache.enabled false && \
-    rm -rf .angular/cache
-
 # 執行編譯
-ARG BUILD_ENV=production
 ARG API_URL=https://35.212.237.104:8080
-RUN npx ng build --configuration=$BUILD_ENV --verbose
+RUN npx ng build --configuration=production --verbose
 
 # 產生環境變數檔（供 Angular 使用）
 RUN mkdir -p ./dist/acs-frontend/assets && \

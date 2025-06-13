@@ -51,8 +51,6 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          echo "🧪 檢查是否有 .dockerignore"
-          cat ./acs-frontend/.dockerignore || echo "❌ 沒有 .dockerignore 檔案"
           echo "Deploying commit SHA: ${{ github.sha }}"
           IMAGE_TAG=${{ github.sha }}
           docker build \
