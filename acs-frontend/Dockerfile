@@ -3,6 +3,9 @@ FROM node:22-alpine AS build
 
 WORKDIR /usr/src/app
 
+RUN echo "📂 Build Context 中的資料夾（不含子檔案）如下：" && \
+    find . -maxdepth 1 -type d | sort
+
 # 安裝必要工具
 RUN apk add --no-cache bash
 
