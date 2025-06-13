@@ -1,6 +1,8 @@
 # 第 1 階段（build）
 # 用 Node.js 編譯 Angular 專案，產出 dist 靜態檔
 
+RUN echo "🔥 BUILD STARTED AT $(date)"
+
 FROM node:18-alpine AS build
 # 使用 Node.js 18 + Alpine 版當作建構階段（build stage）的 base image
 # alpine 表示精簡、高效、小體積
@@ -17,6 +19,7 @@ RUN echo "🐞 Build Context 根目錄內容：" && ls -al && echo "==="
 RUN apk add --no-cache bash
 
 ARG BUILD_ENV=production
+
 ARG API_URL=https://35.212.237.104:8080
 # 如果沒有在docker run 指令中提供 --build-arg BUILD_ENV=xxx，就預設用 production
 # 如果你有提供，會覆蓋它
@@ -62,7 +65,8 @@ RUN rm -rf .angular/cache
 RUN echo "📁 確認 src/ assets/ 存在？" && ls -al src && ls -al src/assets || echo "❌ 找不到"
 
 # 執行 Angular build
-RUN npm run build -- --configuration=$BUILD_ENV
+#RUN npm run build -- --configuration=$BUILD_ENV
+RUN npx ng build -- --configuration=$BUILD_ENV
 
 # mkdir -p 會確保 assets/ 目錄存在，避免 sed 失敗
 # 在 build 階段完成環境變數注入（減少 runtime 變數錯誤）
