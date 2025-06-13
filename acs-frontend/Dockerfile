@@ -7,6 +7,7 @@ FROM node:22-alpine AS build
 
 RUN echo "🔥 BUILD STARTED AT $(date)"
 
+
 WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
 # 之後的所有 COPY, RUN 指令都會以這個目錄為基準
