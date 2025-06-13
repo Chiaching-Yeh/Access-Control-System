@@ -57,6 +57,7 @@ RUN echo "✅ Angular CLI path: $(which ng)"
 RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
 
 # 禁用 Angular CLI 快取，確保 `ng build` 總是重新編譯
+RUN test -f angular.json && echo "✅ angular.json 存在，ng config 可執行" || echo "❌ angular.json 不存在"
 RUN ng config cli.cache.enabled false
 RUN rm -rf .angular/cache
 
