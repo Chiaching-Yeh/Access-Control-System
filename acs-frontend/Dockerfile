@@ -1,12 +1,11 @@
 # 第 1 階段（build）
 # 用 Node.js 編譯 Angular 專案，產出 dist 靜態檔
-
-RUN echo "🔥 BUILD STARTED AT $(date)"
-
 FROM node:18-alpine AS build
 # 使用 Node.js 18 + Alpine 版當作建構階段（build stage）的 base image
 # alpine 表示精簡、高效、小體積
 # AS build 是給這個階段命名，後面會用 --from=build 來引用
+
+RUN echo "🔥 BUILD STARTED AT $(date)"
 
 WORKDIR /usr/src/app
 # 設定 container 內的工作目錄為 /usr/src/app
@@ -79,6 +78,8 @@ FROM nginx:stable-alpine
 # 建立新的階段（run stage），以官方的 Nginx + Alpine 版作為 base image
 # 用來 serve 前端的靜態檔案（.html, .js, .css）
 # Nginx 是最穩定、效能最佳的靜態伺服器之一
+
+RUN echo "🔥 NGINX STAGE STARTED AT $(date)"
 
 COPY --from=build /usr/src/app/dist/acs-frontend /usr/share/nginx/html
 # 複製 Angular 靜態檔至 nginx 對應目錄
