@@ -19,7 +19,7 @@ RUN npx ng config cli.cache.enabled false && rm -rf .angular/cache
 # 執行編譯
 ARG BUILD_ENV=production
 ARG API_URL=https://35.212.237.104:8080
-RUN npx ng build --configuration=$BUILD_ENV --verbose
+RUN npx ng build --configuration=$BUILD_ENV
 
 # 產生環境變數檔（供 Angular 使用）
 RUN mkdir -p ./dist/acs-frontend/assets && \
