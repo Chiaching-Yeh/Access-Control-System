@@ -39,6 +39,8 @@ RUN echo "📦 BEFORE COPY . ." && ls -l $(which ng)
 # 🐞 Debug COPY 前的內容
 RUN echo "🐞 COPY 前容器內 /usr/src/app 內容：" && pwd && ls -al
 
+RUN echo "📦 Build Context 內容：" && find . | sort
+
 # 複製 acs-frontend 目錄下的所有檔案到容器內的工作目錄 COPY <來源路徑> <目的地路徑>
 COPY . .
 
@@ -64,6 +66,7 @@ RUN echo "🛠 Building Angular app with configuration: $BUILD_ENV"
 RUN test -f angular.json && echo "✅ angular.json 存在，ng config 可執行" || echo "❌ angular.json 不存在"
 RUN ng config cli.cache.enabled false
 RUN rm -rf .angular/cache
+
 
 # Debug 6：列出 src 與 assets，確保存在
 RUN echo "📁 確認 src/ assets/ 存在？" && ls -al src && ls -al src/assets || echo "❌ 找不到"
