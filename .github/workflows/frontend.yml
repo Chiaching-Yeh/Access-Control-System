@@ -66,7 +66,6 @@ jobs:
           VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
-          IMAGE_TAG: ${{ github.sha }}
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         run: |
           echo "🔐 將私鑰寫入 SSH 金鑰檔"
@@ -80,23 +79,20 @@ jobs:
           echo "🔁 開始登入並執行部署腳本"
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << 'EOF'
           
-          echo '🔁 [0/6] 清除 VM 上 Docker 快取'
+          echo '🔁 [0/4] 清除 VM 上 Docker 快取'
           docker system prune -af
           docker builder prune -af
           
-          echo '🔁 [1/6] 設定 DOCKER_REGISTRY 環境變數'
-          export DOCKER_REGISTRY=${DOCKER_REGISTRY}
-          
-          echo '🔁 [2/6] 切換至專案資料夾 ~/Access-Control-System'
+          echo '🔁 [1/4] 切換至專案資料夾 ~/Access-Control-System'
           cd ~/Access-Control-System && pwd && ls -la
           
-          echo '🔁 [3/6] Docker pull 最新映像（固定標記 latest）'
-          docker pull us-west1-docker.pkg.dev/access-control-system-461910/access-control-registry/acs-frontend:latest
+          echo '🔁 [2/4] Docker pull 最新映像（固定標記 latest）'
+          docker pull us-west1-docker.pkg.dev/access-control-system-461910/access-control-registry/acs-frontend:latest || { echo '❌ Pull 失敗'; exit 1; }
           
-          echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在'
+          echo '🔁 [3/4] 檢查 docker-compose.yml 是否存在'
           ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
           
-          echo '🔁 [6/6] 執行 docker compose up -d --no-build frontend'
+          echo '🔁 [4/4] 執行 docker compose up -d --no-build frontend'
           docker compose up -d --no-build frontend
           
           echo '✅ 部署完成'
