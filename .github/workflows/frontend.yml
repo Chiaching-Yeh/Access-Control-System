@@ -80,8 +80,8 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << 'EOF'
           
           echo '🔁 [0/4] 清除 VM 上 Docker 快取'
-          docker system prune -af
-          docker builder prune -af
+#          docker system prune -af
+#          docker builder prune -af
           
           echo '🔁 [1/4] 切換至專案資料夾 ~/Access-Control-System'
           cd ~/Access-Control-System && pwd && ls -la
