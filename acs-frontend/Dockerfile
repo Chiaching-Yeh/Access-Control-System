@@ -21,6 +21,9 @@ RUN echo "📦 build context 檔案4：" && find . -maxdepth 2
 # 複製專案原始碼（排除 .dockerignore 的項目）
 COPY . .
 
+# 🔍 驗證 node_modules 是否來自本機 Build Context（而非 npm install）
+RUN echo "🧪 COPY . . 後的檔案內容----5：" && find . -maxdepth 2
+
 # 避免 Permission denied 與 Angular cache
 RUN chmod +x ./node_modules/.bin/ng && \
     npx ng config cli.cache.enabled false && \
