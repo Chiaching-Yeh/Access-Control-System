@@ -23,20 +23,6 @@ jobs:
           docker builder prune -af
           echo "Docker resources cleaned."
 
-      - name: Debug - List current directory and check required files
-        run: |
-          echo "=== Current working directory ==="
-          pwd
-          echo "=== List all files in current directory ==="
-          ls -la
-          echo "=== List all files recursively ==="
-          find . -type f -name "*.sh" -o -name "*.conf" -o -name "Dockerfile*" | head -20
-          echo "=== Check for required files ==="
-          echo "Checking for default.conf:"
-          find . -name "default.conf" -type f || echo "❌ default.conf NOT FOUND"
-          echo "=== Show dockerfile build context ==="
-          ls -la ./acs-frontend/ || echo "acs-frontend directory not found"
-
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -52,48 +38,55 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          echo "🛠️ Build and push with fixed tag: frontend"
+          echo "Deploying commit SHA: ${{ github.sha }}"
+          IMAGE_TAG=${{ github.sha }}
           docker build \
-          --no-cache \
-          -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest \
-          -f ./acs-frontend/Dockerfile \
-          ./acs-frontend
-          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest
-          echo "✅ Image pushed: ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:latest"
+            --no-cache \
+            -t ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG \
+            -f ./acs-frontend/Dockerfile \
+            ./acs-frontend
+          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-frontend:$IMAGE_TAG
+          echo "🔍 Listing pushed image:"
+          docker images | grep acs-frontend
 
       - name: SSH to VM via gcloud and deploy frontend
         env:
           VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
+          IMAGE_TAG: ${{ github.sha }}
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         run: |
           echo "🔐 將私鑰寫入 SSH 金鑰檔"
           mkdir -p ~/.ssh
           echo "$VM_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-      
+
           echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
           ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
-      
+
           echo "🔁 開始登入並執行部署腳本"
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << 'EOF'
           
-          echo '🔁 [0/4] 清除 VM 上 Docker 快取'
-          docker system prune -af
-          docker builder prune -af
-          
-          echo '🔁 [1/4] 切換至專案資料夾 ~/Access-Control-System'
-          cd ~/Access-Control-System && pwd && ls -la
-          
-          echo '🔁 [2/4] Docker pull 最新映像（固定標記 latest）'
-          docker pull us-west1-docker.pkg.dev/access-control-system-461910/access-control-registry/acs-frontend:latest || { echo '❌ Pull 失敗'; exit 1; }
-          
-          echo '🔁 [3/4] 檢查 docker-compose.yml 是否存在'
-          ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
-          
-          echo '🔁 [4/4] 執行 docker compose up -d --no-build frontend'
-          docker compose up -d --no-build frontend
-          
-          echo '✅ 部署完成'
+            echo '🔁 [0/6] 清除 VM 上 Docker 快取'
+            docker system prune -af
+            docker builder prune -af
+
+            echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
+            export IMAGE_TAG=${IMAGE_TAG}
+            export DOCKER_REGISTRY=${DOCKER_REGISTRY}
+
+            echo '🔁 [2/6] 切換至專案資料夾 ~/Access-Control-System'
+            cd ~/Access-Control-System && pwd && ls -la
+
+            echo '🔁 [3/6] Docker pull 最新映像'
+            docker pull \$DOCKER_REGISTRY/acs-frontend:\$IMAGE_TAG
+
+            echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在'
+            ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
+
+            echo '🔁 [6/6] 執行 docker compose up -d'
+            docker compose up -d
+
+            echo '✅ 部署完成'
           EOF
