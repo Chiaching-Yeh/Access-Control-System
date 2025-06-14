@@ -68,24 +68,32 @@ jobs:
           echo "🔁 開始登入並執行部署腳本"
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << 'EOF'
           
-            echo '🔁 [0/6] 清除 VM 上 Docker 快取'
+            set -e 
+          
+            echo '🔁 [0/7] 清除 VM 上 Docker 快取'
             docker system prune -af
             docker builder prune -af
 
-            echo '🔁 [1/6] 設定 IMAGE_TAG 環境變數'
+            echo '🔁 [1/7] 設定 IMAGE_TAG 環境變數'
             export IMAGE_TAG=${IMAGE_TAG}
             export DOCKER_REGISTRY=${DOCKER_REGISTRY}
+          
+            echo '🔁 [2/7] 確認 Access-Control-System 是否存在'
+            if [ -d ~/Access-Control-System/.git ]; then
+              echo '📦 已存在 Git 專案，執行 git pull'
+              cd ~/Access-Control-System && git pull origin main
+            else
+              echo '🆕 專案不存在，執行 git clone'
+              git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
+            fi
 
-            echo '🔁 [2/6] 切換至專案資料夾 ~/Access-Control-System'
+            echo '🔁 [2/7] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
 
-            echo '🔁 [3/6] Docker pull 最新映像'
+            echo '🔁 [3/7] Docker pull 最新映像'
             docker pull \$DOCKER_REGISTRY/acs-frontend:\$IMAGE_TAG
 
-            echo '🔁 [5/6] 檢查 docker-compose.yml 是否存在'
-            ls -l docker-compose.yml || echo '❌ 找不到 docker-compose.yml'
-
-            echo '🔁 [6/6] 執行 docker compose up -d'
+            echo '🔁 [6/7] 執行 docker compose up -d'
             docker compose up -d
 
             echo '✅ 部署完成'
