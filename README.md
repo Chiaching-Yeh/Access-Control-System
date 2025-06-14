@@ -52,3 +52,8 @@
 
 ## python-simulator docker
 用來建立一個 Python CLI 容器，來模擬 MQTT 發布功能
+
+
+1. gcloud CLI 必須已安裝在 VM 上
+2. github - vm ssh key
+3. vm ssh key
