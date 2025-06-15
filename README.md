@@ -44,10 +44,10 @@
 [Spring Boot 後端服務]
 ⇅ Redis 
 (授權快取 / 裝置狀態 / 掃碼資訊)
-⇅ PostgreSQL
+⇅ PostgresSQL
 (使用者與開門紀錄)
 
-## Angualr docker
+## Angular docker
 這是典型的 Angular 專案 multi-stage build，會先編譯，再交給 Nginx 做靜態檔案服務
 
 ## python-simulator docker
@@ -55,5 +55,14 @@
 
 
 1. gcloud CLI 必須已安裝在 VM 上
-2. github - vm ssh key
+2. GitHub - vm ssh key
 3. vm ssh key
+4. Docker version 20.10.24+dfsg1
+5. gcloud --version Google Cloud SDK 522.0.0
+6. git version 2.39.5
+7. Docker Compose 的 PostgreSQL service 中指定整個資料夾（例如 ./DB），只要裡面是 .sql 或 .sql.gz 檔案，PostgreSQL 官方映像檔會自動執行該資料夾底下的所有 SQL 腳本。
+  - 當 container 第一次啟動 且 /var/lib/postgresql/data 是空的時候：
+    ✅ 它會自動執行：
+    所有 .sql、.sql.gz、.sh 檔案（只限 /docker-entrypoint-initdb.d 裡的）
+    所以你只要把 .sql 檔案放進那個資料夾，就會自動建立資料表，完全不需要自己額外寫 shell script
+8. python cli

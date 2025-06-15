@@ -97,9 +97,18 @@ jobs:
             echo '🔁 [4/5] Docker pull 最新映像'
             docker image inspect $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG || echo "⚠️ 映像不存在"
             docker pull $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG
+          
+            echo "🔁 [4/5] 嘗試拉取映像 $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG"
+            docker pull $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG
+            
+            echo "🔍 驗證映像已存在於本地"
+            docker image inspect $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG >/dev/null && \
+            echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [5/5] 執行 docker compose up -d'
-            docker compose up -d
+            echo '🔁 [5/5] 執行 docker compose up -d frontend'
+            docker compose up -d db redis mqtt simulator
+            sleep 10
+            docker compose up -d frontend
 
             echo '✅ 部署完成'
           EOF
