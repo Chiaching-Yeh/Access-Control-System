@@ -1,9 +1,9 @@
 services:
   backend:
     container_name: acs-backend
-    build:
-      context: .  # ← build context 是根目錄
-      dockerfile: ./acs-backend/Dockerfile
+#    build:
+#      context: .  # ← build context 是根目錄
+#      dockerfile: ./acs-backend/Dockerfile
     image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
     depends_on:
       - db
@@ -21,9 +21,9 @@ services:
 
   frontend:
     container_name: acs-frontend
-    build:
-      context: ./acs-frontend
-      dockerfile: Dockerfile
+#    build:
+#      context: ./acs-frontend
+#      dockerfile: Dockerfile
     image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
     ports:
       - "4200:80"
