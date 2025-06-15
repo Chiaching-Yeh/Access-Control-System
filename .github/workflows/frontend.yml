@@ -73,7 +73,7 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
           
             set -e 
-          
+
             echo '🔁 [0/5] 清除 VM 上 Docker 快取'
             docker system prune -af
             docker builder prune -af
