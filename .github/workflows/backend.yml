@@ -36,7 +36,7 @@ jobs:
       - name: Configure Docker to use Artifact Registry
         run: gcloud auth configure-docker us-west1-docker.pkg.dev # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
 
-      - name: Build and Push Frontend Docker Image
+      - name: Build and Push Backend Docker Image
         run: |
           echo "Deploying commit SHA: ${{ github.sha }}"
           IMAGE_TAG=${{ github.sha }}
