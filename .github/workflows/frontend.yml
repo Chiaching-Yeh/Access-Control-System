@@ -93,9 +93,6 @@ jobs:
 
             echo '🔁 [3/5] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
-
-            echo '🔁 [4/5] Docker pull 最新映像'
-            docker image inspect $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG || echo "⚠️ 映像不存在"
           
             echo "🔁 [4/5] 嘗試拉取映像 $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG"
             docker pull $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG

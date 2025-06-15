@@ -57,18 +57,18 @@
         <!-- Google OAUTH End -->
 
         <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-analytics -->
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-analytics</artifactId>
-            <version>v3-rev169-1.25.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.apis</groupId>-->
+<!--            <artifactId>google-api-services-analytics</artifactId>-->
+<!--            <version>v3-rev169-1.25.0</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.13.3</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>itextpdf</artifactId>-->
+<!--            <version>5.5.13.3</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
         <dependency>
@@ -276,44 +276,44 @@
         <!-- Excel Start -->
 
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi</artifactId>-->
+<!--            <version>5.2.5</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>xml-apis</groupId>-->
+<!--                    <artifactId>xml-apis</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>5.2.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-scratchpad</artifactId>-->
+<!--            <version>5.2.5</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml</artifactId>-->
+<!--            <version>5.2.5</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>xml-apis</groupId>-->
+<!--                    <artifactId>xml-apis</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>commons-collections</groupId>-->
+<!--            <artifactId>commons-collections</artifactId>-->
+<!--            <version>3.2.2</version>-->
+<!--        </dependency>-->
 
         <!-- Excel End -->
 
