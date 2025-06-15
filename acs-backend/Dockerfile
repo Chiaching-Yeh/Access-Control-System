@@ -25,7 +25,6 @@ RUN chmod +x mvnw
 
 # 建置 backend module  使用 Maven Wrapper 指定只打包 backend 模組（跳過測試）自動先建 acs-common、再建 acs-backend
 RUN ./mvnw -pl acs-backend -am clean package -DskipTests
-#RUN mvn -pl acs-backend clean package -DskipTestsGet-ChildItem -Force mvnw
 
 # 第 2 階段（run）
 # 載入 .jar，乾淨執行，不含多餘檔案或工具

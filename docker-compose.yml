@@ -2,7 +2,7 @@ services:
   backend:
     container_name: acs-backend
     build:
-      context: ./acs-frontend
+      context: .
       dockerfile: Dockerfile
 #      backend 這個容器 依賴其他服務先啟動（啟動順序），但不保證它們已經「可連線」
     image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
