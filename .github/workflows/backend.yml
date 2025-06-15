@@ -14,10 +14,17 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3 # 把 GitHub Repo 的程式碼抓下來到 runner 上
+        uses: actions/checkout@v4 # 把 GitHub Repo 的程式碼抓下來到 runner 上
+
+      - name: Clean Docker Build Cache In Runner
+        run: |
+          echo "Cleaning up Docker resources..."
+          docker system prune -af
+          docker builder prune -af
+          echo "Docker resources cleaned."
 
       - name: Authenticate with Google Cloud # 設定 GCP 專案 ID（來自 GitHub Secret）
-        uses: google-github-actions/auth@v1 # 使用 GCP 服務帳號金鑰登入（JSON）
+        uses: google-github-actions/auth@v2 # 使用 GCP 服務帳號金鑰登入（JSON）
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
@@ -29,29 +36,79 @@ jobs:
       - name: Configure Docker to use Artifact Registry
         run: gcloud auth configure-docker us-west1-docker.pkg.dev # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
 
-      - name: Build and Push Backend Docker Image  # 使用 backend 的 Dockerfile 打包 image，tag 成 artifact registry 格式，推送到 Artifact Registry，給 VM 拉取用
+      - name: Build and Push Frontend Docker Image
         run: |
           echo "Deploying commit SHA: ${{ github.sha }}"
           IMAGE_TAG=${{ github.sha }}
-          docker build --no-cache -t ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG -f ./acs-backend/Dockerfile .
+          docker build \
+            --no-cache \
+            -t ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG \
+            -f ./acs-backend/Dockerfile \
+            ./acs-backend
           docker push ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG
+          echo "🔍 Listing pushed image:"
+          docker images | grep acs-backend
 
-      ## 這裡若沒有加 -f 指定 Dockerfile 的位置，而是單純把 ./acs-backend 當作 build context。
-      # 它會預設在你指定的目錄 (./acs-backend) 裡找 Dockerfile。
-      # 它會把 ./acs-backend 設為 build context（就是 COPY 指令的根目錄）。
-      # 換句話說：這會讓 Docker 根本看不到根目錄的 acs-common/、pom.xml 等檔案。
+      - name: SSH to VM via gcloud and deploy backend
+        env:
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_USER: ${{ secrets.VM_USER }}
+          IMAGE_TAG: ${{ github.sha }}
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+        run: |
+          echo "🔐 將私鑰寫入 SSH 金鑰檔"
+          mkdir -p ~/.ssh
+          echo "$VM_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
-      - name: SSH and Deploy Backend on VM
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.VM_HOST }}   # GCP VM 的外部 IP
-          username: ${{ secrets.VM_USER }}  # 登入使用者帳號
-          key: ${{ secrets.VM_SSH_KEY }}  # 對應的 SSH 私鑰（貼在 GitHub Secret）
-          # 從 Artifact Registry 拉下最新 backend image， # 使用 docker-compose 重新啟動 backend 服務（只更新 backend，不動其他）
-          script: |
-            export IMAGE_TAG=${{ github.sha }}
-            echo "🔍 Deploying BackEnd IMAGE_TAG: $IMAGE_TAG"
-            gcloud auth configure-docker us-west1-docker.pkg.dev
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG
-            docker tag ${{ secrets.DOCKER_REGISTRY }}/acs-backend:$IMAGE_TAG acs-backend:latest
-            docker-compose -f ~/Access-Control-System/docker-compose.yml up -d backend
+          echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
+          ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
+          
+          echo "🧪 DOCKER_REGISTRY=$DOCKER_REGISTRY"
+          echo "🧪 IMAGE_TAG=$IMAGE_TAG"
+          echo "🧪 pull target = $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG"
+          
+          echo "🔁 開始登入並執行部署腳本"
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
+          
+            set -e 
+          
+            echo '🔁 [0/5] 清除 VM 上 Docker 快取'
+            docker system prune -af
+            docker builder prune -af
+
+            echo '🔁 [1/5] 設定 IMAGE_TAG、DOCKER_REGISTRY 環境變數'
+            export IMAGE_TAG=$IMAGE_TAG
+            export DOCKER_REGISTRY=$DOCKER_REGISTRY
+          
+            echo '🔁 [2/5] 確認 Access-Control-System 是否存在'
+            if [ -d ~/Access-Control-System/.git ]; then
+              echo '📦 已存在 Git 專案，執行 git pull'
+              cd ~/Access-Control-System && git pull origin main
+            else
+              echo '🆕 專案不存在，執行 git clone'
+              git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
+            fi
+
+            echo '🔁 [3/5] 切換至專案資料夾 ~/Access-Control-System'
+            cd ~/Access-Control-System && pwd && ls -la
+
+            echo '🔁 [4/5] Docker pull 最新映像'
+            docker image inspect $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG || echo "⚠️ 映像不存在"
+            docker pull $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG
+          
+            echo "🔁 [4/5] 嘗試拉取映像 $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG"
+            docker pull $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG
+          
+            echo "🔍 驗證映像已存在於本地"
+            docker image inspect $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG >/dev/null && \
+            echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
+
+            echo '🔁 [5/5] 執行 docker compose up -d backend'
+            docker compose up -d db redis mqtt simulator
+            sleep 10
+            docker compose up -d backend
+
+            echo '✅ 部署完成'
+          EOF

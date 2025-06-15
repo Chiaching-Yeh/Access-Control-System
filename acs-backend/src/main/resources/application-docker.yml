@@ -52,7 +52,7 @@ spring:
     enabled: false
 
   redis:
-    host: redis
+    host: ${SPRING_REDIS_HOST}
     port: 6379
 
   mvc:
@@ -121,13 +121,13 @@ app:
   qrApi:
     path: "https://35.212.237.104:8080"
 
-  upload:
-    path: "D:/Project/ACS/Upload/download/"
-    temppath: "D:/Project/ACS/Upload/download/origin/"
-    filepath: "D:/Project/ACS/Upload/download/doc/"
-    picpath: "D:/Project/ACS/Upload/download/pic/"
-    mediapath: "D:/Project/ACS/Upload/download/media/"
-    transpdf: "D:/Project/ACS/Upload/download/pdf/"
-    menufilepath: "D:/Project/ACS/Upload/download/menu/"
-    fckfilepath: "D:/Project/ACS/Upload/userfiles/file"
-    fckpicpath: "D:/Project/ACS/Upload/userfiles/image"
+#  upload:
+#    path: "D:/Project/ACS/Upload/download/"
+#    temppath: "D:/Project/ACS/Upload/download/origin/"
+#    filepath: "D:/Project/ACS/Upload/download/doc/"
+#    picpath: "D:/Project/ACS/Upload/download/pic/"
+#    mediapath: "D:/Project/ACS/Upload/download/media/"
+#    transpdf: "D:/Project/ACS/Upload/download/pdf/"
+#    menufilepath: "D:/Project/ACS/Upload/download/menu/"
+#    fckfilepath: "D:/Project/ACS/Upload/userfiles/file"
+#    fckpicpath: "D:/Project/ACS/Upload/userfiles/image"
