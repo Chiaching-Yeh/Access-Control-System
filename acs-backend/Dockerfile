@@ -22,6 +22,8 @@ COPY pom.xml pom.xml
 ##  給 Maven Wrapper 執行權限
 RUN chmod +x mvnw
 
+RUN echo "👀 列出目前目錄內容：" && ls -al /usr/src/app
+
 # 建置 backend module  使用 Maven Wrapper 指定只打包 backend 模組（跳過測試）自動先建 acs-common、再建 acs-backend
 RUN mvnw -pl acs-backend -am clean package -DskipTests
 
