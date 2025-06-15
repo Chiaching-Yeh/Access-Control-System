@@ -1,13 +1,12 @@
 # Default ignored files
 .idea/shelf/
 .idea/workspace.xml
-.mvn/wrapper/maven-wrapper.jar
 .smarttomcat
 
 python-simulator/.env
 # Default ignored files
 python-simulator/.idea/shelf/
-python-simulator/.idea//workspace.xml
+python-simulator/.idea/workspace.xml
 # Editor-based HTTP Client requests
 python-simulator/.idea/httpRequests/
 # Datasource local storage ignored files

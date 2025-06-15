@@ -66,3 +66,27 @@
     所有 .sql、.sql.gz、.sh 檔案（只限 /docker-entrypoint-initdb.d 裡的）
     所以你只要把 .sql 檔案放進那個資料夾，就會自動建立資料表，完全不需要自己額外寫 shell script
 8. python cli
+
+
+---
+ACS/                            ← 專案根目錄
+├── .github/                    ← GitHub 設定資料夾（如 workflows）
+├── .idea/                      ← IntelliJ IDEA 專案設定
+├── .mvn/                       ← Maven wrapper 設定資料夾
+├── .smarttomcat/              ← Smart Tomcat 設定資料夾（IDE外掛用）
+├── acs-backend/               ← Java 後端服務模組
+├── acs-common/                ← Java 共用模組（被 backend 引用）
+├── acs-frontend/              ← Angular 前端專案
+├── DB/                        ← 資料庫初始化用 SQL 檔案或資料夾
+├── mqtt/                      ← MQTT broker 設定資料夾（如 config、data、log）
+├── python-simulator/          ← Python MQTT 發卡模擬器
+├── settingup/                 ← 不明內容（可能是設定用文件或工具）
+├── work/                      ← 暫存或開發用資料夾
+├── .env                       ← 專案環境變數檔案（供 compose 使用）
+├── .gitignore                 ← Git 忽略清單
+├── docker-compose.yml        ← Docker Compose 生產/正式版配置
+├── docker-dev-compose.yml    ← Docker Compose 開發版配置
+├── mvnw                      ← Maven Wrapper Unix 執行檔
+├── mvnw.cmd                  ← Maven Wrapper Windows 執行檔
+├── pom.xml                   ← Maven 根目錄 POM，定義 multi-module
+└── README.md                 ← 專案說明文件

@@ -11,20 +11,22 @@ WORKDIR /usr/src/app
 # /usr/src/app 是開源專案慣例：source code 暫存與編譯區
 
 ## 複製 Maven Wrapper 所需檔案
-COPY ./mvnw ./mvnw
+COPY mvnw mvnw
 COPY .mvn .mvn
 
 # 複製整個 multi-module 專案（包含 backend 和 common）
-COPY ./acs-common ./acs-common
-COPY ./acs-backend ./acs-backend
-COPY ./pom.xml ./pom.xml
+COPY acs-common acs-common
+COPY acs-backend acs-backend
+COPY pom.xml pom.xml
 
 ##  給 Maven Wrapper 執行權限
 RUN chmod +x mvnw
 
-
 # 建置 backend module  使用 Maven Wrapper 指定只打包 backend 模組（跳過測試）自動先建 acs-common、再建 acs-backend
-RUN ./mvnw -pl acs-backend -am clean package -DskipTests
+RUN mvnw -pl acs-backend -am clean package -DskipTests
+
+# build 階段找出正確 jar 名稱，改名成標準名稱 app.jar
+RUN cp acs-backend/target/*.jar app.jar
 
 # 第 2 階段（run）
 # 載入 .jar，乾淨執行，不含多餘檔案或工具
@@ -35,9 +37,9 @@ FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 # 設定執行階段的工作目錄為 /app
 
-COPY --from=build /usr/src/app/acs-backend/target/*.jar app.jar
+# 複製打包後的 JAR
+COPY --from=build /usr/src/app/app.jar app.jar
 # 從前一個階段（名為 build）複製出打包好的 JAR 檔，放到 /app 並重新命名為 app.jar
-# 這行實現了「乾淨的部署階段不帶原始碼」的目標（multi-stage 的精華）
 
 EXPOSE 8080
 #宣告這個 container 會對外開放的 port 是 8080
