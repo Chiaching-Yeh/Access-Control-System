@@ -25,6 +25,8 @@ RUN npx ng build --configuration=$BUILD_ENV
 RUN mkdir -p ./dist/acs-frontend/assets && \
     sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/assets/env.js
 
+RUN echo "🗂 dist/acs-frontend 內容：" && ls -al ./dist/acs-frontend
+
 # -------- 第二階段：Serve with Nginx --------
 FROM nginx:stable-alpine
 
