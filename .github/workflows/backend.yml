@@ -8,6 +8,10 @@ on:
       - '.github/workflows/backend.yml'   # 或者這個 workflow 檔案本身有變更
     branches: [main] # 限定 main 分支
 
+permissions:  # 讓 GITHUB_TOKEN 有權限呼叫 workflow_dispatch
+  contents: read
+  actions: write
+
 jobs:
   trigger-infra:
     name: "Ensure Infra Ready"
