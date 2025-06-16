@@ -9,6 +9,16 @@ on:
     branches: [main]
 
 jobs:
+  trigger-infra:
+    name: "Ensure Infra Ready"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Infra Deployment
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: infra.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   deploy-frontend:
     runs-on: ubuntu-latest
 
@@ -78,11 +88,11 @@ jobs:
             docker system prune -af
             docker builder prune -af
 
-            echo '🔁 [1/5] 設定 IMAGE_TAG、DOCKER_REGISTRY 環境變數'
+            echo '🔁 [1/6] 設定 IMAGE_TAG、DOCKER_REGISTRY 環境變數'
             export IMAGE_TAG=$IMAGE_TAG
             export DOCKER_REGISTRY=$DOCKER_REGISTRY
           
-            echo '🔁 [2/5] 確認 Access-Control-System 是否存在'
+            echo '🔁 [2/6] 確認 Access-Control-System 是否存在'
             if [ -d ~/Access-Control-System/.git ]; then
               echo '📦 已存在 Git 專案，執行 git pull'
               cd ~/Access-Control-System && git pull origin main
@@ -91,19 +101,27 @@ jobs:
               git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
             fi
 
-            echo '🔁 [3/5] 切換至專案資料夾 ~/Access-Control-System'
+            echo '🔁 [3/6] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
           
-            echo "🔁 [4/5] 嘗試拉取映像 $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG"
+            echo '🔍 [4/6] 檢查 infra container 是否啟動'
+            if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
+               ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
+               ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
+              echo '🔧 有 infra container 沒有啟動，執行 docker compose up for infra'
+              docker compose -f infra.yml up -d
+            else
+              echo '✅ 所有 infra container 已在執行'
+            fi
+          
+            echo "🔁 [5/6] 嘗試拉取映像 $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG"
             docker pull $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG
             
             echo "🔍 驗證映像已存在於本地"
             docker image inspect $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [5/5] 執行 docker compose up -d frontend'
-            docker compose up -d db redis mqtt simulator
-            sleep 10
+            echo '🔁 [6/6] 執行 docker compose up -d frontend'
             docker compose up -d frontend
 
             echo '✅ 部署完成'

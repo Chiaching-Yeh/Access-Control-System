@@ -4,7 +4,7 @@ services:
 #    build:
 #      context: .  # ← build context 是根目錄
 #      dockerfile: ./acs-backend/Dockerfile
-    image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
+    image: ${DOCKER_REGISTRY}/acs-backend:${IMAGE_TAG}
     depends_on:
       - db
       - redis
@@ -33,10 +33,11 @@ services:
       - mqtt
 
   simulator:
-    container_name: acs-python-simulator
-    build:
-      context: ./python-simulator
-      dockerfile: Dockerfile
+    container_name: acs-simulator
+#    build:
+#      context: ./simulator
+#      dockerfile: Dockerfile
+    image: ${DOCKER_REGISTRY}/acs-simulator:${IMAGE_TAG}
     environment:
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}

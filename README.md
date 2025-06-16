@@ -79,7 +79,7 @@ ACS/                            ← 專案根目錄
 ├── acs-frontend/              ← Angular 前端專案
 ├── DB/                        ← 資料庫初始化用 SQL 檔案或資料夾
 ├── mqtt/                      ← MQTT broker 設定資料夾（如 config、data、log）
-├── python-simulator/          ← Python MQTT 發卡模擬器
+├── simulator/                 ← Python MQTT 發卡模擬器
 ├── settingup/                 ← 不明內容（可能是設定用文件或工具）
 ├── work/                      ← 暫存或開發用資料夾
 ├── .env                       ← 專案環境變數檔案（供 compose 使用）
@@ -90,3 +90,12 @@ ACS/                            ← 專案根目錄
 ├── mvnw.cmd                  ← Maven Wrapper Windows 執行檔
 ├── pom.xml                   ← Maven 根目錄 POM，定義 multi-module
 └── README.md                 ← 專案說明文件
+
+不需要自己在 GitHub 專案中手動設定 GITHUB_TOKEN，因為它是 GitHub Actions 內建自動提供的特殊 Token。
+
+🧠 解釋：什麼是 GITHUB_TOKEN？
+GITHUB_TOKEN 是 GitHub 自動幫每個 workflow 建立的 temporary token。
+
+每次執行 workflow 時，GitHub 會自動幫你注入這個變數到 secrets.GITHUB_TOKEN。
+
+它擁有操作這個 repo 的 基本權限（例如觸發其他 workflow、拉 code、留言）
