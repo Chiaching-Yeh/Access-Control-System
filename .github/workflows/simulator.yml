@@ -1,0 +1,128 @@
+name: Deploy simulator
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'simulator/**'  # 只要 simulator 資料夾有變更，就觸發這個 workflow #test
+      - '.github/workflows/simulator.yml'   # 或者這個 workflow 檔案本身有變更
+    branches: [main] # 限定 main 分支
+
+jobs:
+  trigger-infra:
+    name: "Ensure Infra Ready"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Infra Deployment
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: infra.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-simulator:
+    runs-on: ubuntu-latest # 在 GitHub 提供的 Ubuntu runner 上執行
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4 # 把 GitHub Repo 的程式碼抓下來到 runner 上
+
+      - name: Clean Docker Build Cache In Runner
+        run: |
+          echo "Cleaning up Docker resources..."
+          docker system prune -af
+          docker builder prune -af
+          echo "Docker resources cleaned."
+
+      - name: Authenticate with Google Cloud # 設定 GCP 專案 ID（來自 GitHub Secret）
+        uses: google-github-actions/auth@v2 # 使用 GCP 服務帳號金鑰登入（JSON）
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Configure Docker to use Artifact Registry
+        run: gcloud auth configure-docker us-west1-docker.pkg.dev # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
+
+      - name: Build and Push Simulator Docker Image
+        run: |
+          echo "Deploying commit SHA: ${{ github.sha }}"
+          IMAGE_TAG=${{ github.sha }}
+          docker build \
+            --no-cache \
+            -t ${{ secrets.DOCKER_REGISTRY }}/acs-simulator:$IMAGE_TAG \
+            -f ./simulator/Dockerfile \
+            ./simulator
+          docker push ${{ secrets.DOCKER_REGISTRY }}/acs-simulator:$IMAGE_TAG
+          echo "🔍 Listing pushed image:"
+          docker images | grep acs-simulator
+
+      - name: SSH to VM via gcloud and deploy simulator
+        env:
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_USER: ${{ secrets.VM_USER }}
+          IMAGE_TAG: ${{ github.sha }}
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+        run: |
+          echo "🔐 將私鑰寫入 SSH 金鑰檔"
+          mkdir -p ~/.ssh
+          echo "$VM_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
+          ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
+          
+          echo "🧪 DOCKER_REGISTRY=$DOCKER_REGISTRY"
+          echo "🧪 IMAGE_TAG=$IMAGE_TAG"
+          echo "🧪 pull target = $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG"
+          
+          echo "🔁 開始登入並執行部署腳本"
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
+          
+            set -e 
+          
+            echo '🔁 [0/6] 清除 VM 上 Docker 快取'
+            docker system prune -af
+            docker builder prune -af
+
+            echo '🔁 [1/6] 設定 IMAGE_TAG、DOCKER_REGISTRY 環境變數'
+            export IMAGE_TAG=$IMAGE_TAG
+            export DOCKER_REGISTRY=$DOCKER_REGISTRY
+          
+            echo '🔁 [2/6] 確認 Access-Control-System 是否存在'
+            if [ -d ~/Access-Control-System/.git ]; then
+              echo '📦 已存在 Git 專案，執行 git pull'
+              cd ~/Access-Control-System && git pull origin main
+            else
+              echo '🆕 專案不存在，執行 git clone'
+              git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
+            fi
+
+            echo '🔁 [3/6] 切換至專案資料夾 ~/Access-Control-System'
+            cd ~/Access-Control-System && pwd && ls -la
+               
+            echo '🔍 [4/6] 檢查 infra container 是否啟動'
+            if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
+               ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
+               ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
+              echo '🔧 有 infra container 沒有啟動，執行 docker compose up for infra'
+              docker compose -f infra.yml up -d
+            else
+              echo '✅ 所有 infra container 已在執行'
+            fi   
+          
+            echo "🔁 [5/6] 嘗試拉取映像 $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG"
+            docker pull $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG
+          
+            echo "🔍 驗證映像已存在於本地"
+            docker image inspect $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG >/dev/null && \
+            echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
+
+            echo '🔁 [6/6] 執行 docker compose up -d simulator'
+            docker compose up -d simulator
+
+            echo '✅ 部署完成'
+          EOF

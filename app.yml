@@ -1,0 +1,57 @@
+services:
+  backend:
+    container_name: acs-backend
+    image: ${DOCKER_REGISTRY}/acs-backend:${IMAGE_TAG}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mqtt:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_MQTT_BROKER: ${SPRING_MQTT_BROKER}
+    ports:
+      - "8080:8080"
+    networks:
+      - acs_net
+
+  frontend:
+    container_name: acs-frontend
+    image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
+    ports:
+      - "4200:80"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mqtt:
+        condition: service_healthy
+    networks:
+      - acs_net
+
+  simulator:
+    container_name: acs-simulator
+    image: ${DOCKER_REGISTRY}/acs-simulator:${IMAGE_TAG}
+    environment:
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mqtt:
+        condition: service_healthy
+    networks:
+      - acs_net
+
+networks:
+  acs_net:
+    external: true  # 要和 infra 共用 network
