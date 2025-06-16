@@ -31,7 +31,7 @@ RUN echo "🗂 dist/acs-frontend 內容：" && ls -al ./dist/acs-frontend
 FROM nginx:stable-alpine
 
 # 複製編譯後的檔案到 Nginx 對外目錄
-COPY --from=build /usr/src/app/dist/acs-frontend /usr/share/nginx/html
+COPY --from=build /usr/src/app/dist/acs-frontend/browser /usr/share/nginx/html
 
 # 複製 Nginx 自訂設定
 COPY default.conf /etc/nginx/conf.d/default.conf
