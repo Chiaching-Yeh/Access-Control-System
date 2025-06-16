@@ -3,16 +3,16 @@
 .idea/workspace.xml
 .smarttomcat
 
-python-simulator/.env
+simulator/.env
 # Default ignored files
-python-simulator/.idea/shelf/
-python-simulator/.idea/workspace.xml
+simulator/.idea/shelf/
+simulator/.idea/workspace.xml
 # Editor-based HTTP Client requests
-python-simulator/.idea/httpRequests/
+simulator/.idea/httpRequests/
 # Datasource local storage ignored files
-python-simulator/.idea/dataSources/
-python-simulator/.idea/dataSources.local.xml
-python-simulator/.venv
+simulator/.idea/dataSources/
+simulator/.idea/dataSources.local.xml
+simulator/.venv
 
 ## 前端
 acs-frontend/node_modules

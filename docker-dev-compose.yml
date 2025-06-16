@@ -39,7 +39,7 @@ services:
   simulator:
     container_name: acs-python-simulator
     build:
-      context: ./python-simulator
+      context: simulator
       dockerfile: Dockerfile
     environment:
       - MQTT_HOST=mqtt

@@ -9,6 +9,16 @@ on:
     branches: [main] # 限定 main 分支
 
 jobs:
+  trigger-infra:
+    name: "Ensure Infra Ready"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Infra Deployment
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: infra.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   deploy-backend:
     runs-on: ubuntu-latest # 在 GitHub 提供的 Ubuntu runner 上執行
 
@@ -94,16 +104,24 @@ jobs:
             echo '🔁 [3/5] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
           
-            echo "🔁 [4/5] 嘗試拉取映像 $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG"
+            echo '🔍 [4/6] 檢查 infra container 是否啟動'
+            if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
+               ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
+               ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
+              echo '🔧 有 infra container 沒有啟動，執行 docker compose up for infra'
+              docker compose -f infra.yml up -d
+            else
+              echo '✅ 所有 infra container 已在執行'
+            fi
+          
+            echo "🔁 [5/6] 嘗試拉取映像 $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG"
             docker pull $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG
           
             echo "🔍 驗證映像已存在於本地"
             docker image inspect $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [5/5] 執行 docker compose up -d backend'
-            docker compose up -d db redis mqtt simulator
-            sleep 10
+            echo '🔁 [6/6] 執行 docker compose up -d backend'
             docker compose up -d backend
 
             echo '✅ 部署完成'
