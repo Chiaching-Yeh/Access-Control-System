@@ -33,9 +33,6 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Configure Docker to use Artifact Registry
-        run: gcloud auth configure-docker us-west1-docker.pkg.dev
-
       - name: SSH to VM via gcloud and deploy infra
         env:
           VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
