@@ -48,9 +48,8 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker to use Artifact Registry
-        env:
-          REGION: ${{ secrets.REGION }}
-        run: gcloud auth configure-docker $REGION-docker.pkg.dev
+        run: |
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
         # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
 
       - name: Build and Push Backend Docker Image
