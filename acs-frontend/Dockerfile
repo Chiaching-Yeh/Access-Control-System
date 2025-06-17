@@ -22,10 +22,10 @@ ARG API_URL=https://35.234.52.43:8080
 RUN npx ng build --configuration=$BUILD_ENV
 
 # 產生環境變數檔（供 Angular 使用）
-RUN mkdir -p ./dist/acs-frontend/assets && \
-    sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/assets/env.js
+RUN mkdir -p ./dist/acs-frontend/browser/assets && \
+    sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/browser/assets/env.js
 
-RUN echo "🗂 dist/acs-frontend 內容：" && ls -al ./dist/acs-frontend
+RUN echo "🗂 dist/acs-frontend/browser：" && ls -al ./dist/acs-frontend/browser
 
 # -------- 第二階段：Serve with Nginx --------
 FROM nginx:stable-alpine
