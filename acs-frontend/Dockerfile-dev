@@ -17,7 +17,7 @@ RUN apk add --no-cache bash
 
 ARG BUILD_ENV=production
 
-ARG API_URL=https://35.212.237.104:8080
+ARG API_URL=https://35.234.52.43:8080
 # 如果沒有在docker run 指令中提供 --build-arg BUILD_ENV=xxx，就預設用 production
 # 如果你有提供，會覆蓋它
 
