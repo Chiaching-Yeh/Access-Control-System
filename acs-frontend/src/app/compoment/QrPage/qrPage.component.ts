@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './qrPage.component.html',
   styleUrl: './qrPage.component.scss',
   imports: [CommonModule, FormsModule],
+  providers: [WebSocketService, EnvironmentService],
 })
 export class QrPageComponent implements OnInit {
 
@@ -33,7 +34,7 @@ export class QrPageComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private webSoket: WebSocketService,
+    private webSocket: WebSocketService,
     private envService: EnvironmentService
   ) {
     console.log(this.envService.API_URL);
@@ -66,7 +67,7 @@ export class QrPageComponent implements OnInit {
   ngOnInit(): void {
 
     // 訂閱推播資料
-    this.messageSub = this.webSoket.messages$.subscribe(data => {
+    this.messageSub = this.webSocket.messages$.subscribe(data => {
       if (data) {
         this.accessRecords.unshift(data);
         this.isRequesting = false;
@@ -74,7 +75,7 @@ export class QrPageComponent implements OnInit {
     });
 
     // 訂閱錯誤狀態
-    this.errorSub = this.webSoket.connectionError$.subscribe(err => {
+    this.errorSub = this.webSocket.connectionError$.subscribe(err => {
       this.connectionError = err;
       if (err) {
         this.isRequesting = false; // 顯示錯誤後結束 loading
@@ -82,9 +83,9 @@ export class QrPageComponent implements OnInit {
     });
 
     // 當連線正常時就向後端索取資料
-    this.connectedSub  = this.webSoket.connected$.subscribe((isConnected) => {
+    this.connectedSub  = this.webSocket.connected$.subscribe((isConnected) => {
       if (isConnected) {
-        this.webSoket.sendMessage('/app/request-records', '');
+        this.webSocket.sendMessage('/app/request-records', '');
       }
     });
 
@@ -96,5 +97,6 @@ export class QrPageComponent implements OnInit {
     this.connectedSub?.unsubscribe();
     this.messageSub?.unsubscribe();
   }
+
 
 }
