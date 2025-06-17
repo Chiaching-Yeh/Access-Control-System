@@ -29,6 +29,10 @@
             "styles": [
               "src/styles.css"
             ],
+            "polyfills": [
+              "src/polyfills.ts",
+              "zone.js"
+            ],
             "scripts": [],
             "server": "src/main.server.ts",
             "prerender": true,
