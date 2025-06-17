@@ -101,3 +101,17 @@ GITHUB_TOKEN 是 GitHub 自動幫每個 workflow 建立的 temporary token。
 它擁有操作這個 repo 的 基本權限（例如觸發其他 workflow、拉 code、留言）
 
 1. VM產public key並加入deploy key
+2. 在 VM 上執行 gcloud auth configure-docker (一次性)
+   在你 VM 中，請執行下列命令來讓 Docker 使用 GCP 的憑證：
+gcloud auth configure-docker asia-east1-docker.pkg.dev
+這會建立或修改 ~/.docker/config.json 檔案，告訴 Docker CLI：
+對於 asia-east1-docker.pkg.dev 這個 Registry，使用 gcloud 來處理憑證（也就是 VM 預設身份）。
+執行後你可以檢查：
+cat ~/.docker/config.json
+應該會看到類似這樣的內容：
+{
+"credHelpers": {
+"asia-east1-docker.pkg.dev": "gcloud"
+}
+}
+這樣 docker pull 才會觸發 gcloud 幫你用服務帳號身份認證。
