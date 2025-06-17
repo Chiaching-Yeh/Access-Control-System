@@ -119,7 +119,7 @@ app:
     expose-session-attributes: false
 
   qrApi:
-    path: "https://35.212.237.104:8080"
+    path: "https://35.234.52.43:8080"
 
 #  upload:
 #    path: "D:/Project/ACS/Upload/download/"
