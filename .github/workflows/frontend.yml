@@ -48,9 +48,8 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker to use Artifact Registry
-        env:
-          REGION: ${{ secrets.REGION }}
-        run: gcloud auth configure-docker $REGION-docker.pkg.dev
+        run: |
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
 
       - name: Build and Push Frontend Docker Image
         run: |

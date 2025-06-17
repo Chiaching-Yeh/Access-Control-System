@@ -99,3 +99,5 @@ GITHUB_TOKEN 是 GitHub 自動幫每個 workflow 建立的 temporary token。
 每次執行 workflow 時，GitHub 會自動幫你注入這個變數到 secrets.GITHUB_TOKEN。
 
 它擁有操作這個 repo 的 基本權限（例如觸發其他 workflow、拉 code、留言）
+
+1. VM產public key並加入deploy key
