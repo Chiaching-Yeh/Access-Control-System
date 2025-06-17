@@ -49,7 +49,7 @@ jobs:
 
       - name: Configure Docker to use Artifact Registry
         run: |
-          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
+          gcloud auth configure-docker asia-east1-docker.pkg.dev
         # 設定 Docker 可以登入 GCP 的 Artifact Registry，用來推送 image
 
       - name: Build and Push Backend Docker Image
