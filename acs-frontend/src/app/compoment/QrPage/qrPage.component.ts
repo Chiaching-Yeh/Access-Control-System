@@ -36,9 +36,7 @@ export class QrPageComponent implements OnInit {
     private http: HttpClient,
     private webSocket: WebSocketService,
     private envService: EnvironmentService
-  ) {
-    console.log(this.envService.API_URL);
-    }
+  ) {}
 
 
   // 使用者按下按鈕，產生 QRCode

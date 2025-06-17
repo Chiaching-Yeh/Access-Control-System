@@ -2,12 +2,19 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class EnvironmentService {
-  public readonly API_URL: string;
-  public readonly WS_URL: string;
 
-  constructor() {
-    const env = (window as any).env || {};
-    this.API_URL = env.API_URL || '/api'; // fallback
-    this.WS_URL = env.WS_URL || '/ws/access'; // fallback
+  get API_URL(): string {
+    if (typeof window !== 'undefined') {
+      return (window as any).env?.API_URL || '/api';
+    }
+    return '/api'; // fallback for SSR
   }
+
+  get WS_URL(): string {
+    if (typeof window !== 'undefined') {
+      return (window as any).env?.WS_URL || '/ws/access';
+    }
+    return '/ws/access'; // fallback for SSR
+  }
+  
 }
