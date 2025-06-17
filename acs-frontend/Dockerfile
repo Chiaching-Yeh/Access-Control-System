@@ -30,8 +30,11 @@ RUN echo "🗂 dist/acs-frontend 內容：" && ls -al ./dist/acs-frontend
 # -------- 第二階段：Serve with Nginx --------
 FROM nginx:stable-alpine
 
-# 複製編譯後的檔案到 Nginx 對外目錄
+#  複製 Angular 編譯結果到 Nginx 靜態網站根目錄
 COPY --from=build /usr/src/app/dist/acs-frontend/browser /usr/share/nginx/html
+
+# 把 index.csr.html 改名成 index.html（覆蓋掉預設頁面）
+RUN mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html
 
 # 複製 Nginx 自訂設定
 COPY default.conf /etc/nginx/conf.d/default.conf
