@@ -79,7 +79,6 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
           echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
           
           echo "🧪 DOCKER_REGISTRY=$DOCKER_REGISTRY"
@@ -104,6 +103,9 @@ jobs:
               echo '📦 已存在 Git 專案，執行 git pull'
               cd ~/Access-Control-System && git pull origin main
             else
+              echo '🔐 [前置] 加入 GitHub 到 VM 的 known_hosts（避免 host key verification failed）'
+              mkdir -p ~/.ssh
+              ssh-keyscan github.com >> ~/.ssh/known_hosts
               echo '🆕 專案不存在，執行 git clone'
               git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
             fi
