@@ -1,14 +1,14 @@
-import { Injectable} from '@angular/core';
-import { catchError, retry, tap } from 'rxjs/operators';
-import { EMPTY, Observable, Subject, BehaviorSubject } from 'rxjs';
-import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
-import { EnvironmentService } from './environmentService';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { EnvironmentService } from './environmentService';
 
 @Injectable({ providedIn: 'root' })
 export class WebSocketService {
 
-  private stompClient: Client;
+  private stompClient!: Client; 
   public messages$ = new Subject<any>();
   public connectionError$ = new BehaviorSubject<boolean>(false);
   public connected$ = new BehaviorSubject<boolean>(false);
@@ -47,10 +47,9 @@ constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private
           this.connected$.next(false);
       },
     });
-  }
 
     this.stompClient.activate(); // 啟動連線
-
+  }
 
   }
 
