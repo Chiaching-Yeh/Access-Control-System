@@ -45,6 +45,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
           echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
           
           echo "🔁 開始登入並執行部署腳本"
