@@ -13,7 +13,8 @@ export class WebSocketService {
   public connectionError$ = new BehaviorSubject<boolean>(false);
   public connected$ = new BehaviorSubject<boolean>(false);
 
-constructor(private envService: EnvironmentService) {
+constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private platformId: Object) {
+  if (isPlatformBrowser(this.platformId)) {
     this.stompClient = new Client({
 //       webSocketFactory: () => new SockJS('http://localhost:8080/ws/access'),
       webSocketFactory: () => new SockJS(this.envService.WS_URL),
@@ -46,6 +47,7 @@ constructor(private envService: EnvironmentService) {
           this.connected$.next(false);
       },
     });
+  }
 
     this.stompClient.activate(); // 啟動連線
 
