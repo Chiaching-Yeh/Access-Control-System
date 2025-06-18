@@ -20,7 +20,7 @@ jobs:
       - name: Trigger Infra Deployment
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: infra.yml
+          workflow: docker-compose-infra.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-backend:
@@ -130,8 +130,8 @@ jobs:
             docker image inspect $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [6/6] 執行 docker compose up -d backend'
-            docker compose up -d backend
+            echo '🔁 [6/6] 執行 docker compose -f app.yml up -d backend'
+            docker compose -f docker-compose-app.yml up -d backend 
 
             echo '✅ 部署完成'
           EOF

@@ -20,7 +20,7 @@ jobs:
       - name: Trigger Infra Deployment
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: infra.yml
+          workflow: docker-compose-infra.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-frontend:
@@ -130,7 +130,7 @@ jobs:
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
             echo '🔁 [6/6] 執行 docker compose up -d frontend'
-            docker compose up -d frontend nginx
+            docker compose -f docker-compose-app.yml up -d frontend nginx
 
             echo '✅ 部署完成'
           EOF

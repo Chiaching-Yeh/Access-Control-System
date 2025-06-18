@@ -20,7 +20,7 @@ jobs:
       - name: Trigger Infra Deployment
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: infra.yml
+          workflow: docker-compose-infra.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-simulator:
@@ -129,8 +129,8 @@ jobs:
             docker image inspect $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [6/6] 執行 docker compose up -d simulator'
-            docker compose up -d simulator
+            echo '🔁 [6/6] 執行 docker compose -f docker-compose-app.yml up -d simulator'
+            docker compose -f docker-compose-app.yml up -d simulator
 
             echo '✅ 部署完成'
           EOF
