@@ -76,4 +76,4 @@ services:
 
 networks:
   acs_net:
-    external: true  # 要和 infra 共用 network
+    external: true
