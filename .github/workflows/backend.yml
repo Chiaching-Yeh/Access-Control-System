@@ -131,7 +131,6 @@ jobs:
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
             echo '🔁 [6/6] 執行 docker compose up '
-            docker compose -f docker-compose-infra.yml -f docker-compose-app.yml up -d backend
-
+            docker compose -p access-control-system -f docker-compose-infra.yml -f docker-compose-app.yml up -d backend
             echo '✅ 部署完成'
           EOF
