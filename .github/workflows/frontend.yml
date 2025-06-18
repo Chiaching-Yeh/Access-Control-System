@@ -129,8 +129,9 @@ jobs:
             docker image inspect $DOCKER_REGISTRY/acs-frontend:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [6/6] 執行 docker compose -f docker-compose-app.yml up -d frontend nginx'
-            docker compose -f docker-compose-app.yml up -d frontend nginx
+            echo '🔁 [6/6] 執行 docker compose -f docker-compose-app.yml/infra.yml up -d frontend nginx'
+            docker compose -f docker-compose-infra.yml -f docker-compose-app.yml up -d frontend nginx
+
 
             echo '✅ 部署完成'
           EOF
