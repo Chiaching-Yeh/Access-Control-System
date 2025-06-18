@@ -130,8 +130,8 @@ jobs:
             docker image inspect $DOCKER_REGISTRY/acs-backend:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
-            echo '🔁 [6/6] 執行 docker compose -f docker-compose-app.yml up -d backend '
-            docker compose -f docker-compose-app.yml up -d backend 
+            echo '🔁 [6/6] 執行 docker docker-compose-app.yml/infra.yml backend '
+            docker compose -f docker-compose-infra.yml -f docker-compose-app.yml up -d backend
 
             echo '✅ 部署完成'
           EOF
