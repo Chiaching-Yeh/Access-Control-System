@@ -130,7 +130,7 @@ jobs:
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
 
             echo '🔁 [6/6] 執行 docker compose up -d frontend'
-            docker compose up -d frontend
+            docker compose up -d frontend nginx
 
             echo '✅ 部署完成'
           EOF
