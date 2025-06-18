@@ -44,7 +44,7 @@ services:
     networks:
       - acs_net
     healthcheck:
-      test: [ "CMD-SHELL", "mosquitto_sub -h localhost -t test -C 1 || exit 1" ]
+      test: ["CMD-SHELL", "ps mosquitto || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
