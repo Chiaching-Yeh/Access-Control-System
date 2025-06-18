@@ -118,7 +118,7 @@ jobs:
                ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
                ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
               echo '🔧 有 infra container 沒有啟動，執行 docker compose up for infra'
-              docker compose -f infra.yml up -d
+              docker compose -f docker-compose-infra.yml up -d
             else
               echo '✅ 所有 infra container 已在執行'
             fi
