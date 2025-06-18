@@ -34,6 +34,8 @@ RUN if [ -f ./dist/acs-frontend/browser/index.csr.html ]; then \
       echo "⚠️  index.csr.html 不存在，略過 rename"; \
     fi
 
+cat ./dist/acs-frontend/browser/index.html
+
 # ✅ Debug：列出 index.html 最終確認
 RUN echo "📄 index.html 最終狀態：" && ls -l ./dist/acs-frontend/browser/index.html || echo "⛔ index.html 不存在！"
 
