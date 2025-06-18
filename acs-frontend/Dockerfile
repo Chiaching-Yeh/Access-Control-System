@@ -18,7 +18,7 @@ RUN npx ng config cli.cache.enabled false && rm -rf .angular/cache
 
 # 執行編譯
 ARG BUILD_ENV=production
-ARG API_URL=https://35.234.52.43:8080
+ARG API_URL=https://charlielab.online/api
 RUN npx ng build --configuration=$BUILD_ENV
 
 # 產生環境變數檔（供 Angular 使用）
@@ -28,17 +28,17 @@ RUN mkdir -p ./dist/acs-frontend/browser/assets && \
 RUN echo "🗂 dist/acs-frontend/browser：" && ls -al ./dist/acs-frontend/browser
 
 # -------- 第二階段：Serve with Nginx --------
-FROM nginx:stable-alpine
-
-#  複製 Angular 編譯結果到 Nginx 靜態網站根目錄
-COPY --from=build /usr/src/app/dist/acs-frontend/browser /usr/share/nginx/html
-
-# 把 index.csr.html 改名成 index.html（覆蓋掉預設頁面）
-RUN mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html
-
-# 複製 Nginx 自訂設定
-COPY default.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+#FROM nginx:stable-alpine
+#
+##  複製 Angular 編譯結果到 Nginx 靜態網站根目錄
+#COPY --from=build /usr/src/app/dist/acs-frontend/browser /usr/share/nginx/html
+#
+## 把 index.csr.html 改名成 index.html（覆蓋掉預設頁面）
+#RUN mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html
+#
+## 複製 Nginx 自訂設定
+#COPY default.conf /etc/nginx/conf.d/default.conf
+#
+#EXPOSE 80
+#
+#CMD ["nginx", "-g", "daemon off;"]
