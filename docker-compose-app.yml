@@ -66,7 +66,7 @@ services:
       - "8443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./frontend/dist/acs-frontend/browser:/usr/share/nginx/html:ro
+      - ./acs-frontend/dist/acs-frontend/browser:/usr/share/nginx/html:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
