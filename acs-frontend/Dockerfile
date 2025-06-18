@@ -21,14 +21,30 @@ ARG BUILD_ENV=production
 ARG API_URL=https://charlielab.online/api
 RUN npx ng build --configuration=$BUILD_ENV
 
+# ✅ Debug：列出 dist 結果
+RUN echo "📁 檢查 SSR build 輸出目錄：" && \
+    ls -al ./dist/acs-frontend/browser
+
+
+# ✅ Debug：若有 index.csr.html 就改名為 index.html，否則提示跳過
+RUN if [ -f ./dist/acs-frontend/browser/index.csr.html ]; then \
+      echo "✅ index.csr.html 找到了，改名成 index.html"; \
+      mv ./dist/acs-frontend/browser/index.csr.html ./dist/acs-frontend/browser/index.html; \
+    else \
+      echo "⚠️  index.csr.html 不存在，略過 rename"; \
+    fi
+
+# ✅ Debug：列出 index.html 最終確認
+RUN echo "📄 index.html 最終狀態：" && ls -l ./dist/acs-frontend/browser/index.html || echo "⛔ index.html 不存在！"
+
 # 產生環境變數檔（供 Angular 使用）
 RUN mkdir -p ./dist/acs-frontend/browser/assets && \
     sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/browser/assets/env.js
 
-# 因Agular使用SSR渲染，index.csr.html 改名為 index.html（避免 Nginx 出現預設頁面）
-RUN mv ./dist/acs-frontend/browser/index.csr.html ./dist/acs-frontend/browser/index.html || echo "No .csr.html found, skipping"
+# ✅ Debug：預先模擬 nginx volume 掛載時會看到什麼
+RUN echo "📦 模擬 nginx 掛載時看到的目錄結構：" && \
+    ls -al ./dist/acs-frontend/browser
 
-RUN echo "🗂 dist/acs-frontend/browser：" && ls -al ./dist/acs-frontend/browser
 
 # -------- 第二階段：Serve with Nginx --------
 #FROM nginx:stable-alpine
