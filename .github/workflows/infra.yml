@@ -78,7 +78,7 @@ jobs:
             if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
                ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
                ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
-              docker compose -f docker-compose-infra.yml up -d
+              docker compose -p access-control-system -f docker-compose-infra.yml up -d
               echo '✅ deploy completed'
             else
               echo "✅ Infra already running."
