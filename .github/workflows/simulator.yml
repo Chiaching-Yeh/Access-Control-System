@@ -20,7 +20,7 @@ jobs:
       - name: Trigger Infra Deployment
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: docker-compose-infra.yml
+          workflow: infra.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-simulator:

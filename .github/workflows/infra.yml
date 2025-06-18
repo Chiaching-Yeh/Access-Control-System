@@ -66,11 +66,11 @@ jobs:
             echo '🔁 [2/3] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
 
-            echo '🔁 [3/3] 執行 docker compose up -d'
+            echo '🔁 [3/3] 執行 docker compose -f docker-compose-infra.yml up -d'
             if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
                ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
                ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
-              docker compose -f infra.yml up -d
+              docker compose -f docker-compose-infra.yml up -d
               echo '✅ deploy completed'
             else
               echo "✅ Infra already running."
