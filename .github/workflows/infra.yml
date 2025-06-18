@@ -65,6 +65,14 @@ jobs:
 
             echo '🔁 [2/3] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
+          
+            echo "🔍 檢查 acs_net 是否存在"
+            if ! docker network ls --format '{{.Name}}' | grep -q '^acs_net$'; then
+              echo "建立 acs_net network"
+              docker network create acs_net
+            else
+              echo "✅ acs_net network 已存在"
+            fi
 
             echo '🔁 [3/3] 執行 docker compose up'
             if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
