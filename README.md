@@ -115,3 +115,11 @@ cat ~/.docker/config.json
 }
 }
 這樣 docker pull 才會觸發 gcloud 幫你用服務帳號身份認證。
+
+
+### 憑證設定
+1. 申請網域
+2. DNS 管理平台設定A Record將該網域透過 DNS 設定指向你的 GCP VM 公網 IP
+3. 在 VM 上使用 Certbot 安裝 HTTPS 憑證 
+   - sudo apt install certbot python3-certbot-nginx -y
+   - sudo certbot --nginx -d 網域名

@@ -25,6 +25,9 @@ RUN npx ng build --configuration=$BUILD_ENV
 RUN mkdir -p ./dist/acs-frontend/browser/assets && \
     sed "s|__API_URL__|${API_URL}|g" ./src/assets/env.${BUILD_ENV}.template.js > ./dist/acs-frontend/browser/assets/env.js
 
+# 因Agular使用SSR渲染，index.csr.html 改名為 index.html（避免 Nginx 出現預設頁面）
+RUN mv ./dist/acs-frontend/browser/index.csr.html ./dist/acs-frontend/browser/index.html || echo "No .csr.html found, skipping"
+
 RUN echo "🗂 dist/acs-frontend/browser：" && ls -al ./dist/acs-frontend/browser
 
 # -------- 第二階段：Serve with Nginx --------
