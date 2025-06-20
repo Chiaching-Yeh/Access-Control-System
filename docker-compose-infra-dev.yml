@@ -1,0 +1,59 @@
+services:
+  db:
+    container_name: acs-db
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./DB:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - acs_net
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    container_name: acs-redis
+    image: redis:7
+    ports:
+      - "6379:6379"
+    networks:
+      - acs_net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-h", "localhost", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mqtt:
+    container_name: acs-mqtt
+    image: eclipse-mosquitto
+    volumes:
+      - ./mqtt/config:/mosquitto/config
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+    networks:
+      - acs_net
+    healthcheck:
+      test: ["CMD-SHELL", "ps mosquitto || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+# 哪些資料要持久化（避免 container 關掉資料就不見）
+volumes:
+  postgres_data:
+
+networks:
+  acs_net:
+    name: acs_net
+
