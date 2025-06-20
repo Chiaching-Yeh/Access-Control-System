@@ -3,6 +3,10 @@
 .idea/workspace.xml
 .smarttomcat
 
+# Maven / Gradle build output
+/target/
+*.class
+
 simulator/.env
 # Default ignored files
 simulator/.idea/shelf/
@@ -16,16 +20,39 @@ simulator/.venv
 
 ## 前端
 acs-frontend/node_modules
+acs-frontend/dist/
 acs-frontend/.vscode
 acs-frontend/.idea
 acs-frontend/*.log
 acs-frontend/*.env
+acs-frontend/.angular/cache/
 
+
+##共用
+acs-common/target
+acs-common/log
+acs-common/work
 
 ## 後端
 acs-backend/logs
 acs-backend/work
 acs-backend/target/
+
+# Tomcat logs
+work/backend/logs/*.log
+work/backend/logs/*_access_log.*.txt
+work/backend/logs/catalina.*.log
+
+# Tomcat sensitive config (視實際情況)
+work/backend/conf/tomcat-users.xml
+work/backend/conf/tomcat-users.xsd
+
+
+# Optional: exclude full conf folder if only local
+work/backend/conf/
+
+# Lock files
+*.lck
 
 ### IntelliJ IDEA ##
 .idea/modules.xml
