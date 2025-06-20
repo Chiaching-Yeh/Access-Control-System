@@ -9,11 +9,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig extends BeanConfiguration implements WebSocketMessageBrokerConfigurer {
 
+    /**
+     * 控制哪些網域能成功「握手」建立 WebSocket 連線
+     * @param registry
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/access").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/ws/access").setAllowedOriginPatterns(allowedOriginsPath).withSockJS();
     }
 
     @Override

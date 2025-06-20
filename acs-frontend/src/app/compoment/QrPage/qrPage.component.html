@@ -27,7 +27,7 @@
     <!-- 正常顯示資料 -->
     <ul *ngIf="!connectionError && accessRecords.length > 0">
         <li *ngFor="let record of accessRecords">
-        {{ record.accessTime }} - {{ record.userId }} - {{ record.deviceId }}
+        {{ record.accessTime }} - {{ record.cardId }} - {{ record.deviceId }}
         </li>
     </ul>
 

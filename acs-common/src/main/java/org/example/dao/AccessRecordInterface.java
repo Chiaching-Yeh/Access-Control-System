@@ -14,12 +14,15 @@ import java.util.Optional;
 @RegisterBeanMapper(AccessRecord.class)
 public interface AccessRecordInterface extends SqlObject {
 
-    @SqlUpdate("INSERT INTO accessRecord (recordUid, cardId, accessTime, isSuccessful, reason, deviceId) " +
-            "VALUES (:recordUid, :cardId, :accessTime, :isSuccessful ,:reason, :deviceId)")
+    @SqlUpdate("INSERT INTO accessRecord (cardId, accessTime, successful, reason, deviceId) " +
+            "VALUES (:cardId, :accessTime, :successful ,:reason, :deviceId)")
     int insert(@BindBean AccessRecord record);
 
 
     @SqlQuery("SELECT * FROM accessRecord")
     List<AccessRecord> findAll();
+
+    @SqlQuery("SELECT * FROM accessRecord order by accessTime desc limit 1 ")
+    List<AccessRecord> findLatest();
 
 }

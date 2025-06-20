@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.support.FunctionLogSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,13 +24,12 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfiguration  {
+public class WebSecurityConfiguration extends BeanConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(
                 "/static/**",
-//                "/favicon.ico",
                 "/userfiles/**",
                 "/mp3/**"
         );
@@ -48,11 +48,16 @@ public class WebSecurityConfiguration  {
         );
 
         http.authorizeHttpRequests((authz) -> authz
+                .requestMatchers("/ws/**").permitAll() // 明確允許 WebSocket 端點
+                .requestMatchers("/ws/access/**").permitAll()
                 .anyRequest()
                 .permitAll()
         );
 
         http.csrf(AbstractHttpConfigurer::disable);
+
+        // 啟用 CORS
+        http.cors(Customizer.withDefaults());
 
         // 打印所有的過濾器，確認 HeaderWriterFilter 是否在干擾過程中
         http.addFilterBefore(new OncePerRequestFilter() {
