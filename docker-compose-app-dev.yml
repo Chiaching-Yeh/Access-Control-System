@@ -1,7 +1,10 @@
 services:
   backend:
     container_name: acs-backend
-    image: ${DOCKER_REGISTRY}/acs-backend:${IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: ./acs-backend/Dockerfile
+#    image: ${DOCKER_REGISTRY}/acs-backend:${IMAGE_TAG}
     depends_on:
       db:
         condition: service_healthy
@@ -10,13 +13,12 @@ services:
       mqtt:
         condition: service_healthy
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_PROFILES_ACTIVE: local
+#      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+#      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
       SPRING_MQTT_BROKER: ${SPRING_MQTT_BROKER}
-      JAVA_TOOL_OPTIONS: "-Xmx1024m -Xms512m -XX:+UseG1GC"
     ports:
       - "8080:8080"
     deploy:
@@ -29,9 +31,12 @@ services:
 
   frontend:
     container_name: acs-frontend
-    image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
+    build:
+      context: ./acs-frontend
+      dockerfile: ./acs-frontend/Dockerfile
     ports:
-      - "4200:80"
+      - "8081:80"
+      - "8443:443"
     depends_on:
       db:
         condition: service_healthy
@@ -44,7 +49,10 @@ services:
 
   simulator:
     container_name: acs-simulator
-    image: ${DOCKER_REGISTRY}/acs-simulator:${IMAGE_TAG}
+    build:
+      context: ./simulator
+      dockerfile: ./simulator/Dockerfile
+#    image: ${DOCKER_REGISTRY}/acs-simulator:${IMAGE_TAG}
     environment:
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
@@ -60,4 +68,4 @@ services:
 
 networks:
   acs_net:
-    external: true  # 要和 infra 共用 network
+    external: true

@@ -66,16 +66,23 @@ export class QrPageComponent implements OnInit {
 
     // 訂閱推播資料
     this.messageSub = this.webSocket.messages$.subscribe(data => {
-      if (data) {
+    const isValid = (record: any): boolean =>
+      record.cardId && record.accessTime && record.deviceId;
+      if (isValid(data)) {
+         console.log('[收到推播資料]', data);
         this.accessRecords.unshift(data);
+        this.accessRecords = this.accessRecords.slice(0, 10);
         this.isRequesting = false;
-      }
+      } else {
+        this.accessRecords;
+      }  
     });
 
     // 訂閱錯誤狀態
     this.errorSub = this.webSocket.connectionError$.subscribe(err => {
       this.connectionError = err;
       if (err) {
+        console.error('[WebSocket 錯誤]', err);
         this.isRequesting = false; // 顯示錯誤後結束 loading
       }
     });
@@ -83,7 +90,14 @@ export class QrPageComponent implements OnInit {
     // 當連線正常時就向後端索取資料
     this.connectedSub  = this.webSocket.connected$.subscribe((isConnected) => {
       if (isConnected) {
-        this.webSocket.sendMessage('/app/request-records', '');
+        console.log('[WebSocket 已連線] 送出初始化請求');
+        try {
+          this.webSocket.sendMessage('/app/request-records', '');
+        } catch (e) {
+          console.error('[初始化請求失敗]', e);
+          this.connectionError = true;
+          this.isRequesting = false;
+        }
       }
     });
 
@@ -94,6 +108,7 @@ export class QrPageComponent implements OnInit {
     this.errorSub?.unsubscribe();
     this.connectedSub?.unsubscribe();
     this.messageSub?.unsubscribe();
+    this.webSocket.disconnect(); //WebSocket 連線釋放
   }
 
 

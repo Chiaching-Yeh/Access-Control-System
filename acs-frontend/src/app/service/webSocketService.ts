@@ -16,21 +16,29 @@ export class WebSocketService {
 constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private platformId: Object) {
   if (isPlatformBrowser(this.platformId)) {
     this.stompClient = new Client({
-//       webSocketFactory: () => new SockJS('http://localhost:8080/ws/access'),
       webSocketFactory: () => new SockJS(this.envService.WS_URL),
-      reconnectDelay: 0,  // 設定為 0 表示 不會自動重新連線
+      reconnectDelay: 5000,  // 設定為 0 表示 不會自動重新連線
       debug: str => console.log(str),
       onConnect: () => {
           this.stompClient.subscribe('/topic/access', (message: IMessage) => {
             const body = JSON.parse(message.body);
-            this.messages$.next(body);
+          // this.messages$.next(body) 是將整個陣列視為單筆資料推進來，會導致unshift邏輯錯誤
+          if (Array.isArray(body)) {
+              // 多筆紀錄一次推送的處理方式
+              body.forEach((record: any) => this.messages$.next(record));
+            } else {
+              // 若是單筆推播
+              this.messages$.next(body);
+            }
           });
+          
           this.connectionError$.next(false);
           this.connected$.next(true);
       },
       // 連線被關閉
       onWebSocketClose: (event) => {
         console.error('WebSocket 被關閉', event);
+          console.log(this.envService.WS_URL);
           this.connectionError$.next(true);
           this.connected$.next(false);
       },
@@ -62,13 +70,15 @@ constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private
       });
     } else {
       console.warn('STOMP 尚未連線，無法送出訊息');
-        this.connectionError$.next(true);
+      this.connectionError$.next(true);
     }
   }
 
   // 關閉 WebSocket
   disconnect() {
-    this.stompClient.deactivate();
+    if (this.stompClient && this.stompClient.active) {
+      this.stompClient.deactivate();
+    }
   }
 
 }

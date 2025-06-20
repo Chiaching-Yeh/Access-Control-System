@@ -33,7 +33,7 @@ spring:
   datasource:
       name: master
       driverClassName: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/AccessControlSystem?socketTimeout=30&ssl=true&sslmode=disable
+      jdbc-url: jdbc:postgresql://localhost:5432/postgres?socketTimeout=30&ssl=true&sslmode=disable
       username: postgres
       password: asas2826
       hikari:
@@ -51,6 +51,7 @@ spring:
   jta:
     enabled: false
 
+#  redis: ${SPRING_REDIS_HOST}
   redis:
     host: localhost
     port: 6379
@@ -67,6 +68,7 @@ spring:
       max-request-size: 55MB
 
 mqtt:
+#  broker: ${SPRING_MQTT_BROKER}
   broker: tcp://localhost:1883
 
 openai:
@@ -121,13 +123,16 @@ app:
   qrApi:
     path: "http://localhost:8081"
 
-  upload:
-    path: "D:/Project/ACS/Upload/download/"
-    temppath: "D:/Project/ACS/Upload/download/origin/"
-    filepath: "D:/Project/ACS/Upload/download/doc/"
-    picpath: "D:/Project/ACS/Upload/download/pic/"
-    mediapath: "D:/Project/ACS/Upload/download/media/"
-    transpdf: "D:/Project/ACS/Upload/download/pdf/"
-    menufilepath: "D:/Project/ACS/Upload/download/menu/"
-    fckfilepath: "D:/Project/ACS/Upload/userfiles/file"
-    fckpicpath: "D:/Project/ACS/Upload/userfiles/image"
+  allowed-Origins:
+    path: "http://localhost:4200"
+
+#  upload:
+#    path: "D:/Project/ACS/Upload/download/"
+#    temppath: "D:/Project/ACS/Upload/download/origin/"
+#    filepath: "D:/Project/ACS/Upload/download/doc/"
+#    picpath: "D:/Project/ACS/Upload/download/pic/"
+#    mediapath: "D:/Project/ACS/Upload/download/media/"
+#    transpdf: "D:/Project/ACS/Upload/download/pdf/"
+#    menufilepath: "D:/Project/ACS/Upload/download/menu/"
+#    fckfilepath: "D:/Project/ACS/Upload/userfiles/file"
+#    fckpicpath: "D:/Project/ACS/Upload/userfiles/image"

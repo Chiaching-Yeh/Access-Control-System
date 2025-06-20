@@ -1,15 +1,19 @@
 package org.example.controller.app;
 
 import org.example.configuration.BeanConfiguration;
+import org.example.dao.AccessRecordInterface;
+import org.example.model.AccessRecord;
 import org.example.service.MqttAccessControlService;
 import org.example.support.QrCodeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,6 +27,12 @@ public class QrCodeController extends BeanConfiguration {
 
     @Autowired
     private MqttAccessControlService mqttAccessControlService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private AccessRecordInterface accessRecordDao;
 
 
     @PostMapping("/generate")

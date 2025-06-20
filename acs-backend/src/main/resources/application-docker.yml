@@ -121,6 +121,9 @@ app:
   qrApi:
     path: "https://35.234.52.43:8080"
 
+  allowed-Origins:
+    path: "https://charlielab.online"
+
 #  upload:
 #    path: "D:/Project/ACS/Upload/download/"
 #    temppath: "D:/Project/ACS/Upload/download/origin/"
