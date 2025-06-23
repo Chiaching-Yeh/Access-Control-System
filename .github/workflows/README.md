@@ -36,6 +36,12 @@
   - 檢查 infra container 是否存在，若不存在直呼叫 docker-compose-infra.yml 啟動
   - 拉取新的映像
   - 執行 Docker Compose 更新服務
+  
+  :::warning
+    此階段請將 ssh public key 加入 VM層或專案層級 之安全殼層金鑰，否則將導致 permission deny。
+    GCP 預設會在 ~/.ssh/authorized_keys 產生授權金鑰檔，若你提供的 private key(secrets.VM_SSH_KEY) 無法通過該 VM 的公鑰驗證機制，ssh 就會被擋住。
+  :::
+
 
 ## GitHub 如何判斷要跑哪一個檔案？
 GitHub 只要看到 .github/workflows/*.yml 裡有定義：
@@ -50,4 +56,15 @@ on:
 部署後，每次你 push 到 GitHub，就能在：
 GitHub Repo 頁面 → Actions 頁籤看到執行紀錄！
 
+
+:::warning
+  1. 若使用過舊的docker compose版本或導致語法錯誤 
+     - Docker version 28.2.2, build e6534b4
+     - Docker Compose version v2.36.2
+  
+  2. VM上拉取映像所需之權限設定(需先在VM上設定，避免VM無法拉取image)
+     ```text
+     gcloud auth configure-docker <VM之Region>-docker.pkg.dev
+     ```
+:::
 
