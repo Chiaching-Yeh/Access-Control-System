@@ -64,7 +64,7 @@
 | `MqttAccessControlService` | 透過 MQTT 接收裝置訊息並自動處理授權邏輯 |
 ---
 
-### VM 環境建置指令
+### VM 環境建置指令(未提及指令可操考其他 READEME.md)
 
 #### 1. 更新套件與系統
 
