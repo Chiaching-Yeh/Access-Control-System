@@ -14,9 +14,9 @@ import java.util.Optional;
 public class MqttAccessControlService extends BeanConfiguration {
 
     private static final String MQTT_CLIENT_ID = "java-backend";
-    private static final String CARD_TOPIC = "door/request";
+    private static final String CARD_TOPIC = "door/request/card";
     private static final String QR_TOPIC = "door/request/qr";
-    private static final String CARD_TOPIC_RESPONSE = "door/response";
+    private static final String CARD_TOPIC_RESPONSE = "door/response/card";
     private static final String QR_TOPIC_RESPONSE = "door/response/qr";
 
     @Autowired
@@ -71,6 +71,7 @@ public class MqttAccessControlService extends BeanConfiguration {
 
     /**
      * python CLI 模擬卡片
+     * CARD_TOPIC_RESPONSE + "/" + deviceId 對刷卡的那一台設備做 response，不會造成其他裝置收到同一訊息
      * @param payload
      */
     private void handleCardAuthorization(String payload) {
@@ -81,7 +82,7 @@ public class MqttAccessControlService extends BeanConfiguration {
             String deviceId = parts[1].replace("deviceId:", "").trim();
 
             boolean authorized = authService.checkAuthorization(cardId, deviceId);
-            String responseTopic = CARD_TOPIC_RESPONSE + "/" + cardId;
+            String responseTopic = CARD_TOPIC_RESPONSE + "/" + deviceId;
             String result = authorized ? "grant" : "deny";
 
             client.publish(responseTopic, new MqttMessage(result.getBytes()));
@@ -104,7 +105,7 @@ public class MqttAccessControlService extends BeanConfiguration {
 
             Optional<String> userIdOpt = qrCodeVerifyService.verifyQrCode(uuid, deviceId);
             String result = userIdOpt.isPresent() ? "grant" : "deny";
-            String responseTopic = QR_TOPIC_RESPONSE + "/" + uuid;
+            String responseTopic = QR_TOPIC_RESPONSE + "/" + deviceId;
 
             client.publish(responseTopic, new MqttMessage(result.getBytes()));
             System.out.println("[回應] QR驗證結果: " + result + " → topic: " + responseTopic);
@@ -117,7 +118,7 @@ public class MqttAccessControlService extends BeanConfiguration {
 
         String payload = "uuid:" + uuid + ",deviceId:" + deviceId;
 
-        try{
+        try {
 
         MqttClient client = new MqttClient(mqttBroker, MqttClient.generateClientId());
         client.connect();

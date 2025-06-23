@@ -26,15 +26,7 @@ public class AuthService {
     @Transaction
     public boolean checkAuthorization (String cardId, String deviceId){
 
-        String key = "auth:card:" + cardId;
-
-        // Step 1: 嘗試從 Redis 快取中取得授權結果
-        String cacheResult = redisTemplate.opsForValue().get(key);
-        if (cacheResult != null) {
-            return Boolean.parseBoolean(cacheResult); // "true" 或 "false"
-        }
-
-        // Step 2: 查詢資料庫（實際應查權限表或卡片綁定表）
+        // 查詢資料庫（實際應查權限表或卡片綁定表）
         boolean result = existsByCardId(cardId);
 
         // 寫入刷卡紀錄
@@ -48,9 +40,6 @@ public class AuthService {
         }
 
         accessRecordDao.insert(record);
-
-        // Step 3: 寫入 Redis 快取，有效時間 5 分鐘
-        redisTemplate.opsForValue().set(key, String.valueOf(result), Duration.ofMinutes(5));
 
         return result;
 

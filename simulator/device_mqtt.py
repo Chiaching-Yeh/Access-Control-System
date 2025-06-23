@@ -2,6 +2,7 @@ import argparse  # 處理指令列參數（CLI）
 import paho.mqtt.client as mqtt  # MQTT 通訊協定函式庫（需 pip install）
 import time  # 內建模組
 import os
+import uuid
 from dotenv import load_dotenv
 # 載入 .env 檔案的變數
 load_dotenv()
@@ -31,47 +32,63 @@ def on_message(client, userdata, msg):
 
 #--mode 必須指定 card 或 qr
 #--cardId：卡片模式要用
-#--uuid：QR 模式要用
 #--deviceId：可選，預設是 "device-001"
 
 def main():
     parser = argparse.ArgumentParser(description="模擬門禁設備（卡片或 QR 掃碼）")
     parser.add_argument('--mode', choices=['card', 'qr'], required=True, help="選擇模擬模式：card 或 qr")
-    parser.add_argument('--cardId', help="刷卡模式使用的卡號")
-    parser.add_argument('--uuid', help="QR 模式使用的 UUID")
+    parser.add_argument('--cardId', help="僅 card 模式需輸入卡號")
     parser.add_argument('--deviceId', default=DEVICE_ID, help="設備 ID（預設為 device-001）")
     args = parser.parse_args()
 
+    if args.mode == 'qr':
+        args.deviceId = "device-002"
+
     if args.mode == 'card' and not args.cardId:
         parser.error("刷卡模式必須提供 --cardId")
-    if args.mode == 'qr' and not args.uuid:
-        parser.error("QR 模式必須提供 --uuid")
+
+    # 建立唯一 client_id（防止多裝置互踢）
+    client_id = f"simulator-{args.deviceId}-{uuid.uuid4()}"
+
+    print(f"啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
 
     # 根據模式設定 topic 與 payload
     if args.mode == 'card':
-        request_topic = "door/request"
-        response_topic = f"door/response/{args.cardId}"
+        request_topic = "door/request/card"
+        response_topic = f"door/response/card/{args.deviceId}"
         payload = f"cardId:{args.cardId},deviceId:{args.deviceId}"
+
+        client = mqtt.Client(client_id=client_id, userdata={'response_topic': response_topic})
+        client.on_connect = on_connect
+        client.on_message = on_message
+
+        client.connect(MQTT_HOST, MQTT_PORT, 60)
+        client.loop_start()
+
+        print(f"[裝置端] 發送資料至 topic {request_topic} → {payload}")
+        client.publish(request_topic, payload)
+
+        # 等待回應
+        time.sleep(10)  # 等待10秒接收授權結果
+        client.loop_stop()  # 停止背景執行緒
+        client.disconnect() # 中斷連線
+
     elif args.mode == 'qr':
-        request_topic = "door/request/qr"
-        response_topic = f"door/response/qr/{args.uuid}"
-        payload = f"uuid:{args.uuid},deviceId:{args.deviceId}"
+        response_topic = f"door/response/qr/{args.deviceId}"
 
-    # 建立 MQTT client
-    client = mqtt.Client(userdata={'response_topic': response_topic})
-    client.on_connect = on_connect
-    client.on_message = on_message
+        client = mqtt.Client(client_id=client_id, userdata={'response_topic': response_topic})
+        client.on_connect = on_connect
+        client.on_message = on_message
 
-    client.connect(MQTT_HOST, MQTT_PORT, 60)
-    client.loop_start()
+        client.connect(MQTT_HOST, MQTT_PORT, 60)
+        client.loop_start()
 
-    print(f"[裝置端] 發送資料至 topic {request_topic} → {payload}")
-    client.publish(request_topic, payload)
+        print(f"[裝置端] 等待授權回應（QR 模式），訂閱 topic: {response_topic}")
 
-    # 等待回應
-    time.sleep(10)           # 等待最多 10 秒的回應
-    client.loop_stop()       # 停止背景執行緒
-    client.disconnect()      # 中斷連線
+        time.sleep(300)  # 等待300秒接收授權結果
+        client.loop_stop()  # 停止背景執行緒
+        client.disconnect() # 中斷連線
+
 
 if __name__ == "__main__":
     main()
