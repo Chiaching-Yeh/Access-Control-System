@@ -1,51 +1,53 @@
-## GitHub 如何判斷要跑哪一個檔案？
+## GitHub Actions CI/CD 工作流程說明：
 
+### 流程總覽
+| 階段                | 說明                                           |
+| ----------------- | -------------------------------------------- |
+| 1. Trigger Infra  | 觸發 `infra.yml` 確保 infra 服務（DB、Redis、MQTT）已準備 |
+| 2. Docker Cleanup | 清除 Runner 上的 Docker 快取避免影響建置                 |
+| 3. GCP 認證與設定      | 登入 GCP 並設定 Artifact Registry 權限              |
+| 4. 建置並上傳映像        | 將前端專案建置成 Docker 映像並推送至 Artifact Registry     |
+| 5. SSH 遠端部署       | 透過 SSH 登入 VM，拉取映像並以 Docker Compose 更新服務      |
+
+#### Job 1：trigger-infra
+使用 benc-uk/workflow-dispatch@v1 插件，呼叫同一目錄下的 infra.yml，確保 infra 服務事先啟動。
+
+#### Job 2：deploy
+- Step 1：拉取原始碼
+  - GitHub Actions Runner 從 repo 拉取目前 commit 的程式碼內容到 Runner 的本機目錄，目的是為了讓後續的 Build 步驟。
+
+
+- Step 2：清除 Docker 快取
+  - 避免使用到先前舊的中間層映像，保證建置環境乾淨。
+
+
+- Step 3：登入 GCP 並設定 Artifact Registry 權限
+  - 授權 GCP 使用者金鑰（service account json）
+  - 設定 GCP 專案與 Docker Artifact Registry 權限
+
+
+- Step 4：建置並上傳映像
+  - 使用當前 commit SHA 當作映像 tag，可以追蹤是哪一次的程式碼變更導致某個映像的功能或錯誤。
+
+
+- Step 5：SSH 登入 VM 並部署映像
+  - 將該 VM 主機的 SSH 公鑰寫入 Runner 的 ~/.ssh/known_hosts，表示這個 GCP VM 是可信任的。
+  - 登入 VM，若未 clone 專案，則執行 git clone
+  - 檢查 infra container 是否存在，若不存在直呼叫 docker-compose-infra.yml 啟動
+  - 拉取新的映像
+  - 執行 Docker Compose 更新服務
+
+## GitHub 如何判斷要跑哪一個檔案？
 GitHub 只要看到 .github/workflows/*.yml 裡有定義：
-``
+```text
 on:
   push:
     branches: [main]
-``
-
+```
 就會在 main 分支推送時自動觸發對應的 CI/CD 流程。
-
 
 ## 完成後會出現在哪裡？
 部署後，每次你 push 到 GitHub，就能在：
 GitHub Repo 頁面 → Actions 頁籤看到執行紀錄！
-
-## backend.yml
- - 監聽 backend/ 資料夾有變更時觸發
- - Build + Push backend Docker image 到 Artifact Registry
- - SSH 到 GCP VM，執行 docker pull 並重新部署 backend 容器
-
-
-## frontend.yml
-- 監聽 acs-frontend/ 有變更時觸發
-- Build + Push frontend Docker image 到 Artifact Registry
-- SSH 到 GCP VM，執行 docker pull 並重新部署 frontend 容器
-
-## GitHub Actions CI/CD 工作流程說明：
-本工作流程自動化部署 Spring Boot 後端服務至 GCP VM，採用 Docker + Artifact Registry + SSH 部署架構。以下為各步驟說明：
-- Checkout source
-  - 使用 [actions/checkout]，將 GitHub Repo 的程式碼 checkout 到 runner（GitHub 提供的 Ubuntu 虛擬機），方便後續建置 Docker Image。
-- Authenticate with Google Cloud
-  - 讓 GitHub Actions 以「GCP 服務帳號」身分登入 Google Cloud，用於後續操作 GCP 資源（如推 Image、建 VM、部署等）
-  - 使用 JSON 格式的服務帳號金鑰（GCP_SA_KEY），讓 GitHub Actions 可以上傳 Docker 映像到 GCP Artifact Registry。
-  - 背後會執行 gcloud auth activate-service-account，模擬登入 GCP CLI
-    - 上傳 Docker Image 到 Artifact Registry
-    - 建立 GCP VM / GKE
-    - 操作 GCP Storage、Pub/Sub、Cloud SQL 等 API
-- Set up Google Cloud SDK
-  - 使用 [google-github-actions/setup-gcloud]，透過 GitHub Secrets 中的 GCP 專案 ID（GCP_PROJECT_ID）與服務帳號金鑰（GCP_SA_KEY）登入 Google Cloud。
-  - 這一步讓 GitHub Actions 有權限操作 GCP 的資源（如 Artifact Registry）。
-- Configure Docker to use Artifact Registry (CICD RUNNER 執行)
-  - 將 GCP Artifact Registry 登入資訊註冊給 Docker，使後續能夠成功推送 Docker Image 到 GCP 的容器倉庫。
-- Build and Push Backend Docker Image
-  - 使用 docker build 建置 acs-backend/acs-frontend 資料夾中的 Dockerfile，並將其標記為目標 Artifact Registry Image。
-  - 接著執行 docker push 將 Image 上傳至 GCP，供 VM 拉取使用。
-- SSH and Deploy Backend/Frontend on VM (GCP VM執行)
-  - 使用 [appleboy/ssh-action]，透過 SSH 登入 GCP VM（使用 VM_HOST, VM_USER, VM_SSH_KEY），在 VM 上執行部署指令。
-  - 該指令會先 VM 上設置 Docker 認證，再docker pull 最新後端 Image，再透過 docker-compose 重啟 backend/frontend 服務容器，以完成更新。
 
 
