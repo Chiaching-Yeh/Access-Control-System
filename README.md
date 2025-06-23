@@ -64,7 +64,7 @@
 | `MqttAccessControlService` | 透過 MQTT 接收裝置訊息並自動處理授權邏輯 |
 ---
 
-### VM 環境建置指令(未提及指令可操考其他 READEME.md)
+### VM 環境建置指令(未提及指令可參考其他 READEME.md)
 
 #### 1. 更新套件與系統
 
@@ -103,7 +103,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 sudo usermod -aG docker $USER  # 讓當前用戶可執行 docker（登出再登入生效）
 ```
 
-#### 4. 安裝 Git（已知你是 2.39.5，此為保險處理）
+#### 4. 安裝 Git
 
 ```text
 sudo apt install git -y
@@ -123,9 +123,10 @@ pip3 install --upgrade pip
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "github-runner" -N ""
 ```
 
-#### 7. 顯示公鑰（可貼到 GitHub Deploy Key、或 VM metadata）
+#### 7. 顯示公鑰（可貼到 GitHub Deploy Key、或 VM安全殼層金鑰）
 
 ```text
+ssh-keygen -t ed25519 -C "your_email@example.com"
 cat ~/.ssh/id_ed25519.pub
 ```
 
