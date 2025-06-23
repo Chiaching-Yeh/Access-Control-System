@@ -1,139 +1,143 @@
-# 門禁系統裝置端模擬器
+# 門禁系統簡介
 
-本專案為模擬門禁控制系統，整合 MQTT 即時通訊、Redis 快取、PostgreSQL 資料庫與 Spring Boot 架構，實作設備授權與 QR Code 驗證流程。
+> 本專案為門禁控制系統模擬平台，以前後端分離架構整合 MQTT 即時通訊、Redis 快取、PostgreSQL 資料庫、Spring Boot 及 Angular 前端，
+並支援 Docker 化部署、自動化 CI/CD、GCP 雲端上線，另設計 Python CLI 工具模擬硬體設備（如刷卡機、QR Code 閘門）進行全流程測試，
+並實作 SSL 憑證以確保安全性。
 
-## 環境需求
+---
 
-- Python 3.x
-- 安裝 `paho-mqtt` 函式庫
-- JDK 21
-- Spring Boot 3.3
-- Redis Server
-- PostgreSQL
-- Eclipse Paho MQTT Client
+## 架構說明
 
-## MQTT 規則
+### 後端
+- #### MQTT 通訊服務
+    作為 MQTT broker/客戶端，提供即時的設備通訊機制，實作即時事件推播（如開門指令、授權結果）。
 
-根據模式產生對應的 MQTT Topic 與 Payload，發送至伺服器。
+- ##### Redis 快取與一次性授權管理
+    用於存儲一次性 QR Code 驗證資訊，確保臨時授權憑證能安全、即時、單次生效（QR 掃碼開門）。
 
-| 模式 | Request Topic     | Response Topic            | Payload 範例                             |
-| -- | ----------------- | ------------------------- | -------------------------------------- |
-| 卡片 | `door/request`    | `door/response/{cardId}`  | `cardId:123456789,deviceId:device-001` |
-| QR | `door/request/qr` | `door/response/qr/{uuid}` | `uuid:9876-ABCD,deviceId:device-001`   |
+- ##### PostgreSQL 資料庫
+    存儲門禁卡、設備、刷卡紀錄、用戶資訊等關鍵數據。
 
+- ##### Spring Boot
+    提供模組化、易於擴展的後端驗證服務，並整合Spring security管理session，後續可做為管理系統之擴充。
 
-## 功能模組
+---
+
+### 前端
+- #### Angular SPA 框架
+    所有頁面渲染於前端瀏覽器處理，大幅減輕後端 server 負擔，優於傳統 Spring MVC。
+
+- #### 即時資料推播機制
+    利用 WebSocket 建立前端與後端的長連線，實現即時監控。
+前端訂閱刷卡紀錄事件，一有新紀錄就自動撈取資料庫最新資料，避免使用API輪詢造成伺服器負荷。
+
+---
+
+### 系統設置
+
+- #### Nginx 反向代理於 VM 部署
+    統一入口作為 API Gateway 管理所有對外請求，依照服務與路徑將流量導向對應容器。
+
+- #### DevOps 與 CI/CD（Docker + GitHub Actions + GCP）
+  1. 以 Docker 容器化所有核心組件（前端、後端、MQTT、Redis、資料庫等），確保跨平台一致性部屬。
+  2. 建構基本的 CI/CD 自動化流程
+     - ✅ CI：GitHub Actions 在 GitHub Runner 上自動建置專案、打包成 Docker 映像，並push至 GCP Artifact Registry
+     - ✅ CD：透過 SSH 登入 GCP VM，自動從 Artifact Registry 拉取最新映像，並使用 Docker Compose 重啟服務
+     - [詳細說明](./.github/workflows/README.md)
+
+- #### SSL 憑證（VM 配置）
+    購買網域並在 VM 層完成 SSL 憑證簽發（如 Let's Encrypt），全站流量皆加密，保障門禁資料與人員資訊安全。
+    - [詳細說明](./infra-docs/README.md)
+
+### 測試腳本
+
+- #### Python CLI 測試腳本
+    提供 Python CLI 工具並支援 MQTT 通訊協定，模擬裝置端刷卡、QR Code 掃碼兩種情境。
+    - [詳細說明](./simulator/README.md)
+
+## springBoot 功能模組
 | 模組名稱 | 說明 |
 |----------|------|
 | `AuthService` | 接收刷卡卡號並查詢是否授權，含 Redis 快取 |
 | `QrCodeVerifyService` | 驗證 QR code 是否有效，成功則回傳授權結果 |
-| `DeviceStatusService` | 接收裝置心跳並更新在線狀態 |
 | `AccessRecordService` | 寫入刷卡紀錄：卡號、裝置、時間|
 | `MqttAccessControlService` | 透過 MQTT 接收裝置訊息並自動處理授權邏輯 |
-
-## 其他說明
-@PostConstruct 用於初始化 MQTT 客戶端訂閱 topic
-
-* Redis key 規則請參考：
-  * auth:card:{cardId}
-  * qr:{uuid}
-  * device:{deviceId}:status
-
-[裝置端 Python 模擬]
-⇅ MQTT
-[Spring Boot 後端服務]
-⇅ Redis 
-(授權快取 / 裝置狀態 / 掃碼資訊)
-⇅ PostgresSQL
-(使用者與開門紀錄)
-
-## Angular docker
-這是典型的 Angular 專案 multi-stage build，會先編譯，再交給 Nginx 做靜態檔案服務
-
-## python-simulator docker
-用來建立一個 Python CLI 容器，來模擬 MQTT 發布功能
-
-
-1. gcloud CLI 必須已安裝在 VM 上
-2. GitHub - vm ssh key
-3. vm ssh key
-4. Docker version 20.10.24+dfsg1
-5. gcloud --version Google Cloud SDK 522.0.0
-6. git version 2.39.5
-7. Docker Compose 的 PostgreSQL service 中指定整個資料夾（例如 ./DB），只要裡面是 .sql 或 .sql.gz 檔案，PostgreSQL 官方映像檔會自動執行該資料夾底下的所有 SQL 腳本。
-  - 當 container 第一次啟動 且 /var/lib/postgresql/data 是空的時候：
-    ✅ 它會自動執行：
-    所有 .sql、.sql.gz、.sh 檔案（只限 /docker-entrypoint-initdb.d 裡的）
-    所以你只要把 .sql 檔案放進那個資料夾，就會自動建立資料表，完全不需要自己額外寫 shell script
-8. python cli
-
-
 ---
-ACS/                            ← 專案根目錄
-├── .github/                    ← GitHub 設定資料夾（如 workflows）
-├── .idea/                      ← IntelliJ IDEA 專案設定
-├── .mvn/                       ← Maven wrapper 設定資料夾
-├── .smarttomcat/              ← Smart Tomcat 設定資料夾（IDE外掛用）
-├── acs-backend/               ← Java 後端服務模組
-├── acs-common/                ← Java 共用模組（被 backend 引用）
-├── acs-frontend/              ← Angular 前端專案
-├── DB/                        ← 資料庫初始化用 SQL 檔案或資料夾
-├── mqtt/                      ← MQTT broker 設定資料夾（如 config、data、log）
-├── simulator/                 ← Python MQTT 發卡模擬器
-├── settingup/                 ← 不明內容（可能是設定用文件或工具）
-├── work/                      ← 暫存或開發用資料夾
-├── .env                       ← 專案環境變數檔案（供 compose 使用）
-├── .gitignore                 ← Git 忽略清單
-├── docker-compose.yml        ← Docker Compose 生產/正式版配置
-├── docker-dev-compose.yml    ← Docker Compose 開發版配置
-├── mvnw                      ← Maven Wrapper Unix 執行檔
-├── mvnw.cmd                  ← Maven Wrapper Windows 執行檔
-├── pom.xml                   ← Maven 根目錄 POM，定義 multi-module
-└── README.md                 ← 專案說明文件
 
-不需要自己在 GitHub 專案中手動設定 GITHUB_TOKEN，因為它是 GitHub Actions 內建自動提供的特殊 Token。
+### VM 環境建置指令
 
-🧠 解釋：什麼是 GITHUB_TOKEN？
-GITHUB_TOKEN 是 GitHub 自動幫每個 workflow 建立的 temporary token。
+#### 1. 更新套件與系統
 
-每次執行 workflow 時，GitHub 會自動幫你注入這個變數到 secrets.GITHUB_TOKEN。
+```text
+sudo apt update && sudo apt upgrade -y
+```
 
-它擁有操作這個 repo 的 基本權限（例如觸發其他 workflow、拉 code、留言）
+#### 2. 安裝 Google Cloud CLI
 
-1. VM產public key並加入deploy key
-2. 在 VM 上執行 gcloud auth configure-docker (一次性)
-   在你 VM 中，請執行下列命令來讓 Docker 使用 GCP 的憑證：
-gcloud auth configure-docker asia-east1-docker.pkg.dev
-這會建立或修改 ~/.docker/config.json 檔案，告訴 Docker CLI：
-對於 asia-east1-docker.pkg.dev 這個 Registry，使用 gcloud 來處理憑證（也就是 VM 預設身份）。
-執行後你可以檢查：
-cat ~/.docker/config.json
-應該會看到類似這樣的內容：
-{
-"credHelpers": {
-"asia-east1-docker.pkg.dev": "gcloud"
-}
-}
-這樣 docker pull 才會觸發 gcloud 幫你用服務帳號身份認證。
+```text
+sudo apt install apt-transport-https ca-certificates gnupg curl -y
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | \
+sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | \
+sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+sudo apt update && sudo apt install google-cloud-cli -y
+```
 
+#### 3. 安裝 Docker 與 Docker Compose
+```text
+sudo apt install docker.io docker-compose -y
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker $USER  # 讓當前用戶可執行 docker（登出再登入生效）
+```
 
-### 憑證設定
-1. 申請網域
-2. DNS 管理平台設定A Record將該網域透過 DNS 設定指向你的 GCP VM 公網 IP
-3. 在 VM 上使用 Certbot 安裝 HTTPS 憑證 
-   - sudo apt install certbot python3-certbot-nginx -y
-   - sudo certbot --nginx -d 網域名
+#### 4. 安裝 Git（已知你是 2.39.5，此為保險處理）
 
-[使用者瀏覽器] ──▶ 443 (HTTPS)
-│
-▼
-┌──────────────┐
-│ VM Host Nginx│ 🔐 TLS + Reverse Proxy
-└──────┬───────┘
-│
-轉發至 http://localhost:8081
-│
-▼
-┌──────────────────────────┐
-│ Container (acs-frontend) │ Nginx serve /usr/share/nginx/html
-└──────────────────────────┘
+```text
+sudo apt install git -y
+git --version
+```
+
+#### 5. 安裝 Python CLI 環境（搭配模擬器用）
+
+```text
+sudo apt install python3 python3-pip -y
+pip3 install --upgrade pip
+```
+
+#### 6. 建立 SSH 金鑰（CI/CD runner 用）
+
+```text
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "github-runner" -N ""
+```
+
+#### 7. 顯示公鑰（可貼到 GitHub Deploy Key、或 VM metadata）
+
+```text
+cat ~/.ssh/id_ed25519.pub
+```
+
+#### 8. PostgreSQL Docker Compose 注意事項
+
+```text
+請確保你的 docker-compose.yml 中掛載正確：
+./DB:/docker-entrypoint-initdb.d
+在首次啟動 container 且 data 資料夾為空時，自動執行裡面的 .sql檔案
+```
+
+#### 9. 查看特定端口的使用情況工具，用於網路設置偵錯
+
+```text
+sudo apt install lsof -y
+```
+
+#### 10. 重啟 VM 後驗證 docker、git、gcloud、python 是否正常
+
+```text
+docker --version
+docker-compose --version
+gcloud --version
+git --version
+python3 --version
+pip3 --version
+```
