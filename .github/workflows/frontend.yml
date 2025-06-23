@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-#      - 'acs-frontend/**'
-#      - '.github/workflows/frontend.yml'
+      - 'acs-frontend/**'
+      - '.github/workflows/frontend.yml'
     branches: [main]
 
 permissions:  # 讓 GITHUB_TOKEN 有權限呼叫 workflow_dispatch

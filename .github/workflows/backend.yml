@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-#      - 'acs-backend/**'  # 只要 backend 資料夾有變更，就觸發這個 workflow #test
-#      - '.github/workflows/backend.yml'   # 或者這個 workflow 檔案本身有變更
+      - 'acs-backend/**'  # 只要 backend 資料夾有變更，就觸發這個 workflow #test
+      - '.github/workflows/backend.yml'   # 或者這個 workflow 檔案本身有變更
     branches: [main] # 限定 main 分支
 
 permissions:  # 讓 GITHUB_TOKEN 有權限呼叫 workflow_dispatch
