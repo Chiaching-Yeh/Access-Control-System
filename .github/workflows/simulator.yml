@@ -49,14 +49,13 @@ jobs:
 
       - name: Configure Docker to use Artifact Registry
         run: |
-          gcloud auth configure-docker asia-east1-docker.pkg.dev
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
 
       - name: Build and Push Simulator Docker Image
         run: |
           echo "Deploying commit SHA: ${{ github.sha }}"
           IMAGE_TAG=${{ github.sha }}
           docker build \
-            --no-cache \
             -t ${{ secrets.DOCKER_REGISTRY }}/acs-simulator:$IMAGE_TAG \
             -f ./simulator/Dockerfile \
             ./simulator
@@ -88,10 +87,6 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
           
             set -e 
-          
-            echo '🔁 [0/6] 清除 VM 上 Docker 快取'
-            docker system prune -af
-            docker builder prune -af
 
             echo '🔁 [1/6] 設定 IMAGE_TAG、DOCKER_REGISTRY 環境變數'
             export IMAGE_TAG=$IMAGE_TAG
@@ -113,14 +108,14 @@ jobs:
             cd ~/Access-Control-System && pwd && ls -la
                
             echo '🔍 [4/6] 檢查 infra container 是否啟動'
-            if ! docker ps --format '{{.Names}}' | grep -q 'acs-db' || \
-               ! docker ps --format '{{.Names}}' | grep -q 'acs-redis' || \
-               ! docker ps --format '{{.Names}}' | grep -q 'acs-mqtt'; then
+            if [ "$(docker inspect -f '{{.State.Running}}' acs-db 2>/dev/null)" != "true" ] || \
+               [ "$(docker inspect -f '{{.State.Running}}' acs-redis 2>/dev/null)" != "true" ] || \
+               [ "$(docker inspect -f '{{.State.Running}}' acs-mqtt 2>/dev/null)" != "true" ]; then
               echo '🔧 有 infra container 沒有啟動，執行 docker compose up for infra'
-              docker compose -f docker-compose-infra.yml up -d
+              docker compose -p access-control-system -f docker-compose-infra.yml up -d
             else
               echo '✅ 所有 infra container 已在執行'
-            fi   
+            fi
           
             echo "🔁 [5/6] 嘗試拉取映像 $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG"
             docker pull $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG
