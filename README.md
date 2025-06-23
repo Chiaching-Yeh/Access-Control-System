@@ -84,10 +84,22 @@ sudo apt update && sudo apt install google-cloud-cli -y
 ```
 
 #### 3. 安裝 Docker 與 Docker Compose
+
 ```text
-sudo apt install docker.io docker-compose -y
-sudo systemctl enable docker
-sudo systemctl start docker
+sudo apt update && sudo apt install \
+  ca-certificates curl gnupg lsb-release -y
+
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/debian $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 sudo usermod -aG docker $USER  # 讓當前用戶可執行 docker（登出再登入生效）
 ```
 
@@ -135,7 +147,7 @@ sudo apt install lsof -y
 
 ```text
 docker --version
-docker-compose --version
+docker compose version
 gcloud --version
 git --version
 python3 --version
