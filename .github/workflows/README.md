@@ -38,6 +38,7 @@
   - 執行 Docker Compose 更新服務
 
   > [!WARNING]
+  > 
   > 此階段請將 ssh public key 加入 VM層或專案層級 之安全殼層金鑰，否則將導致 permission deny。
   > GCP 預設會在 ~/.ssh/authorized_keys 產生授權金鑰檔，若你提供的 private key(secrets.VM_SSH_KEY) 無法通過該 VM 的公鑰驗證機制，ssh 就會被擋住。
 
