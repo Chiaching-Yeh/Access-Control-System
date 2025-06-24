@@ -47,6 +47,11 @@ work/backend/logs/catalina.*.log
 work/backend/conf/tomcat-users.xml
 work/backend/conf/tomcat-users.xsd
 
+# 測試
+docker-compose-app-dev.yml
+docker-compose-infra-dev.yml
+docker-compose.yml
+docker-dev-compose.yml
 
 # Optional: exclude full conf folder if only local
 work/backend/conf/
