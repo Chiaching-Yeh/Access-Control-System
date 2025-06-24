@@ -26,7 +26,7 @@ acs-frontend/.idea
 acs-frontend/*.log
 acs-frontend/*.env
 acs-frontend/.angular/cache/
-
+acs-frontend/Dockerfile-dev
 
 ##共用
 acs-common/target
