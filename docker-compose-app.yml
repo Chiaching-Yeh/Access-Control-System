@@ -30,8 +30,7 @@ services:
     container_name: acs-frontend
     image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
     ports:
-      - "80:80"
-      - "443:443"
+      - "8081:80"
     depends_on:
       db:
         condition: service_healthy
