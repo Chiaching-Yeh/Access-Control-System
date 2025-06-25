@@ -1,4 +1,4 @@
-## GitHub Actions CI/CD 工作流程說明：
+## GitHub Actions CI/CD Jobs 流程說明：
 
 ### 流程總覽
 | 階段                | 說明                                         |

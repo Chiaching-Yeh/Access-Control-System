@@ -38,7 +38,7 @@
 - #### Nginx 反向代理於 VM 部署
     統一入口作為 API Gateway 管理所有對外請求，依照服務與路徑將流量導向對應容器。
 
-- #### DevOps 與 CI/CD（Docker + GitHub Actions + GCP）
+- #### 自動化佈署（Docker + GitHub Actions + GCP）
   1. 以 Docker 容器化所有核心組件（前端、後端、MQTT、Redis、資料庫等），確保跨平台一致性部屬。
   2. 建構基本的 CI/CD 自動化流程
      - ✅ CI：GitHub Actions 在 GitHub Runner 上自動建置專案、打包成 Docker 映像，並push至 GCP Artifact Registry
@@ -112,27 +112,20 @@ sudo apt install git -y
 git --version
 ```
 
-#### 5. 安裝 Python CLI 環境（搭配模擬器用）
-
-```text
-sudo apt install python3 python3-pip -y
-pip3 install --upgrade pip
-```
-
-#### 6. 建立 SSH 金鑰（CI/CD runner 用）
+#### 5. 建立 SSH 金鑰（CI/CD runner 用）
 
 ```text
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "github-runner" -N ""
 ```
 
-#### 7. 顯示公鑰（可貼到 GitHub Deploy Key、或 VM安全殼層金鑰）
+#### 6. 顯示公鑰（可貼到 GitHub Deploy Key、或 VM安全殼層金鑰）
 
 ```text
 ssh-keygen -t ed25519 -C "your_email@example.com"
 cat ~/.ssh/id_ed25519.pub
 ```
 
-#### 8. PostgreSQL Docker Compose 注意事項
+#### 7. PostgreSQL Docker Compose 注意事項
 
 ```text
 請確保你的 docker-compose.yml 中掛載正確：
@@ -140,19 +133,17 @@ cat ~/.ssh/id_ed25519.pub
 在首次啟動 container 且 data 資料夾為空時，自動執行裡面的 .sql檔案
 ```
 
-#### 9. 查看特定端口的使用情況工具，用於網路設置偵錯
+#### 8. 查看特定端口的使用情況工具，用於網路設置偵錯
 
 ```text
 sudo apt install lsof -y
 ```
 
-#### 10. 重啟 VM 後驗證 docker、git、gcloud、python 是否正常
+#### 9. 重啟 VM 後驗證 docker、git、gcloud、python 是否正常
 
 ```text
 docker --version
 docker compose version
 gcloud --version
 git --version
-python3 --version
-pip3 --version
 ```
