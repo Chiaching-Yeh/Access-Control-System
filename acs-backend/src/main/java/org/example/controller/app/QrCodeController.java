@@ -45,6 +45,7 @@ public class QrCodeController extends BeanConfiguration {
         redisTemplate.opsForValue().set(redisKey, userId, Duration.ofSeconds(expireSeconds));
 
         // 2. 將 uuid 構造可掃描的 URL
+        System.out.println("qr apiPath>>"+apiPath);
         String qrContent = apiPath + "/api/qr/scan?uuid=" + uuid + "&deviceId=device-002";
 
         String base64Qr = QrCodeSupport.generateBase64Qr(qrContent);
