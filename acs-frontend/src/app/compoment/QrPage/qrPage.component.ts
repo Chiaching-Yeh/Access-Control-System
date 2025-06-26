@@ -56,10 +56,12 @@ export class QrPageComponent implements OnInit {
         next: (response) => {
           // 後端會回傳一張 QRCode 的圖片（base64 格式）
           // 把圖片存在 qrCode 變數中，讓 HTML 顯示用
-          if (response.qrCodeBase64) {
+          if ('success' in response && response.success === false) {
+            alert(response.message ?? '操作失敗');
+          } else if ('qrCodeBase64' in response) {
             this.qrCode = response.qrCodeBase64;
-          } else if (response.error) {
-            alert(response.error);  // 顯示「此人不存在」
+          } else {
+            alert('未知錯誤，請稍後再試');
           }
         },
         error: (err) => {
