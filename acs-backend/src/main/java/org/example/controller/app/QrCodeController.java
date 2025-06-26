@@ -1,5 +1,6 @@
 package org.example.controller.app;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.configuration.BeanConfiguration;
 import org.example.dao.AccessRecordInterface;
 import org.example.dao.UserInterface;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/qr")
 public class QrCodeController extends BeanConfiguration {
@@ -43,14 +45,18 @@ public class QrCodeController extends BeanConfiguration {
     @PostMapping("/generate")
     public ResponseEntity<Map<String, String>> generateQrCode(@RequestBody Map<String, String> data) {
 
+        log.info("收到請求 data: {}", data);
+
         String userId = data.get("userId");
 
         // 查是否有這個人
         Optional<User> userOpt = authService.findByUserId(userId);
         if (userOpt.isEmpty()) {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "此人不存在");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            error.put("success", String.valueOf(false));
+            error.put("code", "USER_NOT_FOUND");
+            error.put("message", "此人不存在");
+            return ResponseEntity.ok(error);
         }
 
         String uuid = UUID.randomUUID().toString();
