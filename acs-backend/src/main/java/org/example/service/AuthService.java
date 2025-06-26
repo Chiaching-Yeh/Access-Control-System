@@ -56,7 +56,7 @@ public class AuthService {
     }
 
     public Optional<User> findByUserId(String userId) {
-        return userDao.findByCardID(userId);
+        return userDao.findByUserId(userId);
     }
 
 }

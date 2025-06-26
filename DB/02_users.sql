@@ -10,3 +10,17 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 加入索引
 CREATE INDEX idx_userid ON public.users USING btree (userId);
+
+INSERT INTO users (
+    userId,
+    "name",
+    cardId,
+    isActive,
+    updatedAt
+) VALUES (
+    'U123',
+    '測試使用者',
+    '12345',
+    true,
+    now()
+);
