@@ -1,0 +1,112 @@
+.container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.panel {
+  flex: 1;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #007bff;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input[type="text"] {
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.8rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.qrcode-preview {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.qrcode-preview img {
+  max-width: 200px;
+  margin-bottom: 0.5rem;
+}
+
+.caption {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.status {
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.status.loading {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.status.error {
+  background-color: #fdecea;
+  color: #c62828;
+}
+
+.status.empty {
+  color: #888;
+  list-style: none;
+  padding-left: 0;
+}
+
+.record-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.record-list li {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.record-list .time {
+  color: #333;
+}
+
+.record-list .card,
+.record-list .device {
+  color: #555;
+}

@@ -1,35 +1,48 @@
 <div class="container">
-  <div class="left">
-    <form (ngSubmit)="generateQrCode()">
-      <input type="text" [(ngModel)]="userId" name="userId" placeholder="請輸入員編" required />
-      <button type="submit">產生 QRCode</button>
-    </form>
-    <div *ngIf="qrCode">
-      <img [src]="'data:image/png;base64,' + qrCode" />
+  <div class="panel left">
+    <div class="card">
+      <h2>產生門禁 QRCode</h2>
+      <form (ngSubmit)="generateQrCode()" class="form">
+        <input
+          type="text"
+          [(ngModel)]="userId"
+          name="userId"
+          placeholder="請輸入員編"
+          required
+        />
+        <button type="submit">產生 QR Code</button>
+      </form>
+
+      <div *ngIf="qrCode" class="qrcode-preview">
+        <img [src]="'data:image/png;base64,' + qrCode" alt="QRCode" />
+        <p class="caption">🔒 請將此 QRCode 提供給掃碼設備</p>
+      </div>
     </div>
   </div>
 
-  <div class="right">
-    <h3>開門紀錄</h3>
+  <div class="panel right">
+    <div class="card">
+      <h2>開門紀錄</h2>
 
-  <div *ngIf="isRequesting && !connectionError" class="loading">🚀 資料讀取中...</div>
+      <div *ngIf="isRequesting && !connectionError" class="status loading">
+        🚀 資料讀取中...
+      </div>
 
-    <!-- 錯誤提示 -->
-    <div *ngIf="connectionError" class="error-message">
-        WebSocket 連線失敗，請確認後端服務是否啟動
-    </div>
+      <div *ngIf="connectionError" class="status error">
+        ❌ WebSocket 連線失敗，請確認後端服務是否啟動
+      </div>
 
-    <!-- 沒錯誤但沒有資料 -->
-    <ul *ngIf="!connectionError && accessRecords.length === 0">
+      <ul *ngIf="!connectionError && accessRecords.length === 0" class="status empty">
         <li>尚無開門紀錄</li>
-    </ul>
+      </ul>
 
-    <!-- 正常顯示資料 -->
-    <ul *ngIf="!connectionError && accessRecords.length > 0">
+      <ul *ngIf="!connectionError && accessRecords.length > 0" class="record-list">
         <li *ngFor="let record of accessRecords">
-        {{ record.accessTime }} - {{ record.cardId }} - {{ record.deviceId }}
+          <span class="time">{{ record.accessTime }}</span>
+          <span class="card">卡號：{{ record.cardId }}</span>
+          <span class="device">設備：{{ record.deviceId }}</span>
         </li>
-    </ul>
-
+      </ul>
+    </div>
   </div>
 </div>
