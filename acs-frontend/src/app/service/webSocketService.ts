@@ -14,6 +14,7 @@ export class WebSocketService {
   public connected$ = new BehaviorSubject<boolean>(false);
 
 constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private platformId: Object) {
+  console.log("this.envService.WS_URL>>"+this.envService.WS_URL)
   if (isPlatformBrowser(this.platformId)) {
     this.stompClient = new Client({
       webSocketFactory: () => new SockJS(this.envService.WS_URL),
