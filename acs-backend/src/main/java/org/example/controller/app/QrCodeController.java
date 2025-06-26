@@ -2,23 +2,17 @@ package org.example.controller.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.configuration.BeanConfiguration;
-import org.example.dao.AccessRecordInterface;
-import org.example.dao.UserInterface;
-import org.example.model.AccessRecord;
 import org.example.model.User;
 import org.example.service.AuthService;
 import org.example.service.MqttAccessControlService;
 import org.example.support.QrCodeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +37,7 @@ public class QrCodeController extends BeanConfiguration {
 
 
     @PostMapping("/generate")
-    public ResponseEntity<Map<String, String>> generateQrCode(@RequestBody Map<String, String> data) {
+    public ResponseEntity<Map<String, Object>> generateQrCode(@RequestBody Map<String, String> data) {
 
         log.info("收到請求 data: {}", data);
 
@@ -52,8 +46,8 @@ public class QrCodeController extends BeanConfiguration {
         // 查是否有這個人
         Optional<User> userOpt = authService.findByUserId(userId);
         if (userOpt.isEmpty()) {
-            Map<String, String> error = new HashMap<>();
-            error.put("success", String.valueOf(false));
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
             error.put("code", "USER_NOT_FOUND");
             error.put("message", "此人不存在");
             return ResponseEntity.ok(error);
@@ -73,7 +67,7 @@ public class QrCodeController extends BeanConfiguration {
         String base64Qr = QrCodeSupport.generateBase64Qr(qrContent);
 
         // 3. 回傳 base64 QR 給前端
-        Map<String, String> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("uuid", uuid);
         result.put("qrCodeBase64", base64Qr);
         return ResponseEntity.ok(result);
