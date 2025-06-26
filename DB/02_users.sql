@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS users (
     "name" varchar(100) NULL,
     cardId varchar(50) NULL,
     isActive bool NULL,
-    qrCode VARCHAR(255),
     updatedAt timestamp NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP NULL,
     CONSTRAINT users_pkey PRIMARY KEY (userId)
