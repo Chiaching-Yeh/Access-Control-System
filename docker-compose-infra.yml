@@ -49,7 +49,7 @@ services:
       timeout: 5s
       retries: 3
 
-# 哪些資料要持久化（避免 container 關掉資料就不見）
+# 哪些資料要持久化-避免 container 關掉資料就不見
 volumes:
   postgres_data:
 
