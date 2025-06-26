@@ -14,10 +14,10 @@ public class AccessSocketPusher {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
-    private AccessRecordInterface accessRecordDao;
+    private AccessRecordService accessRecordService;
 
     public void pushAccessRecord() {
-        List<AccessRecord> records = accessRecordDao.findLatest();
+        List<AccessRecord> records = accessRecordService.findLatest();
         messagingTemplate.convertAndSend("/topic/access", records);
     }
 

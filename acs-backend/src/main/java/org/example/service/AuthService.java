@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dao.AccessRecordInterface;
 import org.example.dao.UserInterface;
 import org.example.model.AccessRecord;
+import org.example.model.User;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -21,7 +23,8 @@ public class AuthService {
     private UserInterface userDao;
 
     @Autowired
-    private AccessRecordInterface accessRecordDao;
+    private AccessRecordService accessRecordService;
+
 
     @Transaction
     public boolean checkAuthorization (String cardId, String deviceId){
@@ -39,7 +42,7 @@ public class AuthService {
             record.setReason("userId doesnt exist");
         }
 
-        accessRecordDao.insert(record);
+        accessRecordService.insert(record);
 
         return result;
 
@@ -50,6 +53,10 @@ public class AuthService {
      */
     public boolean existsByCardId(String cardId) {
         return userDao.findByCardID(cardId).isPresent();
+    }
+
+    public Optional<User> findByUserId(String userId) {
+        return userDao.findByCardID(userId);
     }
 
 }
