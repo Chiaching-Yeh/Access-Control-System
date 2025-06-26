@@ -82,7 +82,7 @@ export class QrPageComponent implements OnInit {
          console.log('[收到推播資料]', data);
         this.accessRecords.unshift(data);
         this.accessRecords = this.accessRecords.slice(0, 10);
-        this.isRequesting = false;
+        // this.isRequesting = false;
       } else {
         this.accessRecords;
       }  
