@@ -1,5 +1,6 @@
 package org.example.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -7,6 +8,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends BeanConfiguration implements WebSocketMessageBrokerConfigurer {
@@ -17,6 +19,7 @@ public class WebSocketConfig extends BeanConfiguration implements WebSocketMessa
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        log.info("----正在註冊 STOMP Endpoint /ws/access----");
         registry.addEndpoint("/ws/access").setAllowedOriginPatterns(allowedOriginsPath).withSockJS();
     }
 
