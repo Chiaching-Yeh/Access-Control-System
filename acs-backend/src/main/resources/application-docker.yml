@@ -66,6 +66,11 @@ spring:
       max-file-size: 50MB
       max-request-size: 55MB
 
+  logging:
+    level:
+      org.springframework.data.redis: DEBUG
+      io.lettuce.core: DEBUG
+
 mqtt:
   broker: ${SPRING_MQTT_BROKER}
 
