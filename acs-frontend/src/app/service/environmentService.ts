@@ -7,14 +7,14 @@ export class EnvironmentService {
     if (typeof window !== 'undefined') {
       return (window as any).env?.API_URL || '/api';
     }
-    return '/api'; // fallback for SSR
+    return '/api'; 
   }
 
   get WS_URL(): string {
     if (typeof window !== 'undefined') {
       return (window as any).env?.WS_URL || '/ws/access';
     }
-    return '/ws/access'; // fallback for SSR
+    return '/ws/access';
   }
   
 }

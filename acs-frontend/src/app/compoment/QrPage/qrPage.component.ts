@@ -41,6 +41,10 @@ export class QrPageComponent implements OnInit {
 
   // 使用者按下按鈕，產生 QRCode
   generateQrCode() {
+
+    console.log('使用者輸入的 userId:', this.userId); 
+    console.log('this.envService.API_URL', this.envService.API_URL); // ✅ 印出 userId
+
     if (!this.userId) {
       alert('請輸入員工編號');
       return;
@@ -52,7 +56,11 @@ export class QrPageComponent implements OnInit {
         next: (response) => {
           // 後端會回傳一張 QRCode 的圖片（base64 格式）
           // 把圖片存在 qrCode 變數中，讓 HTML 顯示用
-          this.qrCode = response.qrCodeBase64;
+          if (response.qrCodeBase64) {
+            this.qrCode = response.qrCodeBase64;
+          } else if (response.error) {
+            alert(response.error);  // 顯示「此人不存在」
+          }
         },
         error: (err) => {
           console.error('產生 QRCode 錯誤:', err);

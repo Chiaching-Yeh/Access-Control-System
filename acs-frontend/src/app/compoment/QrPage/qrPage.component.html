@@ -39,7 +39,7 @@
       <ul *ngIf="!connectionError && accessRecords.length > 0" class="record-list">
         <li *ngFor="let record of accessRecords">
           <span class="time">{{ record.accessTime }}</span>
-          <span class="card">卡號：{{ record.cardId }}</span>
+          <span class="cardId">卡號：{{ record.cardId }}</span>
           <span class="device">設備：{{ record.deviceId }}</span>
         </li>
       </ul>

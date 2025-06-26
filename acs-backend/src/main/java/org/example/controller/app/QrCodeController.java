@@ -2,12 +2,16 @@ package org.example.controller.app;
 
 import org.example.configuration.BeanConfiguration;
 import org.example.dao.AccessRecordInterface;
+import org.example.dao.UserInterface;
 import org.example.model.AccessRecord;
+import org.example.model.User;
+import org.example.service.AuthService;
 import org.example.service.MqttAccessControlService;
 import org.example.support.QrCodeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -32,11 +37,22 @@ public class QrCodeController extends BeanConfiguration {
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    private AccessRecordInterface accessRecordDao;
+    private AuthService authService;
 
 
     @PostMapping("/generate")
-    public ResponseEntity<Map<String, String>> generateQrCode(@RequestParam String userId) {
+    public ResponseEntity<Map<String, String>> generateQrCode(@RequestBody Map<String, String> data) {
+
+        String userId = data.get("userId");
+
+        // 查是否有這個人
+        Optional<User> userOpt = authService.findByUserId(userId);
+        if (userOpt.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "此人不存在");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+
         String uuid = UUID.randomUUID().toString();
         String redisKey = "qr:" + uuid;
         int expireSeconds = 60;
@@ -55,6 +71,7 @@ public class QrCodeController extends BeanConfiguration {
         result.put("uuid", uuid);
         result.put("qrCodeBase64", base64Qr);
         return ResponseEntity.ok(result);
+
     }
 
     @GetMapping("/scan")
