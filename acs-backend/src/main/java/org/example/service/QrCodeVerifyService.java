@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class QrCodeVerifyService {
@@ -34,6 +35,7 @@ public class QrCodeVerifyService {
         String userId = redisTemplate.opsForValue().get(key);
 
         AccessRecord record = new AccessRecord();
+        record.setRecordUid(UUID.randomUUID().toString());
         record.setCardId(userId);
         record.setDeviceId(deviceId);
         record.setAccessTime(LocalDateTime.now());

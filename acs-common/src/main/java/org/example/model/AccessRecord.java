@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 public class AccessRecord {
 
-    UUID recordUid; // 紀錄UID
+    String recordUid; // 紀錄UID
     String cardId; // 讀到的卡號
     LocalDateTime accessTime; // 刷卡時間
     boolean successful;

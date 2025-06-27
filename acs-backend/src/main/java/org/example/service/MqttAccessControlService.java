@@ -117,6 +117,7 @@ public class MqttAccessControlService extends BeanConfiguration {
     public void publishQrScan(String uuid, String deviceId) {
 
         String payload = "uuid:" + uuid + ",deviceId:" + deviceId;
+        System.out.println("publishQrScan Payload>>"+payload);
 
         try {
 

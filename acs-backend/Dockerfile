@@ -39,6 +39,11 @@ FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 # 設定執行階段的工作目錄為 /app
 
+# 安裝 tzdata 並設好 /etc/localtime
+RUN apk add --no-cache tzdata \
+    && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo "${TZ}" > /etc/timezone \
+
 # 複製打包後的 JAR
 COPY --from=build /usr/src/app/app.jar app.jar
 # 從前一個階段（名為 build）複製出打包好的 JAR 檔，放到 /app 並重新命名為 app.jar
