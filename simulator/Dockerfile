@@ -27,6 +27,6 @@ COPY . .
 # 把整個 Python 專案目錄複製到 container 的 /usr/src/app
 # 內含腳本 device_mqtt.py
 
-CMD ["python", "device_mqtt.py"]
-# 設定 container 預設啟動時要執行的程式
+CMD ["tail", "-f", "/dev/null"]
+# 容器啟動後保持常駐
 
