@@ -5,6 +5,7 @@ import { EnvironmentService } from '../../service/environmentService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
@@ -19,7 +20,7 @@ export class QrPageComponent implements OnInit {
   // 使用者輸入的員編（在 HTML 綁定）
   userId: string = '';
   // 從後端取得的 QRCode（base64 圖片）
-  qrCode: string = '';
+  qrCode: SafeUrl | null = null;
   // 所有開門紀錄的清單
   accessRecords: any[] = [];
   // 錯誤訊息
@@ -35,7 +36,8 @@ export class QrPageComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private webSocket: WebSocketService,
-    private envService: EnvironmentService
+    private envService: EnvironmentService,
+    private sanitizer: DomSanitizer  
   ) {}
 
 
@@ -59,7 +61,7 @@ export class QrPageComponent implements OnInit {
           if ('success' in response && response.success === false) {
             alert(response.message ?? '操作失敗');
           } else if ('qrCodeBase64' in response) {
-            this.qrCode = response.qrCodeBase64;
+            this.qrCode = this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${response.qrCodeBase64}`);
           } else {
             alert('未知錯誤，請稍後再試');
           }

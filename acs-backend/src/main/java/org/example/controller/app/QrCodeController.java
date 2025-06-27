@@ -64,7 +64,9 @@ public class QrCodeController extends BeanConfiguration {
         System.out.println("qr apiPath>>"+apiPath);
         String qrContent = apiPath + "/api/qr/scan?uuid=" + uuid + "&deviceId=device-002";
 
-        String base64Qr = QrCodeSupport.generateBase64Qr(qrContent);
+        // 不要額外加 data:image/png;base64，確保乾淨
+        String base64Qr = QrCodeSupport.generateBase64Qr(qrContent).replace("data:image/png;base64,", "");
+        System.out.println("base64Qr>>"+base64Qr);
 
         // 3. 回傳 base64 QR 給前端
         Map<String, Object> result = new HashMap<>();
@@ -87,6 +89,5 @@ public class QrCodeController extends BeanConfiguration {
             return ResponseEntity.status(500).body("模擬失敗: " + e.getMessage());
         }
     }
-
 
 }
