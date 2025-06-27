@@ -41,8 +41,8 @@ WORKDIR /app
 
 # 安裝 tzdata 並設好 /etc/localtime
 RUN apk add --no-cache tzdata \
-    && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && echo "${TZ}" > /etc/timezone \
+    && cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime \
+    && echo "Asia/Taipei" > /etc/timezone \
 
 # 複製打包後的 JAR
 COPY --from=build /usr/src/app/app.jar app.jar
