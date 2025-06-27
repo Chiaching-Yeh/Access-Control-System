@@ -124,7 +124,7 @@ app:
     expose-session-attributes: false
 
   qrApi:
-    path: "https://35.206.79.25:8080"
+    path: "https://charlielab.online"
 
   allowed-Origins:
     path: "https://charlielab.online"
