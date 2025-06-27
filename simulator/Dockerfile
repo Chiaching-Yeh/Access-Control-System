@@ -7,6 +7,13 @@ WORKDIR /usr/src/app
 # 之後的 COPY, RUN, CMD 等操作都會以這裡為根目錄
 # 若該目錄不存在會自動建立
 
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
+    && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo "${TZ}" > /etc/timezone \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 # 只複製 requirements.txt（Python 套件清單）進 container
 # 這樣做的好處是：如果套件沒變，Docker 可以利用快取，不必重跑 pip install，加快 build。

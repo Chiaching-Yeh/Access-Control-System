@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -34,6 +35,7 @@ public class AuthService {
 
         // 寫入刷卡紀錄
         AccessRecord record = new AccessRecord();
+        record.setRecordUid(UUID.randomUUID().toString());
         record.setCardId(cardId);
         record.setDeviceId(deviceId);
         record.setAccessTime(LocalDateTime.now());

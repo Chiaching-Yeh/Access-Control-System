@@ -5,7 +5,6 @@ import org.example.model.AccessRecord;
 import org.example.service.AccessSocketPusher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -40,6 +39,7 @@ public class AccessStompController {
     @GetMapping("/testPush")
     public void testPush() {
         AccessRecord ac = new AccessRecord();
+        ac.setRecordUid(UUID.randomUUID().toString());
         ac.setAccessTime(LocalDateTime.now());
         ac.setReason("門禁測試通過");
         ac.setSuccessful(true);

@@ -1,5 +1,5 @@
 CREATE TABLE accessRecord (
-    recordUid UUID PRIMARY KEY,
+    recordUid varchar(36) PRIMARY KEY,
     cardId varchar(50) NOT NULL,
     accessTime timestamp NOT NULL,
     reason text NULL,

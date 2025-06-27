@@ -6,6 +6,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: ${TZ}
     volumes:
       - ./DB:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
@@ -22,6 +23,8 @@ services:
   redis:
     container_name: acs-redis
     image: redis:7
+    environment:
+      TZ: ${TZ}
     ports:
       - "6379:6379"
     networks:
@@ -39,6 +42,8 @@ services:
       - ./mqtt/config:/mosquitto/config
       - ./mqtt/data:/mosquitto/data
       - ./mqtt/log:/mosquitto/log
+    environment:
+      TZ: ${TZ}
     ports:
       - "1883:1883"
     networks:

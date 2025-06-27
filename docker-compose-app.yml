@@ -16,6 +16,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
       SPRING_MQTT_BROKER: ${SPRING_MQTT_BROKER}
+      TZ: ${TZ}
     ports:
       - "8080:8080"
     deploy:
@@ -29,6 +30,8 @@ services:
   frontend:
     container_name: acs-frontend
     image: ${DOCKER_REGISTRY}/acs-frontend:${IMAGE_TAG}
+    environment:
+      TZ: ${TZ}
     ports:
       - "8081:80"
     depends_on:
@@ -47,6 +50,7 @@ services:
     environment:
       MQTT_HOST: ${MQTT_HOST}
       MQTT_PORT: ${MQTT_PORT}
+      TZ: ${TZ}
     depends_on:
       db:
         condition: service_healthy
