@@ -82,7 +82,7 @@ export class QrPageComponent implements OnInit {
          console.log('[收到推播資料]', data);
         this.accessRecords.unshift(data);
         this.accessRecords = this.accessRecords.slice(0, 10);
-        // this.isRequesting = false;
+        this.isRequesting = false; 
       } else {
         this.accessRecords;
       }  
@@ -103,6 +103,7 @@ export class QrPageComponent implements OnInit {
         console.log('[WebSocket 已連線] 送出初始化請求');
         try {
           this.webSocket.sendMessage('/app/request-records', '');
+          this.isRequesting = false;
         } catch (e) {
           console.error('[初始化請求失敗]', e);
           this.connectionError = true;

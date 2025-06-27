@@ -32,7 +32,7 @@ public class RedisConfig {
      */
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        System.out.println("🚀 RedisConfig: 建立 RedisConnectionFactory，主機：" + redisHost + ":" + redisPort);
+        System.out.println("RedisConfig: 建立 RedisConnectionFactory，主機：" + redisHost + ":" + redisPort);
 
         // Redis 基本設定
         RedisStandaloneConfiguration redisConf = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -72,9 +72,9 @@ public class RedisConfig {
     public void testRedisStartup() {
         try {
             factory.getConnection().ping();  // 用來觸發一次連線
-            System.out.println("✅ Redis 測試連線成功：" + redisHost + ":" + redisPort);
+            System.out.println("Redis 測試連線成功：" + redisHost + ":" + redisPort);
         } catch (Exception e) {
-            System.err.println("❌ Redis 測試連線失敗：" + e.getMessage());
+            System.err.println("Redis 測試連線失敗：" + e.getMessage());
         }
     }
 

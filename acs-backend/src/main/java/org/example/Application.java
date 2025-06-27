@@ -7,11 +7,11 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 
 @EnableJdbcHttpSession
 @ServletComponentScan
-@EnableScheduling
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
