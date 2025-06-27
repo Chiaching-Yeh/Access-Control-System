@@ -29,8 +29,8 @@ RUN mkdir -p ./dist/acs-frontend/browser/assets && \
 FROM nginx:stable-alpine
 
 RUN apk add --no-cache tzdata \
-    && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && echo "${TZ}" > /etc/timezone
+    && cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime \
+    && echo "/Asia/Taipei" > /etc/timezone
 
 #  複製 Angular 編譯結果到 Nginx 靜態網站根目錄（CSR）
 COPY --from=build /usr/src/app/dist/acs-frontend/browser /usr/share/nginx/html
