@@ -14,7 +14,7 @@
       </form>
 
       <div *ngIf="qrCode" class="qrcode-preview">
-        <img [src]="'data:image/png;base64,' + qrCode" alt="QRCode" />
+        <img [src]="qrCode" alt="QRCode" />
         <p class="caption">🔒 請將此 QRCode 提供給掃碼設備</p>
       </div>
     </div>
