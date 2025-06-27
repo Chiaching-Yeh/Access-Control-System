@@ -53,6 +53,13 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisConf, clientConfig);
     }
 
+    /**
+     * 主動初始化底層 Redis 連線池
+     * 明確告訴 Spring：我需要一個 StringRedisTemplate，而且要用這個 LettuceConnectionFactory。
+     * 這樣會讓 Spring Boot 在啟動時，建立這個 Bean，並自動初始化底層的連線池。
+     * @param factory
+     * @return
+     */
     @Bean
     public StringRedisTemplate redisTemplate(LettuceConnectionFactory factory) {
         StringRedisTemplate template = new StringRedisTemplate();
@@ -71,7 +78,7 @@ public class RedisConfig {
     @PostConstruct
     public void testRedisStartup() {
         try {
-            factory.getConnection().ping();  // 用來觸發一次連線
+            factory.getConnection().ping();  // 強制提早連線，避免Redis連線延遲初始化導致CONNECTION REFUSE
             System.out.println("Redis 測試連線成功：" + redisHost + ":" + redisPort);
         } catch (Exception e) {
             System.err.println("Redis 測試連線失敗：" + e.getMessage());
