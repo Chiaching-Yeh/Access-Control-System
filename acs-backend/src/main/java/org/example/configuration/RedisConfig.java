@@ -3,6 +3,7 @@ package org.example.configuration;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,9 @@ public class RedisConfig {
 
     @Value("${spring.redis.port}")
     private int redisPort;
+
+    @Autowired
+    private LettuceConnectionFactory factory;
 
     /**
      * 手動建立 Lettuce Redis Connection Factory，開啟 autoReconnect 與連線 timeout。
@@ -66,17 +70,11 @@ public class RedisConfig {
      */
     @PostConstruct
     public void testRedisStartup() {
-        LettuceConnectionFactory factory = null;
         try {
-            factory = redisConnectionFactory(); // 你手動 new 的 Factory
-            factory.afterPropertiesSet();       // 初始化
+            factory.getConnection().ping();  // 用來觸發一次連線
             System.out.println("✅ Redis 測試連線成功：" + redisHost + ":" + redisPort);
         } catch (Exception e) {
             System.err.println("❌ Redis 測試連線失敗：" + e.getMessage());
-        } finally {
-            if (factory != null) {
-                factory.destroy(); // 主動關閉
-            }
         }
     }
 

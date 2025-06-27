@@ -17,10 +17,14 @@ public class RedisTestController {
     public String setKey() {
 
         try {
+            System.out.println("------------執行/set------------");
             redisTemplate.opsForValue().set("testKey", "Spring Hello");
             return "Set OK";
         } catch (Exception e) {
+            System.out.println("------------執行/set錯誤------------");
             e.printStackTrace();
+            System.out.println("e.getClass().getName():"+e.getClass().getName());
+            System.out.println("e.getMessage();>>"+e.getMessage());
             return "Redis Error: " + e.getClass().getName() + ": " + e.getMessage();
         }
     }
