@@ -15,13 +15,25 @@ public class RedisTestController {
 
     @GetMapping("/set")
     public String setKey() {
-        redisTemplate.opsForValue().set("testKey", "Spring Hello");
-        return "Set OK";
+
+        try {
+            redisTemplate.opsForValue().set("testKey", "Spring Hello");
+            return "Set OK";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Redis Error: " + e.getClass().getName() + ": " + e.getMessage();
+        }
     }
 
     @GetMapping("/get")
     public String getKey() {
-        return redisTemplate.opsForValue().get("testKey");
+
+        try {
+            return redisTemplate.opsForValue().get("testKey");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Redis Error: " + e.getClass().getName() + ": " + e.getMessage();
+        }
     }
 
 }
