@@ -24,10 +24,17 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     result = msg.payload.decode()
     print(f"[裝置端] 收到授權結果: {result}")
-    if result == "grant":
+    if result.startswith("grant"):
         print("✅ 開門成功（模擬）")
+    elif result.startswith("deny"):
+        parts = result.split("deny", 1)
+        reason = parts[1].strip(" -") if len(parts) > 1 else ""
+        if reason:
+            print(f"❌ 拒絕進入（模擬）原因：{reason}")
+        else:
+            print("❌ 拒絕進入（模擬）")
     else:
-        print("❌ 拒絕進入（模擬）")
+        print("⚠️ 收到未知授權狀態")
 
 
 #--mode 必須指定 card 或 qr

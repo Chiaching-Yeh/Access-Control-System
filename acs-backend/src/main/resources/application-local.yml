@@ -126,6 +126,9 @@ app:
   allowed-Origins:
     path: "http://localhost:4200"
 
+  QrCode:
+    expireSeconds: 30
+
 #  upload:
 #    path: "D:/Project/ACS/Upload/download/"
 #    temppath: "D:/Project/ACS/Upload/download/origin/"

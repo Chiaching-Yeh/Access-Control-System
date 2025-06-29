@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,10 +30,16 @@ public class AuthService {
 
 
     @Transaction
-    public boolean checkAuthorization (String cardId, String deviceId){
+    public Map<String, Object> checkAuthorization (String cardId, String deviceId){
 
-        // 查詢資料庫（實際應查權限表或卡片綁定表）
-        boolean result = existsByCardId(cardId);
+
+        // 是否綁定使用者
+        Optional<User> userOptional = existsByCardId(cardId);
+        String reason = userOptional
+                .map(user -> user.getIsActive() ? null : "該人員已離職或停權")
+                .orElse("卡號沒有綁定使用者");
+
+        boolean isSuccessful = (reason == null);  // 沒有 reason 表示成功
 
         // 寫入刷卡紀錄
         AccessRecord record = new AccessRecord();
@@ -39,12 +47,16 @@ public class AuthService {
         record.setCardId(cardId);
         record.setDeviceId(deviceId);
         record.setAccessTime(LocalDateTime.now());
-        record.setSuccessful(result);
-        if (!result){
-            record.setReason("userId doesnt exist");
+        record.setSuccessful(isSuccessful);
+        if (!isSuccessful) {
+            record.setReason(reason);
         }
 
         accessRecordService.insert(record);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("isSuccessful", isSuccessful);
+        result.put("reason", reason);
 
         return result;
 
@@ -53,8 +65,8 @@ public class AuthService {
     /**
      * 判斷是否授權卡號（存在 = true，不存在 = false）
      */
-    public boolean existsByCardId(String cardId) {
-        return userDao.findByCardID(cardId).isPresent();
+    public Optional<User> existsByCardId(String cardId) {
+        return userDao.findByCardID(cardId);
     }
 
     public Optional<User> findByUserId(String userId) {
