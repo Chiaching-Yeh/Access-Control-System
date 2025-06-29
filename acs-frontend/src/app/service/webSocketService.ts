@@ -8,13 +8,12 @@ import { EnvironmentService } from './environmentService';
 @Injectable({ providedIn: 'root' })
 export class WebSocketService {
 
-  private stompClient!: Client; 
+  private stompClient!: Client;
   public messages$ = new Subject<any>();
   public connectionError$ = new BehaviorSubject<boolean>(false);
   public connected$ = new BehaviorSubject<boolean>(false);
 
 constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private platformId: Object) {
-  console.log("this.envService.WS_URL>>"+this.envService.WS_URL)
   if (isPlatformBrowser(this.platformId)) {
     this.stompClient = new Client({
       webSocketFactory: () => new SockJS(this.envService.WS_URL),
@@ -32,7 +31,7 @@ constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private
               this.messages$.next(body);
             }
           });
-          
+
           this.connectionError$.next(false);
           this.connected$.next(true);
       },

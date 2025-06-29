@@ -100,15 +100,53 @@ button:hover {
   display: flex;
   justify-content: space-between;
   font-size: 0.95rem;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+/* 區分成功與失敗背景 */
+.record-list li.success {
+  background-color: #e6ffed;
+}
+
+.record-list li.fail {
+  background-color: #ffecec;
+}
+
+/* 左側資訊排版 */
+.left-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* 右側狀態排版 */
+.right-status {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .record-list .time {
   color: #333;
+  font-weight: bold;
 }
 
 .record-list .cardId,
-.record-list .device {
+.record-list .device,
+.record-list .reason {
   color: #555;
+  font-size: 0.9rem;
+}
+
+.record-list .successful {
+  font-weight: bold;
+  color: #2e7d32; /* 成功: 深綠色 */
+}
+
+.record-list li.fail .successful {
+  color: #c62828; /* 失敗: 深紅色 */
 }
 
 

@@ -45,12 +45,21 @@
       </ul>
 
       <ul *ngIf="!connectionError && accessRecords.length > 0" class="record-list">
-        <li *ngFor="let record of accessRecords">
-          <span class="time">{{ record.accessTime }}</span>
-          <span class="cardId">卡號：{{ record.cardId }}</span>
-          <span class="device">設備：{{ record.deviceId }}</span>
+        <li *ngFor="let record of accessRecords" [class.success]="record.successful" [class.fail]="!record.successful">
+          <div class="left-info">
+            <div class="time">{{ record.accessTime | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+            <div class="cardId">卡號：{{ record.cardId }}</div>
+            <div class="device">設備：{{ record.deviceId }}</div>
+          </div>
+          <div class="right-status">
+            <div class="successful">
+              {{ record.successful ? '✅ 成功' : '❌ 拒絕' }}
+            </div>
+            <div class="reason" *ngIf="record.reason">原因：{{ record.reason }}</div>
+          </div>
         </li>
       </ul>
+      
     </div>
   </div>
 </div>
