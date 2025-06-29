@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -81,12 +82,20 @@ public class MqttAccessControlService extends BeanConfiguration {
             String cardId = parts[0].replace("cardId:", "").trim();
             String deviceId = parts[1].replace("deviceId:", "").trim();
 
-            boolean authorized = authService.checkAuthorization(cardId, deviceId);
-            String responseTopic = CARD_TOPIC_RESPONSE + "/" + deviceId;
-            String result = authorized ? "grant" : "deny";
+            Map<String, Object> result = authService.checkAuthorization(cardId, deviceId);
 
-            client.publish(responseTopic, new MqttMessage(result.getBytes()));
-            System.out.println("[回應] 授權結果: " + result + " → topic: " + responseTopic);
+            boolean isSuccessful = Boolean.TRUE.equals(result.get("isSuccessful"));
+            String reason = (String) result.get("reason");
+            boolean authorized = isSuccessful;
+            String responseMessage;
+            if (authorized) {
+                responseMessage = "grant";
+            } else {
+                responseMessage = "deny" + (reason != null ? " - " + reason : "");
+            }
+            String responseTopic = CARD_TOPIC_RESPONSE + "/" + deviceId;
+            client.publish(responseTopic, new MqttMessage(responseMessage.getBytes()));
+            System.out.println("[回應] 授權結果: " + responseMessage + " → topic: " + responseTopic);
         } catch (Exception e) {
             e.printStackTrace();
         }

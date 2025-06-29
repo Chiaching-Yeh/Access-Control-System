@@ -129,6 +129,9 @@ app:
   allowed-Origins:
     path: "https://charlielab.online"
 
+  QrCode:
+    expireSeconds: 30
+
 #  upload:
 #    path: "D:/Project/ACS/Upload/download/"
 #    temppath: "D:/Project/ACS/Upload/download/origin/"

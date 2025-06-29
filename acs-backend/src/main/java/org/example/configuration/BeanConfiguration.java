@@ -19,5 +19,7 @@ public abstract class BeanConfiguration {
     @Value("${app.allowed-Origins.path}")
     protected String allowedOriginsPath;
 
+    @Value("${app.QrCode.expireSeconds}")
+    protected int expireSeconds;
 
 }
