@@ -102,7 +102,6 @@ public class MqttAccessControlService extends BeanConfiguration {
     }
 
     /**
-     * python CLI 模擬 QR code
      * @param payload
      */
     private void handleQrCodeAuthorization(String payload) {

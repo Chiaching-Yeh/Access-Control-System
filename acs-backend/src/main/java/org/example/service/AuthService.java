@@ -20,13 +20,13 @@ import java.util.UUID;
 public class AuthService {
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
     private UserInterface userDao;
 
     @Autowired
     private AccessRecordService accessRecordService;
+
+    @Autowired
+    private AccessSocketPusher accessSocketPusher;
 
 
     @Transaction
@@ -53,6 +53,9 @@ public class AuthService {
         }
 
         accessRecordService.insert(record);
+
+        // 推播刷卡紀錄給前端
+        accessSocketPusher.pushAccessRecord(record);
 
         Map<String, Object> result = new HashMap<>();
         result.put("isSuccessful", isSuccessful);

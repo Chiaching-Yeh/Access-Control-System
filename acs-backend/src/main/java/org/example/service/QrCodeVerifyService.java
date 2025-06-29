@@ -20,6 +20,9 @@ public class QrCodeVerifyService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private AccessSocketPusher accessSocketPusher;
+
     /**
      * 將使用者驗證資訊暫存於 Redis，TTL 為 180 秒（3 分鐘）。
      */
@@ -44,13 +47,19 @@ public class QrCodeVerifyService {
             redisTemplate.delete(key);
             record.setSuccessful(true);
             accessRecordDao.insert(record);
+            // 新增推播：有成功的授權記錄，推給前端
+            accessSocketPusher.pushAccessRecord(record);
             return Optional.of(userId);
         } else {
             record.setSuccessful(false);
-            record.setReason("userId dose not exist");
+            record.setReason("使用者不存在");
             accessRecordDao.insert(record);
+            // 新增推播：失敗也要推播前端記錄
+            accessSocketPusher.pushAccessRecord(record);
+
+            return Optional.empty();
         }
 
-        return Optional.empty();
+
     }
 }
