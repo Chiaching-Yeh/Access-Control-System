@@ -33,19 +33,26 @@ public class AuthService {
     public Map<String, Object> checkAuthorization (String cardId, String deviceId){
 
 
-        // 是否綁定使用者
+        boolean isSuccessful = false;
+        String reason = null;
+
         Optional<User> userOptional = existsByCardId(cardId);
-        userOptional.ifPresentOrElse(
-                user -> System.out.println("✅ 找到使用者：" + user),
-                () -> System.out.println("❌ 查無此卡號對應的使用者")
-        );
-        String reason = userOptional
-                .map(user -> user.getIsActive() ? null : "該人員已離職或停權")
-                .orElse("卡號沒有綁定使用者");
 
-        boolean isSuccessful = (reason == null);  // 沒有 reason 表示成功
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (Boolean.TRUE.equals(user.getIsActive())) {
+                System.out.println("✅ 找到有效使用者：" + user);
+                isSuccessful = true;
+            } else {
+                System.out.println("❌ 使用者存在但已停權/離職：" + user);
+                reason = "該人員已離職或停權";
+            }
+        } else {
+            System.out.println("❌ 查無此卡號對應的使用者");
+            reason = "卡號沒有綁定使用者";
+        }
 
-        // 寫入刷卡紀錄
+        // 建立 AccessRecord（不重複）
         AccessRecord record = new AccessRecord();
         record.setRecordUid(UUID.randomUUID().toString());
         record.setCardId(cardId);
@@ -57,14 +64,12 @@ public class AuthService {
         }
 
         accessRecordService.insert(record);
-
-        // 推播刷卡紀錄給前端
         accessSocketPusher.pushAccessRecord(record);
 
+        // 回傳結果 Map
         Map<String, Object> result = new HashMap<>();
         result.put("isSuccessful", isSuccessful);
         result.put("reason", reason);
-
         return result;
 
     }

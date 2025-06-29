@@ -24,3 +24,17 @@ INSERT INTO users (
     true,
     now()
 );
+
+INSERT INTO users (
+    userId,
+    "name",
+    cardId,
+    isActive,
+    updatedAt
+) VALUES (
+    'U456',
+    '測試使用者2',
+    '67890',
+    false,
+    now()
+);

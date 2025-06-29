@@ -87,9 +87,8 @@ public class MqttAccessControlService extends BeanConfiguration {
 
             boolean isSuccessful = Boolean.TRUE.equals(result.get("isSuccessful"));
             String reason = (String) result.get("reason");
-            boolean authorized = isSuccessful;
             String responseMessage;
-            if (authorized) {
+            if (isSuccessful) {
                 responseMessage = "grant";
             } else {
                 responseMessage = "deny" + (reason != null ? " - " + reason : "");
