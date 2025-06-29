@@ -14,10 +14,10 @@ import java.util.Optional;
 @RegisterBeanMapper(User.class)
 public interface UserInterface extends SqlObject {
 
-    @SqlQuery("SELECT * FROM USERS WHERE cardId = :cardId")
+    @SqlQuery("SELECT * FROM users WHERE cardId = :cardId")
     Optional<User> findByCardID(@Bind("cardId") String cardId);
 
-    @SqlQuery("SELECT * FROM USERS WHERE userId = :userId ")
+    @SqlQuery("SELECT * FROM users WHERE userId = :userId ")
     Optional<User> findByUserId(@Bind("userId") String userId);
 
     @SqlUpdate("INSERT INTO users (userId, name, cardId, isActive, updatedAt, createdAt) " +
