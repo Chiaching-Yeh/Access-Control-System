@@ -110,3 +110,19 @@ button:hover {
 .record-list .device {
   color: #555;
 }
+
+
+.caption {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+}
+.caption.expired {
+  color: red;
+  font-weight: bold;
+}
+.form-error {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+}
