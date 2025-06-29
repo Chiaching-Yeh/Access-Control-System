@@ -1,48 +1,44 @@
-import argparse  # 處理指令列參數（CLI）
-import paho.mqtt.client as mqtt  # MQTT 通訊協定函式庫
-import time  # 內建模組
+import argparse
+import paho.mqtt.client as mqtt
+import time
 import os
 import uuid
 from datetime import datetime
 from dotenv import load_dotenv
-# 載入 .env 檔案的變數
+
 load_dotenv()
 
-# MQTT broker 設定
 MQTT_HOST = os.environ.get("MQTT_HOST", "localhost")
 MQTT_PORT = 1883
-DEVICE_ID = "device-001"  # 預設設備 ID
+DEVICE_ID = "device-001"
 
-# MQTT 事件處理
 def on_connect(client, userdata, flags, rc):
     print("[裝置端] 已連線至 MQTT broker")
-    client.subscribe(userdata['response_topic'])
-    print(f"[裝置端] 訂閱回應 topic: {userdata['response_topic']}")
+    topic = userdata['response_topic']
+    client.subscribe(topic)
+    print(f"[裝置端] 訂閱回應 topic: {topic}")
 
-# 當收到訊息（回應授權結果）時，會自動觸發這個函式。
-# msg.payload.decode() 把收到的位元資料轉換成字串。
-# 根據內容判斷是否顯示「開門」或「拒絕」。
+    # 確保在訂閱完成後再發送
+    if 'request_topic' in userdata and 'payload' in userdata:
+        print(f"[裝置端] 發送資料至 topic {userdata['request_topic']} → {userdata['payload']}")
+        client.publish(userdata['request_topic'], userdata['payload'])
+
 def on_message(client, userdata, msg):
     result = msg.payload.decode()
-    # 取得現在時間字串（格式你可以自訂）
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[裝置端] 收到授權結果: {result}")
+
     if result.startswith("grant"):
-        print(f"[{now}] ✅ 開門成功（模擬）")
+        print(f"[{now}] 開門成功（模擬）")
     elif result.startswith("deny"):
         parts = result.split("deny", 1)
         reason = parts[1].strip(" -") if len(parts) > 1 else ""
         if reason:
-            print(f"[{now}] ❌ 拒絕進入（模擬）原因：{reason}")
+            print(f"[{now}] 拒絕進入（模擬）原因：{reason}")
         else:
-            print(f"[{now}] ❌ 拒絕進入（模擬）")
+            print(f"[{now}] 拒絕進入（模擬）")
     else:
-        print(f"[{now}] ⚠️ 收到未知授權狀態")
-
-
-#--mode 必須指定 card 或 qr
-#--cardId：卡片模式要用
-#--deviceId：可選，預設是 "device-001"
+        print(f"[{now}] 收到未知授權狀態")
 
 def main():
     parser = argparse.ArgumentParser(description="模擬門禁設備（卡片或 QR 掃碼）")
@@ -53,52 +49,40 @@ def main():
 
     if args.mode == 'qr':
         args.deviceId = "device-002"
-
-    if args.mode == 'card' and not args.cardId:
-        parser.error("刷卡模式必須提供 --cardId")
-
-    # 建立唯一 client_id（防止多裝置互踢）
-    client_id = f"simulator-{args.deviceId}-{uuid.uuid4()}"
-
-    print(f"[裝置端] 啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
-
-    # 根據模式設定 topic 與 payload
-    if args.mode == 'card':
+        request_topic = None
+        payload = None
+        response_topic = f"door/response/qr/{args.deviceId}"
+    else:
+        if not args.cardId:
+            parser.error("刷卡模式必須提供 --cardId")
         request_topic = "door/request/card"
         response_topic = f"door/response/card/{args.deviceId}"
         payload = f"cardId:{args.cardId},deviceId:{args.deviceId}"
 
-        client = mqtt.Client(client_id=client_id, userdata={'response_topic': response_topic})
-        client.on_connect = on_connect
-        client.on_message = on_message
+    client_id = f"simulator-{args.deviceId}-{uuid.uuid4()}"
+    print(f"[裝置端] 啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
 
-        client.connect(MQTT_HOST, MQTT_PORT, 60)
-        client.loop_start()
+    # 建立 client，並把 request_topic/payload/response_topic 傳入
+    client = mqtt.Client(client_id=client_id, userdata={
+        'request_topic': request_topic,
+        'response_topic': response_topic,
+        'payload': payload
+    })
 
-        print(f"[裝置端] 發送資料至 topic {request_topic} → {payload}")
-        client.publish(request_topic, payload)
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-        # 等待回應
-        time.sleep(10)  # 等待10秒接收授權結果
-        client.loop_stop()  # 停止背景執行緒
-        client.disconnect() # 中斷連線
+    client.connect(MQTT_HOST, MQTT_PORT, 60)
+    client.loop_start()
 
-    elif args.mode == 'qr':
-        response_topic = f"door/response/qr/{args.deviceId}"
-
-        client = mqtt.Client(client_id=client_id, userdata={'response_topic': response_topic})
-        client.on_connect = on_connect
-        client.on_message = on_message
-
-        client.connect(MQTT_HOST, MQTT_PORT, 60)
-        client.loop_start()
-
+    if args.mode == 'card':
+        time.sleep(10)  # 等待回應
+    else:
         print(f"[裝置端] 等待授權回應（QR 模式），訂閱 topic: {response_topic}")
+        time.sleep(300)
 
-        time.sleep(300)  # 等待300秒接收授權結果
-        client.loop_stop()  # 停止背景執行緒
-        client.disconnect() # 中斷連線
-
+    client.loop_stop()
+    client.disconnect()
 
 if __name__ == "__main__":
     main()
