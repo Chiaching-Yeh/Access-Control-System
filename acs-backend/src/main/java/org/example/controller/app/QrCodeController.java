@@ -8,6 +8,8 @@ import org.example.service.MqttAccessControlService;
 import org.example.support.QrCodeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -55,10 +57,10 @@ public class QrCodeController extends BeanConfiguration {
 
         String uuid = UUID.randomUUID().toString();
         String redisKey = "qr:" + uuid;
-        int expireSeconds = 60;
 
         // 1. 將 userId 與 uuid 對應存入 Redis，設定 60 秒有效時間
         redisTemplate.opsForValue().set(redisKey, userId, Duration.ofSeconds(expireSeconds));
+        long serverTimeMillis = System.currentTimeMillis();
 
         // 2. 將 uuid 構造可掃描的 URL
         System.out.println("qr apiPath>>"+apiPath);
@@ -66,12 +68,13 @@ public class QrCodeController extends BeanConfiguration {
 
         // 不要額外加 data:image/png;base64，確保乾淨
         String base64Qr = QrCodeSupport.generateBase64Qr(qrContent).replace("data:image/png;base64,", "");
-        System.out.println("base64Qr>>"+base64Qr);
 
         // 3. 回傳 base64 QR 給前端
         Map<String, Object> result = new HashMap<>();
         result.put("uuid", uuid);
         result.put("qrCodeBase64", base64Qr);
+        result.put("expireSeconds", expireSeconds);
+        result.put("serverTimeMillis", serverTimeMillis);
         return ResponseEntity.ok(result);
 
     }
@@ -83,10 +86,16 @@ public class QrCodeController extends BeanConfiguration {
 
         try {
             mqttAccessControlService.publishQrScan(uuid, deviceId);
-            return ResponseEntity.ok("已模擬掃碼並送出 MQTT 訊息");
+            // 回傳 HTTP 302 Found 並導向 Angular SPA 的 success 路由
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, "/qr/success")
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("模擬失敗: " + e.getMessage());
+            // 如果 MQTT 發送失敗，就跳轉到失敗畫面
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, "/qr/failure")
+                    .build();
         }
     }
 

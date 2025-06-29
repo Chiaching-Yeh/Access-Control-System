@@ -13,10 +13,18 @@
         <button type="submit">產生 QR Code</button>
       </form>
 
-      <div *ngIf="qrCode" class="qrcode-preview">
-        <img [src]="qrCode" alt="QRCode" />
-        <p class="caption">🔒 請將此 QRCode 提供給掃碼設備</p>
+      <div class="qrcode-preview" *ngIf="qrCode || isQrExpired">
+        <img
+          [src]="qrCode"
+          alt="QRCode"
+          [style.filter]="isQrExpired ? 'grayscale(1) blur(1px)' : 'none'"
+          [style.opacity]="isQrExpired ? 0.5 : 1"
+        />
+
+        <p class="caption" *ngIf="!isQrExpired">⏳ 請於 {{ countdown }} 秒內掃描</p>
+        <p class="caption expired" *ngIf="isQrExpired">⚠️ QR Code 已過期，請重新產生</p>
       </div>
+
     </div>
   </div>
 

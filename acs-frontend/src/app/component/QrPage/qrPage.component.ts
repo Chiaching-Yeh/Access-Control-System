@@ -28,6 +28,15 @@ export class QrPageComponent implements OnInit {
 
   isRequesting: boolean = true; // 預設為 true，表示正在連線/請求中
 
+  // 用來顯示倒數用
+  expireSeconds: number = 0;
+  countdown: number = 0;
+  private countdownTimer?: any;
+  isQrExpired: boolean = false;
+
+  // 記錄錯誤
+  formError: string = '';
+
   private errorSub?: Subscription;
   private messageSub?: Subscription;
   private connectedSub?: Subscription;
@@ -44,11 +53,14 @@ export class QrPageComponent implements OnInit {
   // 使用者按下按鈕，產生 QRCode
   generateQrCode() {
 
+    this.formError = '';
+    this.isQrExpired = false;
+
     console.log('使用者輸入的 userId:', this.userId); 
-    console.log('this.envService.API_URL', this.envService.API_URL); // ✅ 印出 userId
+    console.log('this.envService.API_URL', this.envService.API_URL); // 印出 userId
 
     if (!this.userId) {
-      alert('請輸入員工編號');
+      this.formError = '請輸入員工編號';
       return;
     }
 
@@ -56,21 +68,39 @@ export class QrPageComponent implements OnInit {
     this.http.post<any>(`${this.envService.API_URL}/qr/generate`, { userId: this.userId })
       .subscribe({
         next: (response) => {
-          // 後端會回傳一張 QRCode 的圖片（base64 格式）
-          // 把圖片存在 qrCode 變數中，讓 HTML 顯示用
-          if ('success' in response && response.success === false) {
+          if (response.success === false) {
             alert(response.message ?? '操作失敗');
-          } else if ('qrCodeBase64' in response) {
-            this.qrCode = this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${response.qrCodeBase64}`);
-          } else {
-            alert('未知錯誤，請稍後再試');
+            return;
           }
+          const base64 = response.qrCodeBase64;
+          const expireSeconds = Number(response.expireSeconds);
+          const serverTime = Number(response.serverTimeMillis);
+          const clientTime = Date.now();
+          const drift = clientTime - serverTime;
+          console.log('前端時間差 drift(ms):', drift);
+          this.expireSeconds = expireSeconds;
+          this.countdown = expireSeconds - Math.floor(drift / 1000); // 減去時間誤差
+          this.qrCode = this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${base64}`);
+          this.startCountdown();
         },
         error: (err) => {
-          console.error('產生 QRCode 錯誤:', err);
-          alert('產生 QRCode 失敗，請稍後再試');
+          this.formError = '⚠️ 無法連線後端服務，請稍後再試';
+          console.error('[QRCode產生失敗]', err);
         }
       });
+  }
+
+  startCountdown(): void {
+    if (this.countdownTimer) clearInterval(this.countdownTimer);
+
+    this.countdownTimer = setInterval(() => {
+      this.countdown--;
+      if (this.countdown <= 0) {
+        clearInterval(this.countdownTimer);
+        this.qrCode = null;
+        this.isQrExpired = true; 
+      }
+    }, 1000);
   }
 
   // 當畫面載入完成元件初始化時執行
@@ -81,7 +111,7 @@ export class QrPageComponent implements OnInit {
     const isValid = (record: any): boolean =>
       record.cardId && record.accessTime && record.deviceId;
       if (isValid(data)) {
-         console.log('[收到推播資料]', data);
+        console.log('[收到推播資料]', data);
         this.accessRecords.unshift(data);
         this.accessRecords = this.accessRecords.slice(0, 10);
         this.isRequesting = false; 
@@ -118,6 +148,9 @@ export class QrPageComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    if (this.countdownTimer) {
+      clearInterval(this.countdownTimer);
+    }
     this.errorSub?.unsubscribe();
     this.connectedSub?.unsubscribe();
     this.messageSub?.unsubscribe();
