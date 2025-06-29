@@ -8,21 +8,7 @@ on:
       - '.github/workflows/simulator.yml'
     branches: [main] # 限定 main 分支
 
-permissions:  # 讓 GITHUB_TOKEN 有權限呼叫 workflow_dispatch
-  contents: read
-  actions: write
-
 jobs:
-  trigger-infra:
-    name: "Ensure Infra Ready"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Infra Deployment
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: infra.yml
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   deploy-simulator:
     runs-on: ubuntu-latest # 在 GitHub 提供的 Ubuntu runner 上執行
 
@@ -106,15 +92,22 @@ jobs:
 
             echo '🔁 [3/6] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
-               
+          
             echo '🔍 [4/6] 檢查 infra container 是否啟動'
-            if [ "$(docker inspect -f '{{.State.Running}}' acs-db 2>/dev/null)" != "true" ] || \
-               [ "$(docker inspect -f '{{.State.Running}}' acs-redis 2>/dev/null)" != "true" ] || \
-               [ "$(docker inspect -f '{{.State.Running}}' acs-mqtt 2>/dev/null)" != "true" ]; then
-              echo '🔧 有 infra container 沒有啟動，執行 docker compose up for infra'
-              docker compose -p access-control-system -f docker-compose-infra.yml up -d
+            if [ -f /tmp/infra_ready ]; then
+              echo '✅ 快取存在，略過 Infra 啟動'
             else
-              echo '✅ 所有 infra container 已在執行'
+              echo '⚠️ 找不到快取，檢查 container 狀態並必要時啟動 Infra'
+              if [ "$(docker inspect -f '{{.State.Running}}' acs-db 2>/dev/null)" != "true" ] || \
+                 [ "$(docker inspect -f '{{.State.Running}}' acs-redis 2>/dev/null)" != "true" ] || \
+                 [ "$(docker inspect -f '{{.State.Running}}' acs-mqtt 2>/dev/null)" != "true" ]; then
+                 echo '🔧 有 infra container 未執行，重新啟動 Infra...'
+                 docker compose -p access-control-system -f docker-compose-infra.yml up -d
+                 echo "$(date)" > /tmp/infra_ready
+              else
+                 echo '✅ 所有 Infra container 正常執行，更新快取時間戳'
+                 echo "$(date)" > /tmp/infra_ready
+              fi
             fi
           
             echo "🔁 [5/6] 嘗試拉取映像 $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG"
