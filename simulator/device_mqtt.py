@@ -1,8 +1,9 @@
 import argparse  # 處理指令列參數（CLI）
-import paho.mqtt.client as mqtt  # MQTT 通訊協定函式庫（需 pip install）
+import paho.mqtt.client as mqtt  # MQTT 通訊協定函式庫
 import time  # 內建模組
 import os
 import uuid
+from datetime import datetime
 from dotenv import load_dotenv
 # 載入 .env 檔案的變數
 load_dotenv()
