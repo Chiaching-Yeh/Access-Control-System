@@ -83,6 +83,7 @@ public class MqttAccessControlService extends BeanConfiguration {
             String deviceId = parts[1].replace("deviceId:", "").trim();
 
             Map<String, Object> result = authService.checkAuthorization(cardId, deviceId);
+            System.out.println("result>>"+result);
 
             boolean isSuccessful = Boolean.TRUE.equals(result.get("isSuccessful"));
             String reason = (String) result.get("reason");

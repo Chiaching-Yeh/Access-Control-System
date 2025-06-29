@@ -35,6 +35,10 @@ public class AuthService {
 
         // 是否綁定使用者
         Optional<User> userOptional = existsByCardId(cardId);
+        userOptional.ifPresentOrElse(
+                user -> System.out.println("✅ 找到使用者：" + user),
+                () -> System.out.println("❌ 查無此卡號對應的使用者")
+        );
         String reason = userOptional
                 .map(user -> user.getIsActive() ? null : "該人員已離職或停權")
                 .orElse("卡號沒有綁定使用者");
