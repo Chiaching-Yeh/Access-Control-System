@@ -10,9 +10,15 @@
     color: red;
   }
 
-  button {
+  a.btn {
+    display: inline-block;
     margin-top: 1rem;
     padding: 0.5rem 1rem;
     font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    border-radius: 4px;
   }
 }
