@@ -1,0 +1,18 @@
+.result {
+  text-align: center;
+  padding: 2rem;
+
+  &.success h2 {
+    color: green;
+  }
+
+  &.failure h2 {
+    color: red;
+  }
+
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+}
