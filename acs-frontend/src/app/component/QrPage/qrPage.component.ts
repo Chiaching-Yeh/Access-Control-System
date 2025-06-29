@@ -37,6 +37,9 @@ export class QrPageComponent implements OnInit {
   // 記錄錯誤
   formError: string = '';
 
+  // 判斷是否是初始化
+  private hasInitialized = false;
+
   private errorSub?: Subscription;
   private messageSub?: Subscription;
   private connectedSub?: Subscription;
@@ -131,11 +134,12 @@ export class QrPageComponent implements OnInit {
 
     // 當連線正常時就向後端索取資料
     this.connectedSub  = this.webSocket.connected$.subscribe((isConnected) => {
-      if (isConnected) {
+      if (isConnected && !this.hasInitialized) {
         console.log('[WebSocket 已連線] 送出初始化請求');
         try {
           this.webSocket.sendMessage('/app/request-records', '');
           this.isRequesting = false;
+          this.hasInitialized = true; //判斷是否是初始化，避免斷線後reconnectDelay重送資料導致紀錄重複
         } catch (e) {
           console.error('[初始化請求失敗]', e);
           this.connectionError = true;
