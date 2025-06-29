@@ -69,6 +69,7 @@ jobs:
               echo '🔧 有 Infra container 未執行，重新啟動 Infra...'
               docker compose -p access-control-system -f docker-compose-infra.yml up -d
               echo '✅ Infra 啟動完成'
+              echo "$(date)" > /tmp/infra_ready
             else
               echo "✅ 所有 Infra container 已在執行"
             fi
