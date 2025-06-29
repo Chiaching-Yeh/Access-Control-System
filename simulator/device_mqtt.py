@@ -23,18 +23,20 @@ def on_connect(client, userdata, flags, rc):
 # 根據內容判斷是否顯示「開門」或「拒絕」。
 def on_message(client, userdata, msg):
     result = msg.payload.decode()
+    # 取得現在時間字串（格式你可以自訂）
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[裝置端] 收到授權結果: {result}")
     if result.startswith("grant"):
-        print("✅ 開門成功（模擬）")
+        print(f"[{now}] ✅ 開門成功（模擬）")
     elif result.startswith("deny"):
         parts = result.split("deny", 1)
         reason = parts[1].strip(" -") if len(parts) > 1 else ""
         if reason:
-            print(f"❌ 拒絕進入（模擬）原因：{reason}")
+            print(f"[{now}] ❌ 拒絕進入（模擬）原因：{reason}")
         else:
-            print("❌ 拒絕進入（模擬）")
+            print(f"[{now}] ❌ 拒絕進入（模擬）")
     else:
-        print("⚠️ 收到未知授權狀態")
+        print(f"[{now}] ⚠️ 收到未知授權狀態")
 
 
 #--mode 必須指定 card 或 qr
@@ -57,7 +59,7 @@ def main():
     # 建立唯一 client_id（防止多裝置互踢）
     client_id = f"simulator-{args.deviceId}-{uuid.uuid4()}"
 
-    print(f"啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
+    print(f"[裝置端] 啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
 
     # 根據模式設定 topic 與 payload
     if args.mode == 'card':
