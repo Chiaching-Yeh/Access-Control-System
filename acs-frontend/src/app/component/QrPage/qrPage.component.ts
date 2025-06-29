@@ -112,8 +112,8 @@ export class QrPageComponent implements OnInit {
       record.cardId && record.accessTime && record.deviceId;
       if (isValid(data)) {
         console.log('[收到推播資料]', data);
-        this.accessRecords.unshift(data);
-        this.accessRecords = this.accessRecords.slice(0, 10);
+        this.accessRecords.unshift(data); // 將新資料插到最前面
+        this.accessRecords = this.accessRecords.slice(0, 10); // 保留最新10筆
         this.isRequesting = false; 
       } else {
         this.accessRecords;
