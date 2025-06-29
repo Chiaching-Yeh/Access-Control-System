@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QrFailureComponent } from './qr-failure.component';
+import { QrFailureComponent } from './qrFailure.component';
 
 describe('QrFailureComponent', () => {
   let component: QrFailureComponent;

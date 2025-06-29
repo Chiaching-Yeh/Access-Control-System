@@ -22,16 +22,17 @@ constructor(private envService: EnvironmentService, @Inject(PLATFORM_ID) private
       onConnect: () => {
           this.stompClient.subscribe('/topic/access', (message: IMessage) => {
             const body = JSON.parse(message.body);
-          // this.messages$.next(body) 是將整個陣列視為單筆資料推進來，會導致unshift邏輯錯誤
-          if (Array.isArray(body)) {
-              // 多筆紀錄一次推送的處理方式
-              body.forEach((record: any) => this.messages$.next(record));
-            } else {
-              // 若是單筆推播
+            const isValid = (record: any): boolean =>
+              record.cardId && record.accessTime && record.deviceId;
+            if (Array.isArray(body)) {
+              // 多筆紀錄（初始化）反轉後 unshift 保持最新在上
+              const validRecords = body.filter(isValid).slice().reverse();
+              validRecords.forEach(record => this.messages$.next(record));
+            } else if (isValid(body)) {
+              // 單筆推播資料（刷卡通知）直接 unshift
               this.messages$.next(body);
             }
           });
-
           this.connectionError$.next(false);
           this.connected$.next(true);
       },
