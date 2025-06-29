@@ -13,11 +13,12 @@ public class AccessSocketPusher {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-    @Autowired
-    private AccessRecordService accessRecordService;
 
-    public void pushAccessRecord() {
-        List<AccessRecord> records = accessRecordService.findLatest();
+    public void pushAccessRecord(AccessRecord record) {
+        messagingTemplate.convertAndSend("/topic/access", record);
+    }
+
+    public void pushAccessRecordList(List<AccessRecord> records) {
         messagingTemplate.convertAndSend("/topic/access", records);
     }
 

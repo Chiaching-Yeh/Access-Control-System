@@ -15,8 +15,8 @@ public class AccessRecordService {
     private AccessRecordInterface accessRecordDao;
 
     @Transaction
-    public List<AccessRecord> findLatest() {
-        return accessRecordDao.findLatest();
+    public List<AccessRecord> findLatest(int limit) {
+        return accessRecordDao.findLatest(limit);
     }
 
     @Transaction
