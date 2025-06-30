@@ -9,9 +9,6 @@ QR模式：裝置端僅需訂閱專屬回應主題，等待伺服器端（由 We
 
 ## 環境需求
 
-- Python 3.x
-- 安裝 `paho-mqtt` 函式庫
-
 ## 使用方式
 ### 1. 啟動 MQTT Broker
 請先確認你的開發環境中已啟動 MQTT broker。
