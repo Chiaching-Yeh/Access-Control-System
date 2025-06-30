@@ -14,28 +14,20 @@ QR模式：裝置端僅需訂閱專屬回應主題，等待伺服器端（由 We
 
 ## 使用方式
 ### 1. 啟動 MQTT Broker
-請先確認你的開發環境中已啟動 MQTT broker，例如使用 [Mosquitto](https://mosquitto.org/)：
-```bash
-mosquitto
-```
+請先確認你的開發環境中已啟動 MQTT broker。
 
 ## 執行模擬裝置
-### 1. 模擬刷卡模式
+### 1. 模擬刷卡模式，須確保VM上可執行Docker指令
 ```bash
-python device_mqtt.py --mode card --cardId 123456789 --deviceId device-001
-```
-
-### 2. 模擬 QR 掃碼模式
-```bash
-python device_mqtt.py --mode --deviceId device-002
+docker exec acs-simulator python device_mqtt.py --mode card --cardId=U123 --deviceId=device-001
 ```
 
 ### 3. 參數說明
-| 參數名稱         | 說明                           | 範例值          |
-| ------------ | ---------------------------- | ------------ |
-| `--mode`     | 模擬模式（必填）`card` 或 `qr`        | `card`       |
-| `--cardId`   | 卡片 ID，**僅 `card` 模式需填**      | `123456789`  |
-| `--deviceId` | 裝置編號（選填，預設為 `device-001`）    | `device-001` |
+| 參數名稱         | 說明                         | 範例值          |
+| ------------ | -------------------------- | ------------ |
+| `--mode`     | 模擬模式（必填）`card`         | `card`       |
+| `--cardId`   | 卡片 ID，**僅 `card` 模式需填**    | `123456789`  |
+| `--deviceId` | 裝置編號（選填，預設為 `device-001`）  | `device-001` |
 
 
 ## 程式邏輯簡介
@@ -51,7 +43,7 @@ python device_mqtt.py --mode --deviceId device-002
 ### 2. 裝置訂閱伺服器授權回應
 裝置會訂閱個別的回應 topic，主機端應該回傳以下授權訊息之一：
 - grant：授權通過，模擬開門
-- 其他文字：授權失敗，拒絕進入
+- deny：授權失敗，拒絕進入
 
 ## MQTT架構簡述
 本模擬器採用 MQTT 的 Pub/Sub 架構：
