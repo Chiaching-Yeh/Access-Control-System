@@ -1,3 +1,4 @@
+import ssl
 import argparse
 import paho.mqtt.client as mqtt
 import time

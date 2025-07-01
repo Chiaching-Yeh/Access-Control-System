@@ -8,11 +8,11 @@ WORKDIR /usr/src/app
 # 若該目錄不存在會自動建立
 
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata ca-certificates \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo "${TZ}" > /etc/timezone \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
 
 COPY requirements.txt .
 # 只複製 requirements.txt（Python 套件清單）進 container
