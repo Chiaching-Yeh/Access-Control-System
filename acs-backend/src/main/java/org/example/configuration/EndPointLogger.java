@@ -18,7 +18,7 @@ public class EndPointLogger implements ApplicationListener<ApplicationReadyEvent
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         mapping.getHandlerMethods().forEach((key, value) ->
-                System.out.println("📍 註冊的 endpoint: " + key));
+                System.out.println("[ 註冊的 endpoint: " + key + "]"));
     }
 
 }
