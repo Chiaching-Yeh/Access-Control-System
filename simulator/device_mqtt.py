@@ -1,4 +1,4 @@
-import ssl
+import logging
 import argparse
 import paho.mqtt.client as mqtt
 import time
@@ -11,6 +11,8 @@ load_dotenv()
 
 MQTT_HOST = os.environ.get("MQTT_HOST", "localhost")
 MQTT_PORT = 8883
+USERNAME = os.environ.get("MQTT_USERNAME")
+PASSWORD = os.environ.get("MQTT_PASSWORD")
 DEVICE_ID = "device-001"
 
 def on_connect(client, userdata, flags, rc):
@@ -22,7 +24,8 @@ def on_connect(client, userdata, flags, rc):
     # 確保在訂閱完成後再發送
     if 'request_topic' in userdata and 'payload' in userdata:
         print(f"[裝置端] 發送資料至 topic {userdata['request_topic']} → {userdata['payload']}")
-        client.publish(userdata['request_topic'], userdata['payload'])
+        result = client.publish(userdata['request_topic'], userdata['payload'])
+        print("[裝置端] Publish result:", result.rc)  # 0 表示成功
 
 def on_message(client, userdata, msg):
     result = msg.payload.decode()
@@ -63,6 +66,8 @@ def main():
     client_id = f"simulator-{args.deviceId}-{uuid.uuid4()}"
     print(f"[裝置端] 啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
 
+    logging.basicConfig(level=logging.DEBUG)
+
     # 建立 client，並把 request_topic/payload/response_topic 傳入
     client = mqtt.Client(client_id=client_id, userdata={
         'request_topic': request_topic,
@@ -70,7 +75,10 @@ def main():
         'payload': payload
     })
 
+    client.enable_logger()
+
     client.tls_set() # 啟用 TLS
+    client.username_pw_set(USERNAME, PASSWORD)
     client.on_connect = on_connect
     client.on_message = on_message
 
