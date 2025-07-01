@@ -32,13 +32,4 @@ public class BeanConfiguration {
     @Value("${mqtt.password}")
     protected String mqttPassword;
 
-    @PostConstruct
-    public void test(){
-        System.out.println("=== MQTT 設定檢查 ===");
-        System.out.println("mqtt.broker   = " + mqttBroker);
-        System.out.println("mqtt.clientId = " + mqttClientId);
-        System.out.println("mqtt.username = " + mqttUsername);
-        System.out.println("mqtt.password = " + mqttPassword);
-    }
-
 }
