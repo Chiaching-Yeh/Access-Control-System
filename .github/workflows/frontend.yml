@@ -82,8 +82,6 @@ jobs:
             if [ -d ~/Access-Control-System/.git ]; then
               echo '📦 已存在 Git 專案，執行 git pull'
               cd ~/Access-Control-System
-              echo '🛠 修正 mqtt 權限中...'
-              sudo chown -R g3912_unisurf:g3912_unisurf ./mqtt
               git pull origin main
             else
               echo '🔐 [前置] 加入 GitHub 到 VM 的 known_hosts（避免 host key verification failed）'
