@@ -23,27 +23,27 @@ def on_log(client, userdata, level, buf):
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print("[裝置端] ✅ 已成功連線至 MQTT broker")
+        print("[裝置端 py] 已成功連線至 MQTT broker")
 
         topic = userdata.get('response_topic')
         if topic:
             result = client.subscribe(topic)
-            print(f"[裝置端] 已訂閱回應 topic: {topic}（SUB result: {result[0]}）")
+            print(f"[裝置端 py] 已訂閱回應 topic: {topic}（SUB result: {result[0]}）")
         else:
-            print("[裝置端] ⚠️ 無 response_topic，略過訂閱")
+            print("[裝置端 py] 無 response_topic，略過訂閱")
 
         # 等訂閱完成再發送請求
         if 'request_topic' in userdata and 'payload' in userdata:
             request_topic = userdata['request_topic']
             payload = userdata['payload']
             time.sleep(1)  # 等待訂閱穩定（避免還沒來得及接收回應就送出）
-            print(f"[裝置端] 發送資料至 topic {request_topic} → {payload}")
+            print(f"[裝置端 py] 發送資料至 topic {request_topic} → {payload}")
             result = client.publish(request_topic, payload)
-            print(f"[裝置端] Publish result: {mqtt.error_string(result.rc)}")
+            print(f"[裝置端 py] Publish result: {mqtt.error_string(result.rc)}")
         else:
-            print("[裝置端] ⚠️ 無 request_topic 或 payload，略過發送")
+            print("[裝置端 py] 無 request_topic 或 payload，略過發送")
     else:
-        print(f"[裝置端] ❌ 連線失敗，錯誤代碼 rc={rc} ({mqtt.connack_string(rc)})")
+        print(f"[裝置端 py] 連線失敗，錯誤代碼 rc={rc} ({mqtt.connack_string(rc)})")
 
 def on_message(client, userdata, msg):
 
@@ -52,17 +52,17 @@ def on_message(client, userdata, msg):
 
     result = msg.payload.decode()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[裝置端] 收到授權結果: {result}")
+    print(f"[裝置端 py] 收到授權結果: {result}")
 
     if result.startswith("grant"):
-        print(f"[{now}] 開門成功（模擬）")
+        print(f"[{now}] 開門成功")
     elif result.startswith("deny"):
         parts = result.split("deny", 1)
         reason = parts[1].strip(" -") if len(parts) > 1 else ""
         if reason:
-            print(f"[{now}] 拒絕進入（模擬）原因：{reason}")
+            print(f"[{now}] 拒絕進入原因：{reason}")
         else:
-            print(f"[{now}] 拒絕進入（模擬）")
+            print(f"[{now}] 拒絕進入")
     else:
         print(f"[{now}] 收到未知授權狀態")
 
@@ -72,9 +72,6 @@ def main():
     parser.add_argument('--cardId', help="僅 card 模式需輸入卡號")
     parser.add_argument('--deviceId', default=DEVICE_ID, help="設備 ID（預設為 device-001）")
     args = parser.parse_args()
-
-    print(f"[DEBUG] USERNAME: {USERNAME}")
-    print(f"[DEBUG] PASSWORD: {PASSWORD}")
 
     if args.mode == 'qr':
         args.deviceId = "device-002"
@@ -89,7 +86,7 @@ def main():
         payload = f"cardId:{args.cardId},deviceId:{args.deviceId}"
 
     client_id = f"simulator-{args.deviceId}-{uuid.uuid4()}"
-    print(f"[裝置端] 啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
+    print(f"[裝置端 py] 啟動模式: {args.mode}，設備ID: {args.deviceId}，ClientId: {client_id}")
 
     logging.basicConfig(level=logging.DEBUG)
 
@@ -115,11 +112,11 @@ def main():
     for i in range(wait_seconds):
         if got_response:
             break
-        print(f"[裝置端] ⏳ 等待授權回應中...（{i + 1}/{wait_seconds}秒）")
+        print(f"[裝置端 py] 等待授權回應中...（{i + 1}/{wait_seconds}秒）")
         time.sleep(1)
 
     if not got_response:
-        print("[裝置端] ❗ 等待逾時，未收到授權結果")
+        print("[裝置端 py] 等待逾時，未收到授權結果")
 
     client.loop_stop()
     client.disconnect()

@@ -67,7 +67,7 @@ public class MqttAccessControlService extends BeanConfiguration {
 
             client.subscribe(CARD_TOPIC);
             client.subscribe(QR_TOPIC);
-            System.out.println("MQTT 已訂閱: " + CARD_TOPIC + " 與 " + QR_TOPIC);
+            System.out.println("[MQTT 已訂閱: " + CARD_TOPIC + " 與 " + QR_TOPIC + "]");
 
         } catch (MqttException e) {
             e.printStackTrace();
