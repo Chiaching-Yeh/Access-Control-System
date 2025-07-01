@@ -94,4 +94,4 @@ build/
 .DS_Store
 
 ## mqtt
-mqtt/log
+mqtt/logmqtt/config/passwordfile
