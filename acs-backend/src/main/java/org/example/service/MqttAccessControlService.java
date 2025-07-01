@@ -31,9 +31,9 @@ public class MqttAccessControlService extends BeanConfiguration {
     @Autowired
     public MqttAccessControlService(MqttClient client) {
         this.client = client;
-        init();
     }
 
+    @PostConstruct
     private void init() {
         try {
             client.setCallback(new MqttCallback() {
