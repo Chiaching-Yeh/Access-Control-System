@@ -139,7 +139,16 @@ cat ~/.ssh/id_ed25519.pub
 sudo apt install lsof -y
 ```
 
-#### 9. 重啟 VM 後驗證 docker、git、gcloud、python 是否正常
+### 9. 安裝 mosquitto-clients 測試 MQTT 工具、mosquitto-dev提供
+安裝 mosquitto-clients: 提供測試 MQTT 的 pub/sub 工具
+安裝 mosquitto-dev: 提供 mosquitto_passwd 指令
+```text
+sudo apt install -y mosquitto-clients 
+sudo apt install -y mosquitto-dev
+```
+mosquitto_passwd -b -c ./mqtt/config/passwordfile mqtt_user <your password>
+
+#### 10 . 重啟 VM 後驗證 docker、git、gcloud、python 是否正常
 
 ```text
 docker --version
