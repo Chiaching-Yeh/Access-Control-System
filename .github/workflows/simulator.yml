@@ -84,6 +84,7 @@ jobs:
               cd ~/Access-Control-System
               echo '🛠 修正 mqtt 權限中...'
               sudo chown -R g3912_unisurf:g3912_unisurf ./mqtt
+              sudo chmod 600 ./mqtt/config/passwordfile
               git pull origin main
             else
               echo '🔐 [前置] 加入 GitHub 到 VM 的 known_hosts（避免 host key verification failed）'
@@ -91,6 +92,9 @@ jobs:
               ssh-keyscan github.com >> ~/.ssh/known_hosts
               echo '🆕 專案不存在，執行 git clone'
               git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
+              cd ~/Access-Control-System
+              sudo chown -R g3912_unisurf:g3912_unisurf ./mqtt
+              sudo chmod 600 ./mqtt/config/passwordfile
             fi
 
             echo '🔁 [3/6] 切換至專案資料夾 ~/Access-Control-System'
