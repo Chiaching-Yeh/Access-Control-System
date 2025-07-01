@@ -21,11 +21,19 @@ public class MqttConfig extends BeanConfiguration {
         options.setCleanSession(true);
         options.setUserName(mqttUsername);
         options.setPassword(mqttPassword.toCharArray());
-        options.setSocketFactory(SSLSocketFactory.getDefault());
+
+        // 若 broker 是 ssl://，才設置 TLS
+        if (mqttBroker.startsWith("ssl://")) {
+            options.setSocketFactory(SSLSocketFactory.getDefault());
+        }
 
         client.connect(options);
+        System.out.println("MQTT client connected to " + mqttBroker);
+
         return client;
+
+        }
     }
-}
+
 
 
