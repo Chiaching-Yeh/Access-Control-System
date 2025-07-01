@@ -42,7 +42,8 @@ services:
       - ./mqtt/config:/mosquitto/config
       - ./mqtt/data:/mosquitto/data
       - ./mqtt/log:/mosquitto/log
-      - /etc/letsencrypt/live/charlielab.online:/mosquitto/certs:ro
+      - /etc/letsencrypt/live/charlielab.online/fullchain.pem:/mosquitto/certs/fullchain.pem
+      - /etc/letsencrypt/live/charlielab.online/privkey.pem:/mosquitto/certs/privkey.pem
     environment:
       TZ: ${TZ}
     ports:
