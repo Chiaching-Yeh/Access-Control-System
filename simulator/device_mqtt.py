@@ -69,6 +69,7 @@ def main():
         'payload': payload
     })
 
+    client.tls_set() # 啟用 TLS
     client.on_connect = on_connect
     client.on_message = on_message
 
