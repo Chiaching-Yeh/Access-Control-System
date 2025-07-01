@@ -12,7 +12,7 @@ RUN apt-get update \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo "${TZ}" > /etc/timezone \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 # 只複製 requirements.txt（Python 套件清單）進 container
