@@ -26,10 +26,12 @@ public class MqttAccessControlService extends BeanConfiguration {
     private QrCodeVerifyService qrCodeVerifyService;
 
     private final MqttClient client;
+    private final MqttConnectOptions options;
 
     @Autowired
-    public MqttAccessControlService(MqttClient client) {
+    public MqttAccessControlService(MqttClient client, MqttConnectOptions options) {
         this.client = client;
+        this.options = options;
     }
 
     @PostConstruct
@@ -58,6 +60,10 @@ public class MqttAccessControlService extends BeanConfiguration {
                     System.out.println("MQTT 訊息送達: " + token.isComplete());
                 }
             });
+
+
+            client.connect(options);
+            System.out.println("[MQTT] 已連線至 broker");
 
             client.subscribe(CARD_TOPIC);
             client.subscribe(QR_TOPIC);

@@ -13,27 +13,30 @@ import javax.net.ssl.SSLSocketFactory;
 public class MqttConfig extends BeanConfiguration {
 
     @Bean
-    public MqttClient mqttClient() throws MqttException {
-
-        MqttClient client = new MqttClient(mqttBroker, mqttClientId);
+    public MqttConnectOptions mqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
-        options.setCleanSession(true);
+        options.setCleanSession(false);
         options.setUserName(mqttUsername);
         options.setPassword(mqttPassword.toCharArray());
 
         // 若 broker 是 ssl://，才設置 TLS
         if (mqttBroker.startsWith("ssl://")) {
             options.setSocketFactory(SSLSocketFactory.getDefault());
+            System.out.println("使用:"+mqttBroker);
         }
 
-        client.connect(options);
-        System.out.println("MQTT client connected to " + mqttBroker);
-
-        return client;
-
-        }
+        return options;
     }
+
+
+    @Bean
+    public MqttClient mqttClient(MqttConnectOptions options) throws MqttException {
+        return new MqttClient(mqttBroker, mqttClientId);
+    }
+
+}
+
 
 
 
