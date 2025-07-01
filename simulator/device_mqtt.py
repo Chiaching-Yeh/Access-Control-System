@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 MQTT_HOST = os.environ.get("MQTT_HOST", "localhost")
-MQTT_PORT = 1883
+MQTT_PORT = 8883
 DEVICE_ID = "device-001"
 
 def on_connect(client, userdata, flags, rc):

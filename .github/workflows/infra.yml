@@ -42,6 +42,9 @@ jobs:
           echo "🔐 加入 VM 到 known_hosts（避免首次連線提示）"
           ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
           
+          echo "🛠 修正 mqtt 權限中..."
+          sudo chown -R $(whoami):$(whoami) ./mqtt
+          
           echo "🔁 開始登入並執行部署腳本"
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $VM_USER@$VM_HOST << EOF
           
@@ -50,7 +53,10 @@ jobs:
             echo '🔁 [1/3] 確認 Access-Control-System 是否存在'
             if [ -d ~/Access-Control-System/.git ]; then
               echo '📦 已存在 Git 專案，執行 git pull'
-              cd ~/Access-Control-System && git pull origin main
+              cd ~/Access-Control-System
+              echo '🛠 修正 mqtt 權限中...'
+              sudo chown -R g3912_unisurf:g3912_unisurf ./mqtt
+              git pull origin main
             else
               echo '🔐 [前置] 加入 GitHub 到 VM 的 known_hosts（避免 host key verification failed）'
               mkdir -p ~/.ssh
