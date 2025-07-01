@@ -10,22 +10,37 @@ from dotenv import load_dotenv
 load_dotenv()
 
 MQTT_HOST = os.environ.get("MQTT_HOST", "localhost")
-MQTT_PORT = 8883
 USERNAME = os.environ.get("MQTT_USERNAME")
 PASSWORD = os.environ.get("MQTT_PASSWORD")
+MQTT_PORT = 8883
 DEVICE_ID = "device-001"
 
-def on_connect(client, userdata, flags, rc):
-    print("[裝置端] 已連線至 MQTT broker")
-    topic = userdata['response_topic']
-    client.subscribe(topic)
-    print(f"[裝置端] 訂閱回應 topic: {topic}")
+def on_log(client, userdata, level, buf):
+    print(f"[MQTT-LOG] {buf}")
 
-    # 確保在訂閱完成後再發送
-    if 'request_topic' in userdata and 'payload' in userdata:
-        print(f"[裝置端] 發送資料至 topic {userdata['request_topic']} → {userdata['payload']}")
-        result = client.publish(userdata['request_topic'], userdata['payload'])
-        print("[裝置端] Publish result:", result.rc)  # 0 表示成功
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("[裝置端] ✅ 已成功連線至 MQTT broker")
+
+        topic = userdata.get('response_topic')
+        if topic:
+            result = client.subscribe(topic)
+            print(f"[裝置端] 已訂閱回應 topic: {topic}（SUB result: {result[0]}）")
+        else:
+            print("[裝置端] ⚠️ 無 response_topic，略過訂閱")
+
+        # 等訂閱完成再發送請求
+        if 'request_topic' in userdata and 'payload' in userdata:
+            request_topic = userdata['request_topic']
+            payload = userdata['payload']
+            time.sleep(1)  # 🔍 等待訂閱穩定（避免還沒來得及接收回應就送出）
+            print(f"[裝置端] 發送資料至 topic {request_topic} → {payload}")
+            result = client.publish(request_topic, payload)
+            print(f"[裝置端] Publish result: {mqtt.error_string(result.rc)}")
+        else:
+            print("[裝置端] ⚠️ 無 request_topic 或 payload，略過發送")
+    else:
+        print(f"[裝置端] ❌ 連線失敗，錯誤代碼 rc={rc} ({mqtt.connack_string(rc)})")
 
 def on_message(client, userdata, msg):
     result = msg.payload.decode()
@@ -50,6 +65,9 @@ def main():
     parser.add_argument('--cardId', help="僅 card 模式需輸入卡號")
     parser.add_argument('--deviceId', default=DEVICE_ID, help="設備 ID（預設為 device-001）")
     args = parser.parse_args()
+
+    print(f"[DEBUG] USERNAME: {USERNAME}")
+    print(f"[DEBUG] PASSWORD: {PASSWORD}")
 
     if args.mode == 'qr':
         args.deviceId = "device-002"
@@ -81,8 +99,10 @@ def main():
     client.username_pw_set(USERNAME, PASSWORD)
     client.on_connect = on_connect
     client.on_message = on_message
+    client.on_log = on_log
 
     client.connect(MQTT_HOST, MQTT_PORT, 60)
+    time.sleep(2)
     client.loop_start()
 
     if args.mode == 'card':
