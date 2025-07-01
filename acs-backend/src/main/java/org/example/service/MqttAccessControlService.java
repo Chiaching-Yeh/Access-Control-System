@@ -14,7 +14,6 @@ import java.util.Optional;
 @Service
 public class MqttAccessControlService extends BeanConfiguration {
 
-    private static final String MQTT_CLIENT_ID = "java-backend";
     private static final String CARD_TOPIC = "door/request/card";
     private static final String QR_TOPIC = "door/request/qr";
     private static final String CARD_TOPIC_RESPONSE = "door/response/card";
