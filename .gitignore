@@ -56,6 +56,10 @@ docker-dev-compose.yml
 # Optional: exclude full conf folder if only local
 work/backend/conf/
 
+##MQTT
+mqtt/config/passwordfile
+mqtt/data
+
 # Lock files
 *.lck
 
@@ -94,4 +98,5 @@ build/
 .DS_Store
 
 ## mqtt
-mqtt/logmqtt/config/passwordfile
+mqtt/log
+mqtt/config/passwordfile
