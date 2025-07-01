@@ -72,10 +72,10 @@ spring:
       io.lettuce.core: DEBUG
 
 mqtt:
-  broker: ${SPRING_MQTT_BROKER}
-  clientId: ${SPRING_MQTT_CLIENT_ID}
-  username: ${SPRING_MQTT_USERNAME}
-  password: ${SPRING_MQTT_PASSWORD}
+  broker: ${MQTT_BROKER}
+  clientId: ${MQTT_CLIENT_ID}
+  username: ${MQTT_USERNAME}
+  password: ${MQTT_PASSWORD}
 
 openai:
   api:
