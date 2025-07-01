@@ -15,6 +15,9 @@ PASSWORD = os.environ.get("MQTT_PASSWORD")
 MQTT_PORT = 8883
 DEVICE_ID = "device-001"
 
+# 用來追蹤是否收到授權結果
+got_response = False
+
 def on_log(client, userdata, level, buf):
     print(f"[MQTT-LOG] {buf}")
 
@@ -33,7 +36,7 @@ def on_connect(client, userdata, flags, rc):
         if 'request_topic' in userdata and 'payload' in userdata:
             request_topic = userdata['request_topic']
             payload = userdata['payload']
-            time.sleep(1)  # 🔍 等待訂閱穩定（避免還沒來得及接收回應就送出）
+            time.sleep(1)  # 等待訂閱穩定（避免還沒來得及接收回應就送出）
             print(f"[裝置端] 發送資料至 topic {request_topic} → {payload}")
             result = client.publish(request_topic, payload)
             print(f"[裝置端] Publish result: {mqtt.error_string(result.rc)}")
@@ -43,6 +46,10 @@ def on_connect(client, userdata, flags, rc):
         print(f"[裝置端] ❌ 連線失敗，錯誤代碼 rc={rc} ({mqtt.connack_string(rc)})")
 
 def on_message(client, userdata, msg):
+
+    global got_response
+    got_response = True
+
     result = msg.payload.decode()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[裝置端] 收到授權結果: {result}")
@@ -102,14 +109,17 @@ def main():
     client.on_log = on_log
 
     client.connect(MQTT_HOST, MQTT_PORT, 60)
-    time.sleep(2)
     client.loop_start()
 
-    if args.mode == 'card':
-        time.sleep(10)  # 等待回應
-    else:
-        print(f"[裝置端] 等待授權回應（QR 模式），訂閱 topic: {response_topic}")
-        time.sleep(300)
+    wait_seconds = 10 if args.mode == 'card' else 60
+    for i in range(wait_seconds):
+        if got_response:
+            break
+        print(f"[裝置端] ⏳ 等待授權回應中...（{i + 1}/{wait_seconds}秒）")
+        time.sleep(1)
+
+    if not got_response:
+        print("[裝置端] ❗ 等待逾時，未收到授權結果")
 
     client.loop_stop()
     client.disconnect()
