@@ -13,13 +13,22 @@ public abstract class BeanConfiguration {
     @Value("${app.qrApi.path}")
     protected String apiPath;
 
-    @Value("${mqtt.broker}")
-    protected String mqttBroker;
-
     @Value("${app.allowed-Origins.path}")
     protected String allowedOriginsPath;
 
     @Value("${app.QrCode.expireSeconds}")
     protected int expireSeconds;
+
+    @Value("${mqtt.broker}")
+    protected String mqttBroker;
+
+    @Value("${mqtt.clientId}")
+    protected String mqttClientId;
+
+    @Value("${mqtt.username}")
+    protected String mqttUsername;
+
+    @Value("${mqtt.password}")
+    protected String mqttPassword;
 
 }

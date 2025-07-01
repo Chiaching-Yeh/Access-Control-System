@@ -26,16 +26,16 @@ public class MqttAccessControlService extends BeanConfiguration {
     @Autowired
     private QrCodeVerifyService qrCodeVerifyService;
 
-    private MqttClient client;
+    private final MqttClient client;
 
-    @PostConstruct
-    public void init() {
+    @Autowired
+    public MqttAccessControlService(MqttClient client) {
+        this.client = client;
+        init();
+    }
+
+    private void init() {
         try {
-            client = new MqttClient(mqttBroker, MQTT_CLIENT_ID);
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setAutomaticReconnect(true);
-            options.setCleanSession(true);
-
             client.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {
@@ -60,7 +60,6 @@ public class MqttAccessControlService extends BeanConfiguration {
                 }
             });
 
-            client.connect(options);
             client.subscribe(CARD_TOPIC);
             client.subscribe(QR_TOPIC);
             System.out.println("MQTT 已訂閱: " + CARD_TOPIC + " 與 " + QR_TOPIC);

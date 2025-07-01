@@ -68,8 +68,10 @@ spring:
       max-request-size: 55MB
 
 mqtt:
-#  broker: ${SPRING_MQTT_BROKER}
   broker: tcp://localhost:1883
+  clientId: ""
+  username: ""
+  password: ""
 
 openai:
   api:

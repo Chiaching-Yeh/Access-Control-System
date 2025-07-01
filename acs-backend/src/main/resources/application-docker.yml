@@ -73,6 +73,9 @@ spring:
 
 mqtt:
   broker: ${SPRING_MQTT_BROKER}
+  clientId: ${SPRING_MQTT_CLIENT_ID}
+  username: ${SPRING_MQTT_USERNAME}
+  password: ${SPRING_MQTT_PASSWORD}
 
 openai:
   api:
