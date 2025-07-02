@@ -100,3 +100,4 @@ build/
 ## mqtt
 mqtt/log
 mqtt/config/passwordfile
+.env

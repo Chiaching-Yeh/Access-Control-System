@@ -56,6 +56,20 @@ jobs:
           VM_USER: ${{ secrets.VM_USER }}
           IMAGE_TAG: ${{ github.sha }}
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
+          MQTT_BROKER: ${{ secrets.MQTT_BROKER }}
+          MQTT_CLIENT_ID: ${{ secrets.MQTT_CLIENT_ID }}
+          MQTT_USERNAME: ${{ secrets.MQTT_USERNAME }}
+          MQTT_PASSWORD: ${{ secrets.MQTT_PASSWORD }}
+          MQTT_HOST: ${{ secrets.MQTT_HOST }}
+          MQTT_PORT: ${{ secrets.MQTT_PORT }}
+          TZ: ${{ secrets.TZ }}
         run: |
           echo "🔐 將私鑰寫入 SSH 金鑰檔"
           mkdir -p ~/.ssh
@@ -94,6 +108,27 @@ jobs:
             echo '🔁 [3/6] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
           
+            echo "🔑 產生 .env 檔案"
+            echo "POSTGRES_DB=$POSTGRES_DB" > .env
+            echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+  
+            echo "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" >> .env
+            echo "SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME" >> .env
+            echo "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" >> .env
+            echo "SPRING_REDIS_HOST=$SPRING_REDIS_HOST" >> .env
+  
+            echo "MQTT_BROKER=$MQTT_BROKER" >> .env
+            echo "MQTT_CLIENT_ID=$MQTT_CLIENT_ID" >> .env
+            echo "MQTT_USERNAME=$MQTT_USERNAME" >> .env
+            echo "MQTT_PASSWORD=$MQTT_PASSWORD" >> .env
+  
+            echo "DOCKER_REGISTRY=$DOCKER_REGISTRY" >> .env
+  
+            echo "MQTT_HOST=$MQTT_HOST" >> .env
+            echo "MQTT_PORT=$MQTT_PORT" >> .env
+            echo "TZ=$TZ" >> .env
+          
             echo '🔍 [4/6] 檢查 infra container 是否啟動'
             if [ -f /tmp/infra_ready ]; then
               echo '✅ 快取存在，略過 Infra 啟動'
@@ -117,6 +152,19 @@ jobs:
             echo "🔍 驗證映像已存在於本地"
             docker image inspect $DOCKER_REGISTRY/acs-simulator:$IMAGE_TAG >/dev/null && \
             echo "✅ 映像確認成功存在" || echo "❌ 拉取失敗"
+          
+            echo "🔐 [額外安全驗證] 確認 .env 與容器環境變數一致"
+
+            if grep -q "$POSTGRES_DB" .env && grep -q "$MQTT_CLIENT_ID" .env; then
+              echo "✅ .env 中包含機密變數，應為部署時自動產生"
+            else
+              echo "❌ .env 內容異常，機密變數缺失，請確認 CI/CD 是否注入失敗"
+              exit 1
+            fi
+            
+            if grep -i 'password' .env | grep -v '^#'; then
+              echo "⚠️ .env 中包含 password 欄位，但已限制不顯示在 log"
+            fi
 
             echo '🔁 [6/6] 執行 docker compose up'
             docker compose -p access-control-system -f docker-compose-infra.yml -f docker-compose-app.yml up -d simulator
