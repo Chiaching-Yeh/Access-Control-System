@@ -2,7 +2,7 @@
 
 > 本專案為門禁控制系統模擬平台，以前後端分離架構整合 MQTT 即時通訊、Redis 快取、PostgreSQL 資料庫、Spring Boot 及 Angular 前端，
 並支援 Docker 化部署、自動化 CI/CD、GCP 雲端上線，另設計 Python CLI 工具模擬硬體設備（如刷卡機、QR Code 閘門）進行全流程測試，
-並實作 HTTPS 憑證 與 MQTT over TSL 以確保連線的安全性。
+並實作 HTTPS 憑證 與 MQTT over TLS 以確保連線的安全性。
 
 ---
 
@@ -45,8 +45,8 @@
      - ✅ CD：透過 SSH 登入 GCP VM，自動從 Artifact Registry 拉取最新映像，並使用 Docker Compose 重啟服務
      - [詳細說明](./.github/workflows/README.md)
 
-- #### SSL 憑證（VM 配置）
-    購買網域並在 VM 層完成 SSL 憑證簽發（如 Let's Encrypt），全站流量皆加密，保障門禁資料與人員資訊安全。
+- #### TLS 憑證（VM 配置）
+    購買網域並在 VM 層完成 TLS 憑證簽發（如 Let's Encrypt），全站流量皆加密，保障門禁資料與人員資訊安全。
     - [詳細說明](./infra-docs/README.md)
 
 ---

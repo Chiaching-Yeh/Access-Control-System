@@ -34,7 +34,7 @@
 7. [🚀 systemctl reload nginx 重啟服務]
 8. [🌐 VM 防火牆放行 HTTP (port 80)]
 9. [🔐 使用 Certbot 執行 HTTPS 憑證申請]
-10. [⚙️ Certbot 自動修改 nginx.conf 為 SSL 版]
+10. [⚙️ Certbot 自動修改 nginx.conf 為 TLS 版]
 11. [🌍 網站成功支援 HTTPS！]
 12. [🕒 開啟 certbot 自動續期機制 (systemd)]
 ---
@@ -107,7 +107,7 @@ sudo rm /etc/nginx/sites-enabled/<customized domain>
 ```
 ---
 
-## 3. 建立 HTTP 站台設定（初期先不加 SSL）
+## 3. 建立 HTTP 站台設定（初期先不加 TLS）
 
 ```text
 sudo nano /etc/nginx/sites-available/<customized domain>
