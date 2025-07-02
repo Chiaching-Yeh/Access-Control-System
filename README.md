@@ -2,7 +2,7 @@
 
 > 本專案為門禁控制系統模擬平台，以前後端分離架構整合 MQTT 即時通訊、Redis 快取、PostgreSQL 資料庫、Spring Boot 及 Angular 前端，
 並支援 Docker 化部署、自動化 CI/CD、GCP 雲端上線，另設計 Python CLI 工具模擬硬體設備（如刷卡機、QR Code 閘門）進行全流程測試，
-並實作 SSL 憑證以確保安全性。
+並實作 HTTPS 憑證 與 MQTT over TSL 以確保連線的安全性。
 
 ---
 
