@@ -33,6 +33,20 @@ jobs:
           VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
+          MQTT_BROKER: ${{ secrets.MQTT_BROKER }}
+          MQTT_CLIENT_ID: ${{ secrets.MQTT_CLIENT_ID }}
+          MQTT_USERNAME: ${{ secrets.MQTT_USERNAME }}
+          MQTT_PASSWORD: ${{ secrets.MQTT_PASSWORD }}
+          MQTT_HOST: ${{ secrets.MQTT_HOST }}
+          MQTT_PORT: ${{ secrets.MQTT_PORT }}
+          TZ: ${{ secrets.TZ }}
         run: |
           echo "🔐 將私鑰寫入 SSH 金鑰檔"
           mkdir -p ~/.ssh
@@ -50,7 +64,7 @@ jobs:
           
             set -e 
           
-            echo '🔁 [1/3] 確認 Access-Control-System 是否存在'
+            echo '🔁 [1/5] 確認 Access-Control-System 是否存在'
             if [ -d ~/Access-Control-System/.git ]; then
               echo '📦 已存在 Git 專案，執行 git pull'
               cd ~/Access-Control-System
@@ -63,10 +77,39 @@ jobs:
               git clone git@github.com:Chiaching-Yeh/Access-Control-System.git ~/Access-Control-System
             fi
 
-            echo '🔁 [2/3] 切換至專案資料夾 ~/Access-Control-System'
+            echo '🔁 [2/5] 切換至專案資料夾 ~/Access-Control-System'
             cd ~/Access-Control-System && pwd && ls -la
           
-            echo '🔁 [3/3] 執行 docker compose up'
+            echo "🔑 [3/5] 產生 .env 檔案"
+            echo "POSTGRES_DB=$POSTGRES_DB" > .env
+            echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+          
+            echo "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" >> .env
+            echo "SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME" >> .env
+            echo "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" >> .env
+            echo "SPRING_REDIS_HOST=$SPRING_REDIS_HOST" >> .env
+          
+            echo "MQTT_BROKER=$MQTT_BROKER" >> .env
+            echo "MQTT_CLIENT_ID=$MQTT_CLIENT_ID" >> .env
+            echo "MQTT_USERNAME=$MQTT_USERNAME" >> .env
+            echo "MQTT_PASSWORD=$MQTT_PASSWORD" >> .env
+          
+            echo "DOCKER_REGISTRY=$DOCKER_REGISTRY" >> .env
+          
+            echo "MQTT_HOST=$MQTT_HOST" >> .env
+            echo "MQTT_PORT=$MQTT_PORT" >> .env
+            echo "TZ=$TZ" >> .env
+          
+            echo "🔐 [4/5] 確認 .env 與容器環境變數一致"
+            if grep -q "$POSTGRES_DB" .env && grep -q "$MQTT_CLIENT_ID" .env; then
+              echo "✅ .env 中包含機密變數，應為部署時自動產生"
+            else
+              echo "❌ .env 內容異常，機密變數缺失，請確認 CI/CD 是否注入失敗"
+              exit 1
+            fi
+          
+            echo '🔁 [5/5] 執行 docker compose up'
             if [ "$(docker inspect -f '{{.State.Running}}' acs-db 2>/dev/null)" != "true" ] || \
                [ "$(docker inspect -f '{{.State.Running}}' acs-redis 2>/dev/null)" != "true" ] || \
                [ "$(docker inspect -f '{{.State.Running}}' acs-mqtt 2>/dev/null)" != "true" ]; then
