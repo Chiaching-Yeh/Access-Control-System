@@ -15,8 +15,8 @@ import java.util.Optional;
 @RegisterBeanMapper(AccessRecord.class)
 public interface AccessRecordInterface extends SqlObject {
 
-    @SqlUpdate("INSERT INTO accessRecord (recordUid, cardId, accessTime, successful, reason, deviceId) " +
-            "VALUES (:recordUid, :cardId, :accessTime, :successful ,:reason, :deviceId)")
+    @SqlUpdate("INSERT INTO accessRecord (recordUid, userId, cardId, accessTime, successful, reason, deviceId) " +
+            "VALUES (:recordUid, :userId, :cardId, :accessTime, :successful ,:reason, :deviceId)")
     int insert(@BindBean AccessRecord record);
 
     @SqlQuery("SELECT * FROM accessRecord order by accessTime desc limit :limit ")

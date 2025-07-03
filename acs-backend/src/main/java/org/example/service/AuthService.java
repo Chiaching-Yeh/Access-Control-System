@@ -35,11 +35,13 @@ public class AuthService {
 
         boolean isSuccessful = false;
         String reason = null;
+        String userId = null;
 
         Optional<User> userOptional = existsByCardId(cardId);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            userId = user.getUserId();
             if (Boolean.TRUE.equals(user.getIsActive())) {
                 System.out.println("✅ 找到有效使用者：" + user);
                 isSuccessful = true;
@@ -55,6 +57,7 @@ public class AuthService {
         // 建立 AccessRecord（不重複）
         AccessRecord record = new AccessRecord();
         record.setRecordUid(UUID.randomUUID().toString());
+        record.setUserId(userId != null ? userId : "");
         record.setCardId(cardId);
         record.setDeviceId(deviceId);
         record.setAccessTime(LocalDateTime.now());

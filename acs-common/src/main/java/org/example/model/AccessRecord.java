@@ -14,6 +14,7 @@ public class AccessRecord {
 
     String recordUid; // 紀錄UID
     String cardId; // 讀到的卡號
+    String userId; // 員工編號
     LocalDateTime accessTime; // 刷卡時間
     boolean successful;
     String reason; // 失敗原因

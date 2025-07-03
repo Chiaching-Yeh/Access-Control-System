@@ -48,6 +48,7 @@
         <li *ngFor="let record of accessRecords" [class.success]="record.successful" [class.fail]="!record.successful">
           <div class="left-info">
             <div class="time">{{ record.accessTime | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+            <div class="userId">員編：{{ record.userId }}</div>
             <div class="cardId">卡號：{{ record.cardId }}</div>
             <div class="device">設備：{{ record.deviceId }}</div>
           </div>

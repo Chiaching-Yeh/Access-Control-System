@@ -1,7 +1,9 @@
 package org.example.service;
 
 import org.example.dao.AccessRecordInterface;
+import org.example.dao.UserInterface;
 import org.example.model.AccessRecord;
+import org.example.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class QrCodeVerifyService {
     @Autowired
     private AccessSocketPusher accessSocketPusher;
 
+    @Autowired
+    private AuthService authService ;
+
     /**
      * 將使用者驗證資訊暫存於 Redis，TTL 為 180 秒（3 分鐘）。
      */
@@ -39,7 +44,23 @@ public class QrCodeVerifyService {
 
         AccessRecord record = new AccessRecord();
         record.setRecordUid(UUID.randomUUID().toString());
-        record.setCardId(userId);
+        String cardId = null;
+
+        Optional<User> userOptional = authService.findByUserId(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getCardId() != null){
+                cardId = user.getCardId();
+            } else {
+                cardId = "";
+            }
+        } else {
+            System.out.println("使用者不存在");
+        }
+
+        record.setCardId(cardId);
+        record.setUserId(userId);
         record.setDeviceId(deviceId);
         record.setAccessTime(LocalDateTime.now());
 
