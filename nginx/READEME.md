@@ -1,6 +1,8 @@
 當使用者透過 HTTP（port 80）存取 charlielab.online 時，會被自動 301 重導到 HTTPS（port 443），保障連線安全。
 當使用者透過 HTTPS 存取（port 443）時： 掛載 Let's Encrypt 憑證來支援 TLS 加密、 根據 URL 路徑將流量分流到對應的內部服務：
 
+
+``` text
 server {
     listen 443 ssl;
 
@@ -55,3 +57,5 @@ server {
     ✔ 「當有 HTTP 請求（port 80）打到這台機器時，要將 http 強制轉成 https，確保網站只透過 TLS 傳輸」
 
 }
+
+```
