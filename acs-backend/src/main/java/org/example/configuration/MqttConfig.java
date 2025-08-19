@@ -3,6 +3,7 @@ package org.example.configuration;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,13 @@ public class MqttConfig extends BeanConfiguration {
 
     @Bean
     public MqttClient mqttClient(MqttConnectOptions options) throws MqttException {
-        return new MqttClient(mqttBroker, mqttClientId);
+        // 沒設定，MqttClient 可能會給你隨機的 clientId (像 paho3929971981971)，加上後才能確保 clientId 固定。
+        MqttClient client = new MqttClient(mqttBroker, mqttClientId, new MemoryPersistence());
+
+        client.connect(options);
+        System.out.println("✅ MQTT Client 已連線: " + mqttClientId);
+
+        return client;
     }
 
 }

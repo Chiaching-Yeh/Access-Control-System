@@ -132,12 +132,15 @@ public class MqttAccessControlService extends BeanConfiguration {
         System.out.println("publishQrScan Payload>>"+payload);
 
         try {
-
-        MqttClient client = new MqttClient(mqttBroker, mqttClientId);
-        client.connect();
-        client.publish(QR_TOPIC, new MqttMessage(payload.getBytes(StandardCharsets.UTF_8)));
-        client.disconnect();
-        System.out.println("[MQTT 發送] payload: " + payload);
+            if (!client.isConnected()) {
+                // 可視需求：重連或丟錯
+                System.out.println("MQTT not connected, reconnecting...");
+                client.connect(options);     // 用同一組 options
+            }
+            MqttMessage msg = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8));
+            msg.setQos(1);
+            client.publish(QR_TOPIC, msg);
+            System.out.println("[MQTT 發送] payload: " + payload);
 
         } catch (MqttException e) {
             e.printStackTrace();
