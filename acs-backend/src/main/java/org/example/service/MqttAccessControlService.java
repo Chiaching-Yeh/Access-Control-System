@@ -133,7 +133,7 @@ public class MqttAccessControlService extends BeanConfiguration {
 
         try {
 
-        MqttClient client = new MqttClient(mqttBroker, MqttClient.generateClientId());
+        MqttClient client = new MqttClient(mqttBroker, mqttClientId);
         client.connect();
         client.publish(QR_TOPIC, new MqttMessage(payload.getBytes(StandardCharsets.UTF_8)));
         client.disconnect();
